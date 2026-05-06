@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muave — Alexander Blagoev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;1,9..144,300..700,30,1&family=JetBrains+Mono:wght@300;400;500&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #1e1e1c;
+    --paper-warm: #252523;
+    --ink: #ede8df;
+    --ink-soft: #b8b0a4;
+    --muted: #7a726a;
+    --rose: #af9690;
+    --rose-dark: #62595f;
+    --pale: #f3e5f5;
+    --hairline: rgba(237,232,223,0.1);
+    --hairline-soft: rgba(237,232,223,0.05);
+    --nav-bg: rgba(30,30,28,0.92);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', serif; font-size: 17px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-back { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--rose); }
+  .nav-logo { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 500; font-style: italic; }
+  .nav-index { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .lang-toggle { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hairline); padding: 0.3rem 0.7rem; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+  .lang-toggle:hover { color: var(--rose); border-color: var(--rose); }
+
+  /* CONTAINER */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* HERO */
+  .project-hero { padding: 5rem 0 4rem; border-bottom: 1px solid var(--hairline); }
+  .project-meta { display: flex; gap: 3rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3.5rem; }
+  .project-meta span { display: flex; flex-direction: column; gap: 0.4rem; }
+  .project-meta strong { color: var(--rose); font-weight: 400; }
+
+  .project-title {
+    margin-bottom: 2.5rem;
+  }
+  .muave-logo {
+    width: min(460px, 70vw);
+    height: auto;
+    display: block;
+  }
+  .project-tagline { font-family: 'Nunito', sans-serif; font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 300; color: var(--muted); max-width: 580px; line-height: 1.75; letter-spacing: 0.01em; }
+
+  /* DELIVERABLES */
+  .deliverables {
+    border-bottom: 1px solid var(--hairline);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--hairline);
+  }
+  .deliverable { background: var(--paper); padding: 2.5rem 2rem; }
+  .deliverable-icon { font-size: 1.4rem; margin-bottom: 1rem; color: var(--rose); }
+  .deliverable-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.8rem; }
+  .deliverable-desc { font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+
+  /* SECTION LABEL */
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline-soft); display: flex; justify-content: space-between; }
+  .section-label .num { color: var(--rose); }
+
+  /* ABOUT */
+  .section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+  .about-heading { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.025em; font-variation-settings: "opsz" 144, "SOFT" 30; margin-bottom: 2rem; }
+  .about-heading em { font-style: italic; color: var(--rose); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .about-text p { font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 300; line-height: 1.8; color: var(--ink-soft); margin-bottom: 1.4rem; }
+  .about-text em { font-style: italic; color: var(--ink); }
+  .about-text strong { font-weight: 600; color: var(--ink); }
+
+  /* LOOKBOOK GRID */
+  .lookbook-section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  .lookbook-gallery { display: flex; flex-direction: column; gap: 1rem; margin-top: 3rem; }
+  .lb-row { display: grid; gap: 1rem; }
+  .lb-row.full { grid-template-columns: 1fr; }
+  .lb-row.two { grid-template-columns: 1fr 1fr; }
+  .lb-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .lb-item { overflow: hidden; line-height: 0; position: relative; }
+  .lb-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+  .lb-item:hover img { transform: scale(1.03); }
+  .lb-item.portrait { aspect-ratio: 2/3; }
+  .lb-item.landscape { aspect-ratio: 3/2; }
+  .lb-item.square { aspect-ratio: 1/1; }
+  .lb-item.tall { aspect-ratio: 9/16; }
+
+  /* BRAND IDENTITY */
+  .brand-section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); background: var(--paper-warm); }
+  .brand-docs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 3rem; }
+  .brand-doc { overflow: hidden; border: 1px solid var(--hairline); }
+  .brand-doc img { width: 100%; display: block; }
+
+  /* PALETTE */
+  .palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .swatch { border-radius: 4px; overflow: hidden; }
+  .swatch-color { height: 100px; width: 100%; }
+  .swatch-info { padding: 0.9rem 0; }
+  .swatch-name { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); margin-bottom: 0.3rem; }
+  .swatch-hex { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+
+  /* STICKERS */
+  .stickers-section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  /* STICKER SPREAD */
+  .sticker-spread {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 5rem 2rem 3rem;
+    flex-wrap: wrap;
+  }
+  .sticker-circle {
+    width: 260px;
+    height: 260px;
+    flex-shrink: 0;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sticker-circle:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 2; }
+  .sticker-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  /* Scatter rotations */
+  .sc1 { transform: rotate(-8deg); }
+  .sc2 { transform: rotate(5deg) translateY(-24px); }
+  .sc3 { transform: rotate(-4deg) translateY(18px); }
+  .sc4 { transform: rotate(9deg) translateY(-12px); }
+
+  /* STATS */
+  .stats-section { padding: 5rem 0; border-bottom: 1px solid var(--hairline); background: var(--paper-warm); }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hairline); }
+  .stat { background: var(--paper-warm); padding: 3rem 2rem; text-align: center; }
+  .stat-number { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(3rem, 8vw, 6rem); line-height: 1; letter-spacing: -0.04em; color: var(--rose); font-variation-settings: "opsz" 144, "SOFT" 30; margin-bottom: 0.5rem; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+  /* NEXT */
+  .next-project { padding: 4rem 0; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--hairline); }
+  .next-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .next-title { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.02em; font-variation-settings: "opsz" 144, "SOFT" 30; transition: color 0.25s; }
+  .next-title:hover { color: var(--rose); font-style: italic; }
+  .next-arrow { font-size: 2rem; color: var(--muted); transition: transform 0.3s, color 0.3s; }
+  .next-project:hover .next-arrow { transform: translateX(12px); color: var(--rose); }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.d1 { transition-delay: 0.1s; } .reveal.d2 { transition-delay: 0.2s; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  .project-meta { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .project-title { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
+  .project-tagline { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
+
+  @media(max-width:1000px) {
+    .container { padding: 0 1.5rem; } nav { padding: 1.2rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .deliverables { grid-template-columns: 1fr; }
+    .lb-row.two { grid-template-columns: 1fr; }
+    .lb-row.three { grid-template-columns: 1fr 1fr; }
+    .brand-docs { grid-template-columns: 1fr; }
+    .palette-grid { grid-template-columns: repeat(3, 1fr); }
+    .stats-grid { grid-template-columns: 1fr; }
+    .project-meta { flex-wrap: wrap; gap: 1.5rem; }
+  }
+  @media(max-width:600px) {
+    .lb-row.three { grid-template-columns: 1fr; }
+    .palette-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="portfolio-editorial.html" class="nav-back" data-i18n="nav-back">← Back to Portfolio</a>
+  <a href="portfolio-editorial.html" class="nav-logo">Alexander Blagoev</a>
+  <div class="nav-right">
+    <button class="lang-toggle" id="langToggle">BG</button>
+    <span class="nav-index">03 / 04</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="project-hero">
+  <div class="container">
+    <div class="project-meta">
+      <span><strong>Category</strong>Fashion / Brand Identity</span>
+      <span><strong>Year</strong>2023</span>
+      <span><strong>Type</strong>Personal Project</span>
+      <span><strong>Medium</strong>Clothing / 3D / Print</span>
+    </div>
+    <h1 class="project-title">
+      <img src="muave-logo.svg" alt="Muave" class="muave-logo">
+    </h1>
+    <p class="project-tagline" data-i18n="tagline">A self-initiated clothing brand built around freedom, movement, and the colour between pink and purple. Identity, art direction, and 3D campaign imagery — all from scratch.</p>
+  </div>
+</section>
+
+<!-- DELIVERABLES -->
+<div class="deliverables">
+  <div class="deliverable reveal">
+    <div class="deliverable-icon">∿</div>
+    <div class="deliverable-title" data-i18n="del-1-title">Brand Identity</div>
+    <div class="deliverable-desc" data-i18n="del-1-desc">Logo system with four variations, colour palette, typography guidelines, and sticker pack.</div>
+  </div>
+  <div class="deliverable reveal d1">
+    <div class="deliverable-icon">◻</div>
+    <div class="deliverable-title" data-i18n="del-2-title">Art Direction</div>
+    <div class="deliverable-desc" data-i18n="del-2-desc">Surrealist campaign imagery — headless figures in movement, shot across deserts, dunes, and rooftops.</div>
+  </div>
+  <div class="deliverable reveal d2">
+    <div class="deliverable-icon">◈</div>
+    <div class="deliverable-title" data-i18n="del-3-title">3D Renders</div>
+    <div class="deliverable-desc" data-i18n="del-3-desc">Clothing visualised in 3D — each colourway rendered against a distinct environment.</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">01</span> &nbsp;— <span data-i18n="sec-1-label">The Concept</span></span>
+      <span>Personal / 2023</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-heading reveal" data-i18n-html="about-heading">
+        A brand with <em>no face.</em><br>By design.
+      </div>
+      <div class="about-text reveal d1">
+        <p data-i18n="about-p1">Muave started as a question: what does a clothing brand look like when it removes the person and keeps the movement? Every campaign image is deliberately headless — the focus shifts entirely to the garment, the pose, the environment.</p>
+        <p data-i18n="about-p2">The name sits in the space between mauve (the colour) and move (the action). The wave logo — a stylised M — carries the same duality: fluid and structured, soft and bold.</p>
+        <p data-i18n="about-p3">The brand was built end-to-end as a personal project: identity, colour system, typography, 3D product renders, and a full campaign — designed to feel like a real label from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKBOOK -->
+<section class="lookbook-section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">02</span> &nbsp;— <span data-i18n="sec-2-label">Campaign Lookbook</span></span>
+      <span>Art Direction / 3D</span>
+    </div>
+  </div>
+
+  <div class="lookbook-gallery container">
+    <!-- Hero shot -->
+    <div class="lb-row full reveal">
+      <div class="lb-item" style="aspect-ratio:16/9;">
+        <img src="mueave archive/clothing photoshoots/IMG_0725.JPG" alt="Muave white set on sand dunes">
+      </div>
+    </div>
+
+    <!-- Three portrait renders -->
+    <div class="lb-row three reveal">
+      <div class="lb-item portrait">
+        <img src="mueave archive/clothing photoshoots/IMG_0698.PNG" alt="Muave mauve set — purple bg">
+      </div>
+      <div class="lb-item portrait">
+        <img src="mueave archive/clothing photoshoots/IMG_0724.PNG" alt="Muave pink set on rooftop">
+      </div>
+      <div class="lb-item portrait">
+        <img src="mueave archive/clothing photoshoots/IMG_0691.PNG" alt="Muave brown set jumping — desert">
+      </div>
+    </div>
+
+    <!-- Full width — urban -->
+    <div class="lb-row full reveal">
+      <div class="lb-item" style="aspect-ratio:4/3;">
+        <img src="mueave archive/clothing photoshoots/IMG_0721.PNG" alt="Muave grey set against urban wall">
+      </div>
+    </div>
+
+    <!-- Two column -->
+    <div class="lb-row two reveal">
+      <div class="lb-item portrait">
+        <img src="mueave archive/clothing photoshoots/IMG_0720.PNG" alt="Muave brown set floating — mountains">
+      </div>
+      <div class="lb-item portrait">
+        <img src="mueave archive/clothing photoshoots/IMG_0802.PNG" alt="Muave pink set jumping — pink bg">
+      </div>
+    </div>
+
+    <!-- Close-up hoodie -->
+    <div class="lb-row full reveal">
+      <div class="lb-item" style="aspect-ratio:16/9;">
+        <img src="mueave archive/clothing photoshoots/IMG_0711.JPG" alt="Muave ball logo hoodie close-up">
+      </div>
+    </div>
+
+    <!-- Dunes full width -->
+    <div class="lb-row full reveal">
+      <div class="lb-item" style="aspect-ratio:16/9;">
+        <img src="mueave archive/clothing photoshoots/IMG_0722.PNG" alt="Muave white set on dunes — cinematic">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND IDENTITY -->
+<section class="brand-section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">03</span> &nbsp;— <span data-i18n="sec-3-label">Brand Identity</span></span>
+      <span>Logo / Colour / Type</span>
+    </div>
+    <div class="brand-docs reveal">
+      <div class="brand-doc">
+        <img src="muave-brand/brand_02.png" alt="Muave — Act I Logo">
+      </div>
+      <div class="brand-doc">
+        <img src="muave-brand/brand_04.png" alt="Muave — Logo Variations">
+      </div>
+      <div class="brand-doc">
+        <img src="muave-brand/brand_05.png" alt="Muave — Typography">
+      </div>
+      <div class="brand-doc">
+        <img src="mueave archive/brand identitiy/Screenshot 2026-05-05 at 1.07.28.png" alt="Muave — Colour Palette">
+      </div>
+    </div>
+
+    <!-- Palette -->
+    <div class="palette-grid reveal" style="margin-top:4rem;">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#af9690;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Rose Mauve</div>
+          <div class="swatch-hex">#AF9690</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#62595f;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Brownish Mauve</div>
+          <div class="swatch-hex">#62595F</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f3e5f5; border:1px solid rgba(0,0,0,0.06);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Pale Mauve</div>
+          <div class="swatch-hex">#F3E5F5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STICKERS -->
+<section class="stickers-section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">04</span> &nbsp;— <span data-i18n="sec-4-label">Sticker Pack</span></span>
+      <span>Print / Collateral</span>
+    </div>
+    <div class="about-grid" style="margin-bottom:0;">
+      <div class="about-heading reveal" data-i18n-html="sticker-heading">
+        Four colourways.<br><em>One mark.</em>
+      </div>
+      <div class="about-text reveal d1">
+        <p data-i18n="sticker-p1">The sticker pack was designed as brand collateral — circular, typeset with the full brand name running the outer ring, and the wave symbol centred. Each colourway pulls from the brand palette: brownish mauve, white, pale lavender, and dark.</p>
+        <p data-i18n="sticker-p2">One variant includes an embedded QR code that links back to the brand — where the product and the digital presence become the same object.</p>
+      </div>
+    </div>
+    <div class="sticker-spread reveal">
+      <div class="sticker-circle sc1">
+        <img src="mueave archive/stickers/stickers1.png" alt="Muave sticker — brownish mauve">
+      </div>
+      <div class="sticker-circle sc2">
+        <img src="mueave archive/stickers/stickers2.png" alt="Muave sticker — QR dark">
+      </div>
+      <div class="sticker-circle sc3">
+        <img src="mueave archive/stickers/stickers3.png" alt="Muave sticker — white">
+      </div>
+      <div class="sticker-circle sc4">
+        <img src="mueave archive/stickers/sticker4.png" alt="Muave sticker — pale mauve">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat reveal">
+        <div class="stat-number">4</div>
+        <div class="stat-label" data-i18n="stat-1">Logo variations</div>
+      </div>
+      <div class="stat reveal d1">
+        <div class="stat-number">3</div>
+        <div class="stat-label" data-i18n="stat-2">Brand colourways</div>
+      </div>
+      <div class="stat reveal d2">
+        <div class="stat-number">∿</div>
+        <div class="stat-label" data-i18n="stat-3">One mark. Infinite motion.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEXT PROJECT -->
+<div class="container">
+  <a href="bogota.html" class="next-project">
+    <div>
+      <div class="next-label" data-i18n="next-label">Next Project</div>
+      <div class="next-title" data-i18n="next-title">Restaurant Bogota</div>
+    </div>
+    <div class="next-arrow">→</div>
+  </a>
+</div>
+
+<script>
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  // Theme sync
+  if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  const LANG_MUAVE = {
+    en: {
+      'nav-back': '← Back to Portfolio',
+      'tagline': 'A self-initiated clothing brand built around freedom, movement, and the colour between pink and purple. Identity, art direction, and 3D campaign imagery — all from scratch.',
+      'del-1-title': 'Brand Identity',
+      'del-1-desc': 'Logo system with four variations, colour palette, typography guidelines, and sticker pack.',
+      'del-2-title': 'Art Direction',
+      'del-2-desc': 'Surrealist campaign imagery — headless figures in movement, shot across deserts, dunes, and rooftops.',
+      'del-3-title': '3D Renders',
+      'del-3-desc': 'Clothing visualised in 3D — each colourway rendered against a distinct environment.',
+      'sec-1-label': 'The Concept',
+      'sec-2-label': 'Campaign Lookbook',
+      'sec-3-label': 'Brand Identity',
+      'sec-4-label': 'Sticker Pack',
+      'about-heading': 'A brand with <em>no face.</em><br>By design.',
+      'about-p1': 'Muave started as a question: what does a clothing brand look like when it removes the person and keeps the movement? Every campaign image is deliberately headless — the focus shifts entirely to the garment, the pose, the environment.',
+      'about-p2': 'The name sits in the space between mauve (the colour) and move (the action). The wave logo — a stylised M — carries the same duality: fluid and structured, soft and bold.',
+      'about-p3': 'The brand was built end-to-end as a personal project: identity, colour system, typography, 3D product renders, and a full campaign — designed to feel like a real label from day one.',
+      'sticker-heading': 'Four colourways.<br><em>One mark.</em>',
+      'sticker-p1': 'The sticker pack was designed as brand collateral — circular, typeset with the full brand name running the outer ring, and the wave symbol centred. Each colourway pulls from the brand palette: brownish mauve, white, pale lavender, and dark.',
+      'sticker-p2': 'One variant includes an embedded QR code that links back to the brand — where the product and the digital presence become the same object.',
+      'stat-1': 'Logo variations',
+      'stat-2': 'Brand colourways',
+      'stat-3': 'One mark. Infinite motion.',
+      'next-label': 'Next Project',
+      'next-title': 'Restaurant Bogota',
+    },
+    bg: {
+      'nav-back': '← Обратно към Портфолио',
+      'tagline': 'Самоиницииран моден бранд, изграден около свободата, движението и цвета между розово и лилаво. Идентичност, арт дирекция и 3D кампания — всичко от нулата.',
+      'del-1-title': 'Брандова Идентичност',
+      'del-1-desc': 'Лого система с четири вариации, цветова палитра, типографски насоки и стикер пак.',
+      'del-2-title': 'Арт Дирекция',
+      'del-2-desc': 'Сюрреалистични кампанийни изображения — обезглавени фигури в движение, снимани в пустини, дюни и покриви.',
+      'del-3-title': '3D Рендъри',
+      'del-3-desc': 'Облеклото, визуализирано в 3D — всеки цветови вариант рендиран на различна среда.',
+      'sec-1-label': 'Концепцията',
+      'sec-2-label': 'Кампаниен Лукбук',
+      'sec-3-label': 'Брандова Идентичност',
+      'sec-4-label': 'Стикер Пак',
+      'about-heading': 'Бранд <em>без лице.</em><br>По замисъл.',
+      'about-p1': 'Muave започна като въпрос: как изглежда моден бранд, когато премахнеш човека и запазиш движението? Всяко кампанийно изображение е умишлено обезглавено — фокусът се премества изцяло върху облеклото, позата, средата.',
+      'about-p2': 'Името се намира в пространството между mauve (цветът) и move (действието). Вълновото лого — стилизирано М — носи същата двойственост: плавно и структурирано, меко и смело.',
+      'about-p3': 'Брандът беше изграден от край до край като личен проект: идентичност, цветова система, типография, 3D рендъри на продукти и пълна кампания — проектиран да изглежда като реален етикет от първия ден.',
+      'sticker-heading': 'Четири цветови варианта.<br><em>Един знак.</em>',
+      'sticker-p1': 'Стикер пакът беше проектиран като брандово обезпечение — кръгъл, с пълното брандово наименование по外ния ринг и вълновия символ в центъра. Всеки цветови вариант идва от брандовата палитра: кафяво-лилаво, бяло, бледо лавандулово и тъмно.',
+      'sticker-p2': 'Един вариант включва вграден QR код, свързан към бранда — където продуктът и дигиталното присъствие стават един и същи обект.',
+      'stat-1': 'Лого вариации',
+      'stat-2': 'Брандови цветови варианта',
+      'stat-3': 'Един знак. Безкрайно движение.',
+      'next-label': 'Следващ Проект',
+      'next-title': 'Ресторант Богота',
+    }
+  };
+
+  function applyLang(lang) {
+    const t = LANG_MUAVE[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+    });
+    document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    document.documentElement.lang = lang;
+    localStorage.setItem('lang', lang);
+  }
+
+  const savedLang = localStorage.getItem('lang') || 'en';
+  applyLang(savedLang);
+  document.getElementById('langToggle').addEventListener('click', () => {
+    applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+/* =========================================================================
+   Bogota Restaurant — Colors & Type
+   Source brand: Ресторант Богота (restorantbogota.bg)
+   ========================================================================= */
+
+/* ---------- Web fonts ---------- */
+@font-face {
+  font-family: "Bogota Display";
+  src: url("./fonts/Bogota-3651.otf") format("opentype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* P22 Allyson Pro Italic — provided by the brand owner, used for the
+   cursive "Ресторант" word above the БОГОТА wordmark. */
+@font-face {
+  font-family: "P22 Allyson Pro";
+  src: url("./fonts/Bogota-3651.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Display face: Bahnschrift Condensed — provided by the brand owner.
+   Used for the БОГОТА wordmark, headlines, prices, and UI labels. */
+@font-face {
+  font-family: "Bahnschrift";
+  src: url("./fonts/Bahnschrift.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Garogier kept available as a secondary serif for editorial moments. */
+@font-face {
+  font-family: "Garogier";
+  src: url("./fonts/Garogier.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Companion sans for tracked-out caps eyebrows + UI labels.
+   Raleway is a near match for the "GAROGIER" caps in the brand reference. */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+
+/* =========================================================================
+   COLOR TOKENS
+   ========================================================================= */
+:root {
+  /* --- Brand --- */
+  --bg-primary:    #ff5c00;   /* Bogota orange — headlines on dark, CTAs */
+  --bg-primary-soft: #faab64; /* Logo script orange — script word, accents */
+  --bg-accent:     #008124;   /* Forest green — confirmations, "open" */
+
+  /* --- Surface --- */
+  --bg-bg:         #10100f;   /* PRIMARY surface — dark menu/site background */
+  --bg-bg-light:   #ffffff;   /* Inverted surface — receipts, modals, light pages */
+  --bg-bg-alt:     #1a1a18;   /* Subtle alternate dark panel */
+  --bg-paper:      #f5f1ea;   /* Warm cream — secondary light surface */
+  --bg-ink:        #10100f;   /* Foreground on light bg */
+  --bg-ink-on-dark: #ffffff;  /* Body text on dark bg */
+  --bg-ink-2:      #282828;   /* Secondary type, light bg */
+  --bg-ink-3:      #6b6b6b;   /* Muted, captions */
+  --bg-rule:       #eeeeee;   /* Hairline rules on light */
+  --bg-rule-dark:  #2a2a28;   /* Hairline rules on dark */
+  --bg-rule-2:     #b1b1b1;   /* Stronger rules, disabled states */
+
+  /* --- Semantic (DEFAULT = dark surface, the brand's primary mode) --- */
+  --color-bg:           var(--bg-bg);            /* #10100f */
+  --color-bg-light:     var(--bg-bg-light);      /* #ffffff */
+  --color-bg-alt:       var(--bg-bg-alt);
+  --color-fg:           var(--bg-ink-on-dark);   /* white on dark */
+  --color-fg-muted:     rgba(255,255,255,0.72);
+  --color-fg-subtle:    rgba(255,255,255,0.55);
+  --color-headline:     var(--bg-primary);       /* orange headlines */
+  --color-cta:          var(--bg-primary);
+  --color-cta-hover:    #e25200;
+  --color-link:         var(--bg-primary);
+  --color-link-hover:   var(--bg-primary-soft);
+  --color-success:      var(--bg-accent);
+  --color-border:       var(--bg-rule-dark);
+  --color-border-strong:#3a3a36;
+  --color-on-primary:   #ffffff;
+  --color-on-dark:      #ffffff;
+}
+
+/* =========================================================================
+   TYPE TOKENS
+   ========================================================================= */
+:root {
+  /* Families */
+  --font-display:  "Bahnschrift", "DIN Condensed", "Oswald", system-ui, sans-serif;
+  --font-script:   "P22 Allyson Pro", "Allura", "Snell Roundhand", cursive;
+  --font-serif:    "Garogier", Georgia, serif;
+  --font-body:     "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-lead:     "Montserrat", system-ui, sans-serif;
+  --font-ui:       "Bahnschrift", "Raleway", "Montserrat", system-ui, sans-serif;
+
+  /* Sizes — restaurant-friendly scale, generous */
+  --fs-xs:   12px;
+  --fs-sm:   14px;
+  --fs-base: 16px;   /* upgraded from source's 11px which was too small */
+  --fs-md:   18px;
+  --fs-lg:   22px;
+  --fs-xl:   28px;
+  --fs-2xl:  40px;
+  --fs-3xl:  56px;
+  --fs-4xl:  80px;
+  --fs-hero: 128px;
+
+  /* Line heights */
+  --lh-tight:  1.05;
+  --lh-snug:   1.2;
+  --lh-normal: 1.5;
+  --lh-loose:  1.7;
+
+  /* Tracking */
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.08em;
+  --tracking-xwide: 0.18em;
+
+  /* Weights (display font is condensed — uses 400/500/600/700) */
+  --fw-light:   300;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+}
+
+/* =========================================================================
+   SPACING / RADII / SHADOWS
+   ========================================================================= */
+:root {
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  --radius-sm:  2px;
+  --radius-md:  4px;
+  --radius-lg:  8px;
+  --radius-pill: 999px;
+
+  /* Flat material — shadows used sparingly */
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-2: 0 4px 14px rgba(0,0,0,0.08);
+  --shadow-3: 0 12px 40px rgba(0,0,0,0.12);
+
+  --rule: 1px solid var(--color-border);
+  --rule-strong: 1px solid var(--color-border-strong);
+}
+
+/* =========================================================================
+   SEMANTIC TYPOGRAPHY (use these in components)
+   ========================================================================= */
+.bg-hero {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+  color: var(--color-fg);
+}
+
+.bg-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.bg-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.bg-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bg-h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bg-eyebrow {
+  font-family: var(--font-script);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-2xl);
+  line-height: 1;
+  color: var(--bg-primary-soft);
+  font-style: italic;
+}
+
+.bg-eyebrow-sm {
+  font-family: var(--font-script);
+  font-size: var(--fs-xl);
+  color: var(--bg-primary-soft);
+  font-style: italic;
+}
+
+.bg-label {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-xwide);
+  color: var(--color-fg-muted);
+}
+
+.bg-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh-normal);
+  color: var(--color-fg);
+}
+
+.bg-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+}
+
+.bg-lead {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--fs-lg);
+  line-height: var(--lh-loose);
+  color: var(--color-fg-muted);
+}
+
+.bg-caption {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-fg-subtle);
+  text-transform: uppercase;
+}
+
+.bg-price {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-md);
+  letter-spacing: 0.04em;
+  color: var(--color-fg);
+}
+
+/* Helpful element defaults if you scope this to a container */
+.bg-scope { color: var(--color-fg); background: var(--color-bg); }
+.bg-scope a { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
+.bg-scope a:hover { color: var(--color-link-hover); }
+.bg-scope hr { border: 0; border-top: var(--rule); margin: var(--space-6) 0; }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cards</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fafafa; }
+  body { width: 700px; height: 260px; padding: 28px; box-sizing: border-box; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-family: var(--font-body); }
+  .card { padding: 22px; border: 1px solid #eee; background: #fff; }
+  .card.cream { background: #f5f1ea; border-color: #e6dfd2; }
+  .h { font-family: var(--font-display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .p { font-family: var(--font-body); font-size: 14px; color: #282828; margin-top: 8px; line-height: 1.5; }
+  .meta { font-family: var(--font-ui); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #6b6b6b; margin-top: 14px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="h">Резервация</div>
+    <div class="p">Предлагаме маси за двама до десет души. Запазете онлайн или по телефон.</div>
+    <div class="meta">White · 1px rule · square</div>
+  </div>
+  <div class="card cream">
+    <div class="h">Дневно меню</div>
+    <div class="p">Сезонни предложения, които се променят всяка седмица.</div>
+    <div class="meta">Cream paper variant</div>
+  </div>
+</body>
+</html>

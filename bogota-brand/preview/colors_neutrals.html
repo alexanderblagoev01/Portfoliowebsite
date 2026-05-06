@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Neutrals</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { width: 700px; height: 180px; display: grid; grid-template-columns: repeat(7, 1fr); font-family: var(--font-ui); }
+  .swatch { display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; box-sizing: border-box; }
+  .swatch .name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+  .swatch .hex { font-size: 10px; opacity: 0.8; margin-top: 2px; font-family: ui-monospace, monospace; }
+  .a { background: #000; color: #fff; }
+  .b { background: #282828; color: #fff; }
+  .c { background: #6b6b6b; color: #fff; }
+  .d { background: #b1b1b1; color: #1a1a1a; }
+  .e { background: #eeeeee; color: #1a1a1a; }
+  .f { background: #fafafa; color: #1a1a1a; border-right: 1px solid #eee; }
+  .g { background: #f5f1ea; color: #1a1a1a; }
+</style>
+</head>
+<body>
+  <div class="swatch a"><div class="name">Ink</div><div class="hex">#000</div></div>
+  <div class="swatch b"><div class="name">Ink 2</div><div class="hex">#282828</div></div>
+  <div class="swatch c"><div class="name">Muted</div><div class="hex">#6b6b6b</div></div>
+  <div class="swatch d"><div class="name">Rule 2</div><div class="hex">#b1b1b1</div></div>
+  <div class="swatch e"><div class="name">Rule</div><div class="hex">#eeeeee</div></div>
+  <div class="swatch f"><div class="name">Bg Alt</div><div class="hex">#fafafa</div></div>
+  <div class="swatch g"><div class="name">Paper</div><div class="hex">#f5f1ea</div></div>
+</body>
+</html>

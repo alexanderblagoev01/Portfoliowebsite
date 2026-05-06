@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Display Type</title>
+<style>
+  @font-face { font-family: "Bahnschrift"; src: url("../fonts/Bahnschrift.ttf") format("truetype"); font-display: block; }
+  @font-face { font-family: "P22 Allyson Pro"; src: url("../fonts/Bogota-3651.otf") format("opentype"); font-style: italic; font-display: block; }
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap");
+  html, body { margin: 0; padding: 0; background: #10100f; color: #fff; }
+  body { width: 700px; height: 360px; padding: 32px; box-sizing: border-box; }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  .row { display: flex; align-items: baseline; gap: 16px; }
+  .meta { font-family: 'Montserrat', sans-serif; font-size: 10px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.16em; min-width: 110px; font-weight: 500; }
+  .specimen { line-height: 1; color: #f5f1ea; font-family: 'Bahnschrift', 'DIN Condensed', sans-serif; }
+</style>
+</head>
+<body>
+  <div class="stack">
+    <div class="row"><div class="meta">Hero · 88px</div><div class="specimen" style="font-size:88px; font-weight:600;">БОГОТА</div></div>
+    <div class="row"><div class="meta">H1 · 56px</div><div class="specimen" style="font-size:56px; font-weight:500;">МЕНЮ</div></div>
+    <div class="row"><div class="meta">H3 · 32px</div><div class="specimen" style="font-size:32px; font-weight:500;">ЗАПАЗЕТЕ МАСА</div></div>
+    <div class="row"><div class="meta">Caps · 14px</div><div class="specimen" style="font-size:14px; letter-spacing:0.18em; color:#ff5c00; font-weight:500;">BAHNSCHRIFT · BULGARIA</div></div>
+    <div class="row"><div class="meta">Script eyebrow</div><div class="specimen" style="font-family:'P22 Allyson Pro',cursive; font-style:italic; font-size:36px; color:#faab64;">Ресторант</div></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { width: 700px; height: 220px; padding: 28px; box-sizing: border-box; font-family: var(--font-ui); display: flex; flex-direction: column; gap: 18px; justify-content: center; align-items: flex-start; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #6b6b6b; min-width: 80px; }
+  .btn { font-family: var(--font-ui); font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; padding: 14px 28px; border-radius: 999px; border: 1px solid transparent; cursor: pointer; }
+  .btn--primary { background: #ff5c00; color: #fff; }
+  .btn--primary-hover { background: #e25200; color: #fff; }
+  .btn--secondary { background: transparent; color: #000; border-color: #000; }
+  .btn--ghost { background: transparent; color: #000; padding-left: 0; padding-right: 0; }
+  .btn--ghost::after { content: " →"; }
+  .btn--disabled { background: #eee; color: #b1b1b1; cursor: not-allowed; }
+</style>
+</head>
+<body>
+  <div class="row"><div class="label">Primary</div><button class="btn btn--primary">Запазете маса</button><button class="btn btn--primary-hover">Hover</button></div>
+  <div class="row"><div class="label">Outline</div><button class="btn btn--secondary">Виж менюто</button><button class="btn btn--disabled">Disabled</button></div>
+  <div class="row"><div class="label">Ghost</div><button class="btn btn--ghost">Прочетете повече</button></div>
+</body>
+</html>

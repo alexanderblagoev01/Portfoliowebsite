@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Semantic Colors</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #10100f; color: #fff; }
+  body { width: 700px; height: 240px; padding: 28px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .row { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .dot { width: 22px; height: 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); }
+  .label { font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; color: rgba(255,255,255,0.85); }
+  .var { font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.55); margin-left: auto; }
+  .group { display: flex; flex-direction: column; gap: 12px; }
+  @font-face { font-family: "Bahnschrift"; src: url("../fonts/Bahnschrift.ttf") format("truetype"); font-display: block; }
+  .h { font-family: 'Bahnschrift', sans-serif; font-weight: 600; text-transform: uppercase; font-size: 14px; letter-spacing: 0.16em; color: #ff5c00; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+</style>
+</head>
+<body>
+  <div class="group">
+    <div class="h">Foreground</div>
+    <div class="row"><span class="dot" style="background:#ff5c00"></span><span class="label">Headline</span><span class="var">--color-headline</span></div>
+    <div class="row"><span class="dot" style="background:#fff"></span><span class="label">Body</span><span class="var">--color-fg</span></div>
+    <div class="row"><span class="dot" style="background:rgba(255,255,255,0.55);border-color:rgba(255,255,255,0.3)"></span><span class="label">Subtle</span><span class="var">--color-fg-subtle</span></div>
+  </div>
+  <div class="group">
+    <div class="h">Action</div>
+    <div class="row"><span class="dot" style="background:#ff5c00"></span><span class="label">CTA</span><span class="var">--color-cta</span></div>
+    <div class="row"><span class="dot" style="background:#faab64"></span><span class="label">Soft</span><span class="var">--bg-primary-soft</span></div>
+    <div class="row"><span class="dot" style="background:#008124"></span><span class="label">Success</span><span class="var">--color-success</span></div>
+  </div>
+</body>
+</html>

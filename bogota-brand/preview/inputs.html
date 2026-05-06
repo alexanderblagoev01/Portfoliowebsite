@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Form Inputs</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { width: 700px; height: 240px; padding: 28px; box-sizing: border-box; font-family: var(--font-body); display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-content: center; }
+  label { display: flex; flex-direction: column; gap: 6px; }
+  .lbl { font-family: var(--font-ui); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #6b6b6b; }
+  input, select { font-family: var(--font-body); font-size: 16px; padding: 12px 14px; border: 1px solid #b1b1b1; border-radius: 4px; background: #fff; color: #000; }
+  input:focus { outline: none; border-color: #ff5c00; }
+  .focused { border-color: #ff5c00 !important; box-shadow: 0 0 0 3px rgba(255,92,0,0.15); }
+  .help { font-family: var(--font-ui); font-size: 11px; color: #6b6b6b; }
+</style>
+</head>
+<body>
+  <label><span class="lbl">Име</span><input type="text" value="Иван Петров"></label>
+  <label><span class="lbl">Брой гости</span><select><option>2 души</option><option>4 души</option></select></label>
+  <label><span class="lbl">Дата · focused</span><input class="focused" type="text" value="14.05.2026"></label>
+  <label><span class="lbl">Час</span><input type="text" value="20:00"><span class="help">Препоръчваме резервация поне 24 часа предварително.</span></label>
+</body>
+</html>

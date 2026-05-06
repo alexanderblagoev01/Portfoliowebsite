@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander Blagoev — Graphic & Web Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;0,9..144,300..700,30,1;1,9..144,300..700,30,0;1,9..144,300..700,30,1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #1e1e1c;
+    --paper-warm: #252523;
+    --ink: #ede8df;
+    --ink-soft: #b8b0a4;
+    --muted: #7a726a;
+    --terracotta: #c4643e;
+    --rust: #a04828;
+    --sage: #8a9880;
+    --ochre: #c99a50;
+    --hairline: rgba(237, 232, 223, 0.1);
+    --hairline-soft: rgba(237, 232, 223, 0.05);
+    --nav-bg: rgba(30,30,28,0.92);
+  }
+
+  body.light {
+    --paper: #f1ebe0;
+    --paper-warm: #ebe3d4;
+    --ink: #2a221c;
+    --ink-soft: #4a3f36;
+    --muted: #88766a;
+    --terracotta: #b85c3c;
+    --rust: #8a3a1f;
+    --sage: #7d8a6e;
+    --ochre: #c19550;
+    --hairline: rgba(42, 34, 28, 0.14);
+    --hairline-soft: rgba(42, 34, 28, 0.07);
+    --nav-bg: rgba(241,235,224,0.92);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(184,92,60,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(125,138,110,0.04) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-weight: 400; letter-spacing: 0.02em; }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* TOP BAR */
+  .topbar {
+    position: relative; z-index: 10;
+    border-bottom: 1px solid var(--hairline);
+    padding: 1rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  /* NAV */
+  nav.main {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.4rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+  .nav-right { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--terracotta); }
+  .nav-links a::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -4px;
+    height: 1px; background: var(--terracotta);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .theme-toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: none;
+    border: 1px solid var(--hairline);
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .theme-toggle:hover { color: var(--terracotta); border-color: var(--terracotta); }
+
+  /* CONTAINER */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* HERO */
+  #hero {
+    padding: 4rem 0 5rem;
+    border-bottom: 1px solid var(--hairline);
+    position: relative; z-index: 2;
+  }
+  .hero-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(4rem, 13vw, 11.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .hero-name .italic {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+    color: var(--terracotta);
+  }
+  .hero-name .ampersand {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ochre);
+    display: inline-block;
+    transform: translateY(-0.05em);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+    align-items: end;
+  }
+  .hero-statement {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
+    line-height: 1.4;
+    font-weight: 300;
+    color: var(--ink);
+    max-width: 480px;
+  }
+  .hero-statement em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+    color: var(--terracotta);
+  }
+  .hero-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+  .info-block { border-top: 1px solid var(--ink); padding-top: 1rem; }
+  .info-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .info-value { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); line-height: 1.4; }
+  .info-value .accent { color: var(--terracotta); font-style: italic; }
+
+  /* TICKER */
+  .ticker {
+    overflow: hidden;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--hairline);
+    background: var(--paper);
+    position: relative; z-index: 2;
+  }
+  .ticker-track { display: flex; gap: 3rem; animation: scroll 38s linear infinite; white-space: nowrap; }
+  .ticker-item {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 3rem;
+  }
+  .ticker-item em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .ticker-star { color: var(--ochre); font-size: 0.8rem; }
+  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* SECTION GENERAL */
+  section {
+    padding: 7rem 0;
+    position: relative; z-index: 2;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .section-meta {
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--hairline-soft);
+  }
+  .section-num { color: var(--terracotta); }
+  .section-heading {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .section-heading em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .section-sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 620px;
+    line-height: 1.5;
+    margin-bottom: 4rem;
+  }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 5rem; align-items: start; }
+  .about-figure {
+    aspect-ratio: 4/5;
+    background: var(--paper-warm);
+    border: 1px solid var(--hairline);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-figure::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(184,92,60,0.08) 0%, transparent 50%), linear-gradient(315deg, rgba(125,138,110,0.06) 0%, transparent 50%);
+  }
+  .figure-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between;
+  }
+  .about-body { font-family: 'Fraunces', serif; }
+  .drop-cap::first-letter {
+    font-size: 5rem; line-height: 0.9; float: left;
+    margin: 0.1rem 0.7rem 0 0;
+    color: var(--terracotta); font-style: italic; font-weight: 300;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+  }
+  .about-body p { font-size: 1.1rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 1.4rem; }
+  .about-body em { font-style: italic; color: var(--ink); font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .about-body strong { font-weight: 500; color: var(--ink); font-style: italic; }
+  .skills-block { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--hairline); }
+  .skills-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.1em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 1.2rem;
+  }
+  .skills-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .skill-tag {
+    font-family: 'Fraunces', serif;
+    font-size: 0.95rem; color: var(--ink);
+    padding: 0.35rem 1rem;
+    border: 1px solid var(--hairline);
+    background: var(--paper-warm);
+    border-radius: 100px; font-style: italic;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .skill-tag:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* PORTFOLIO */
+  #portfolio { background: var(--paper-warm); }
+  .work-list { display: flex; flex-direction: column; }
+  .work-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px 220px 160px;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--hairline);
+    align-items: center;
+    cursor: pointer;
+    transition: padding 0.3s ease;
+    position: relative;
+  }
+  .work-item:last-child { border-bottom: 1px solid var(--hairline); }
+  .work-item:hover { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .work-item:hover .work-title { color: var(--terracotta); font-style: italic; }
+  .work-item:hover .work-arrow { transform: translateX(8px); color: var(--terracotta); }
+  .work-item::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--terracotta);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .work-item:hover::before { transform: scaleY(1); }
+  .work-num { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--muted); }
+  .work-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+    font-weight: 400; line-height: 1.1;
+    letter-spacing: -0.015em;
+    transition: color 0.3s, font-style 0.3s;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .work-cat { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .work-client { font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); }
+  .work-year-arrow { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink); }
+  .work-arrow { display: inline-block; transition: transform 0.3s ease, color 0.3s ease; font-size: 1.1rem; }
+
+  /* CREDENTIALS */
+  .creds-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 5rem; align-items: start; }
+  .creds-side h3 {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline);
+  }
+  .edu-card { border: 1px solid var(--hairline); padding: 2rem; background: var(--paper-warm); margin-bottom: 1rem; }
+  .edu-card .edu-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ochre); border: 1px solid var(--ochre);
+    padding: 0.2rem 0.5rem; display: inline-block; margin-bottom: 1rem;
+  }
+  .edu-card h4 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.4rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .edu-card .edu-school { font-family: 'Fraunces', serif; font-style: italic; color: var(--terracotta); font-size: 1rem; margin-bottom: 0.8rem; }
+  .edu-card .edu-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .edu-card p { font-family: 'Fraunces', serif; font-size: 0.98rem; line-height: 1.6; color: var(--ink-soft); }
+  .cert-list { display: flex; flex-direction: column; }
+  .cert-row {
+    display: grid; grid-template-columns: 60px 1fr 1.2fr 100px;
+    gap: 2rem; padding: 1.4rem 0;
+    border-top: 1px solid var(--hairline);
+    align-items: baseline;
+    transition: padding 0.25s;
+  }
+  .cert-row:last-child { border-bottom: 1px solid var(--hairline); }
+  .cert-row:hover { padding-left: 1rem; }
+  .cert-num { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--sage); }
+  .cert-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 400; color: var(--ink); line-height: 1.3; }
+  .cert-org { font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); }
+  .cert-year { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink); text-align: right; }
+
+  /* TESTIMONIALS */
+  #testimonials { background: var(--paper-warm); }
+  .testi-feature { text-align: center; max-width: 900px; margin: 0 auto 5rem; padding: 2rem 0; }
+  .testi-feature .quote-icon { font-family: 'Fraunces', serif; font-style: italic; font-size: 5rem; color: var(--terracotta); line-height: 0.5; margin-bottom: 1rem; font-weight: 300; }
+  .testi-feature p { font-family: 'Fraunces', serif; font-style: italic; font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.4; color: var(--ink); font-weight: 300; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .testi-attribution { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .testi-attribution strong { color: var(--ink); font-weight: 500; margin-right: 0.4rem; }
+  .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; border-top: 1px solid var(--hairline); padding-top: 4rem; }
+  .testi-small p { font-family: 'Fraunces', serif; font-size: 1.15rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 1.5rem; }
+  .testi-small p::before { content: '"'; font-family: 'Fraunces', serif; font-style: italic; color: var(--terracotta); margin-right: 0.2rem; }
+  .testi-small p::after { content: '"'; color: var(--terracotta); }
+  .testi-author { display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--hairline); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .testi-author .name { color: var(--ink); }
+
+  /* CONTACT */
+  #contact { padding-bottom: 4rem; }
+  .contact-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6rem; align-items: start; }
+  .contact-headline { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .contact-headline em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .contact-intro { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.2rem; color: var(--muted); line-height: 1.5; max-width: 460px; margin-bottom: 3rem; }
+  .contact-list { display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
+  .contact-row { display: grid; grid-template-columns: 100px 1fr auto; gap: 1.5rem; padding: 1.2rem 0; border-bottom: 1px solid var(--hairline); align-items: baseline; transition: padding 0.25s; }
+  .contact-row:hover { padding-left: 0.8rem; }
+  .contact-row:hover .contact-value { color: var(--terracotta); }
+  .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .contact-value { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); transition: color 0.25s; }
+  .contact-arrow { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.9rem; }
+  .contact-form { background: var(--paper-warm); border: 1px solid var(--hairline); padding: 2.5rem; }
+  .form-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; }
+  .form-title .form-num { color: var(--terracotta); }
+  .form-group { margin-bottom: 1.5rem; border-bottom: 1px solid var(--hairline); padding-bottom: 0.8rem; }
+  .form-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.5rem; }
+  .form-input, .form-textarea { width: 100%; background: transparent; border: none; font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); outline: none; padding: 0.3rem 0; resize: none; }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); font-style: italic; }
+  .form-textarea { min-height: 90px; }
+  .form-submit { background: var(--ink); color: var(--paper); border: none; padding: 1rem 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.25s; width: 100%; margin-top: 1rem; }
+  .form-submit:hover { background: var(--terracotta); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--hairline); padding: 3rem 2.5rem 2rem; position: relative; z-index: 2; background: var(--paper); }
+  .footer-big { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(5rem, 18vw, 18rem); line-height: 0.85; letter-spacing: -0.04em; color: var(--ink); margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; overflow: hidden; }
+  .footer-big em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--hairline); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; flex-wrap: wrap; gap: 1rem; }
+  .footer-social { display: flex; gap: 2rem; }
+  .footer-social a { transition: color 0.25s; }
+  .footer-social a:hover { color: var(--terracotta); }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: 0.1s; }
+  .reveal.d2 { transition-delay: 0.2s; }
+  .reveal.d3 { transition-delay: 0.3s; }
+
+  /* PAGE LOAD HERO ANIMATIONS */
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-name { opacity: 0; animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; }
+  .hero-grid { opacity: 0; animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; }
+
+  /* TYPING CARET */
+  .caret { display: inline-block; color: var(--terracotta); font-style: normal; font-weight: 300; animation: blink 0.9s step-end infinite; margin-left: 3px; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* CYRILLIC FONT OVERRIDE */
+  body.lang-bg .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(4rem, 13vw, 12rem);
+  }
+  body.lang-bg .hero-name .italic {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* SMOOTH THEME TRANSITION */
+  body, nav.main, .topbar, .ticker, footer,
+  section, .about-figure, .edu-card, .contact-form,
+  .skill-tag, .cert-row, .info-block, .work-item {
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 1000px) {
+    .topbar { display: none; }
+    nav.main, footer, .container { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero-grid, .about-grid, .creds-grid, .contact-grid, .testi-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    section { padding: 4.5rem 0; }
+    .hero-info { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .work-item {
+      grid-template-columns: 40px 1fr 100px;
+      grid-template-areas: "num title arrow" ". cat year" ". client client";
+      gap: 0.4rem 1rem; padding: 1.5rem 0;
+    }
+    .work-num { grid-area: num; } .work-title { grid-area: title; } .work-cat { grid-area: cat; }
+    .work-client { grid-area: client; } .work-year-arrow { grid-area: arrow; justify-content: flex-end; }
+    .work-year-arrow span:first-child { display: none; }
+    .cert-row { grid-template-columns: 30px 1fr; grid-template-areas: "num name" ". org" ". year"; gap: 0.3rem 1rem; }
+    .cert-num { grid-area: num; } .cert-name { grid-area: name; } .cert-org { grid-area: org; } .cert-year { grid-area: year; text-align: left; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+  }
+  @media(max-width: 600px) {
+    .hero-info { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar"></div>
+
+<!-- NAV -->
+<nav class="main">
+  <a href="#" class="logo">Alexander Blagoev</a>
+  <ul class="nav-links">
+    <li><a href="#about" data-i18n="nav-index">Index</a></li>
+    <li><a href="#portfolio" data-i18n="nav-work">Work</a></li>
+    <li><a href="#credentials" data-i18n="nav-credentials">Credentials</a></li>
+    <li><a href="#testimonials" data-i18n="nav-words">Words</a></li>
+    <li><a href="#contact" data-i18n="nav-contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="langToggle">BG</button>
+    <button class="theme-toggle" id="themeToggle">☀ Light</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <h1 class="hero-name">
+      <span data-i18n="hero-line1">Design for</span><br>
+      <span class="italic" data-i18n="hero-line2">Screen</span><br>
+      <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
+    </h1>
+    <div class="hero-grid">
+      <p class="hero-statement" data-i18n-html="hero-statement">
+        A graphic and web designer crafting <em>brands</em>, <em>interfaces</em>, and <em>physical matter</em> for clients who care about the details — working remotely, everywhere.
+      </p>
+      <div class="hero-info">
+        <div class="info-block">
+          <div class="info-label" data-i18n="hero-label-1">Practising Since</div>
+          <div class="info-value" data-i18n-html="hero-val-1">Since <span class="accent">2017</span></div>
+        </div>
+        <div class="info-block">
+          <div class="info-label" data-i18n="hero-label-2">Discipline</div>
+          <div class="info-value" data-i18n-html="hero-val-2">Graphic <span class="accent">&</span> Web Design</div>
+        </div>
+        <div class="info-block">
+          <div class="info-label" data-i18n="hero-label-3">Currently</div>
+          <div class="info-value" data-i18n-html="hero-val-3">Open to <span class="accent">commissions</span></div>
+        </div>
+        <div class="info-block">
+          <div class="info-label" data-i18n="hero-label-4">Based</div>
+          <div class="info-value" data-i18n-html="hero-val-4">Bulgaria, <span class="accent">remote</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item" id="ticker1">Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span></div>
+    <div class="ticker-item" id="ticker2">Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-meta">
+      <span><span class="section-num">01</span> <span data-i18n="about-meta-left">&nbsp;— Index</span></span>
+      <span data-i18n="about-meta-right">About the Designer</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-figure reveal">
+        <img src="file:///Users/alexanderblagoev/Desktop/Portfolio/portrait.jpeg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
+      </div>
+      <div class="about-body">
+        <h2 class="section-heading reveal" data-i18n-html="about-heading">Hands at <em>work</em>, eyes on the <em>detail</em>.</h2>
+        <p class="figure-caption" style="margin-bottom: 2.5rem;">
+          <span data-i18n="about-note">— A note —</span>
+        </p>
+        <p class="reveal d1 drop-cap" data-i18n-html="about-p1">
+          <em>I am a graphic and web designer</em> working remotely since 2017 across brand identity, digital interfaces, product design, packaging, and fashion. The range is wide by design; I follow the work wherever it leads.
+        </p>
+        <p class="reveal d2" data-i18n-html="about-p2">
+          I studied Graphic Design at university and left when it became clear I had <strong>outpaced the curriculum</strong>. The real education happened in the work itself — in real briefs, real clients, and the kind of pressure that sharpens you faster than any classroom. I later formalised parts of that knowledge through <em>SoftUni Creative</em>, one of Bulgaria's most recognised creative programmes.
+        </p>
+        <p class="reveal d3" data-i18n-html="about-p3">
+          From restaurant identities to meal-subscription apps, from packaging systems to my own clothing label — I work where <em>visual thinking meets real purpose</em>. Every project is treated as if it will be printed, worn, or lived with for years.
+        </p>
+        <div class="skills-block reveal d3">
+          <div class="skills-label" data-i18n="skills-label">— Practice / Tools —</div>
+          <div class="skills-list">
+            <span class="skill-tag">Brand Identity</span>
+            <span class="skill-tag">Web Design</span>
+            <span class="skill-tag">App Design</span>
+            <span class="skill-tag">Logo Design</span>
+            <span class="skill-tag">Typography</span>
+            <span class="skill-tag">Editorial</span>
+            <span class="skill-tag">Print</span>
+            <span class="skill-tag">Packaging</span>
+            <span class="skill-tag">Product Design</span>
+            <span class="skill-tag">Adobe Suite</span>
+            <span class="skill-tag">Figma</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="container">
+    <div class="section-meta">
+      <span><span class="section-num">02</span> <span data-i18n="portfolio-meta-left">&nbsp;— Selected Works</span></span>
+      <span>2017 — 2026</span>
+    </div>
+    <h2 class="section-heading reveal" data-i18n-html="portfolio-heading">A field of <em>finished</em> work.</h2>
+    <p class="section-sub reveal d1" data-i18n="portfolio-sub">Four projects that show the range. The full archive is available on request — some of it lives in print and deserves to be seen as such.</p>
+
+    <div class="work-list">
+      <a href="bogota.html" class="work-item reveal" style="display:grid;">
+        <div class="work-num">— 01</div>
+        <div class="work-title">Restaurant Bogota</div>
+        <div class="work-cat" data-i18n="work-cat-1">Visual Identity / Web / Print</div>
+        <div class="work-client" data-i18n="work-client-1">Restaurant Bogota</div>
+        <div class="work-year-arrow"><span>2025</span><span class="work-arrow">→</span></div>
+      </a>
+      <a href="olli.html" class="work-item reveal" style="display:grid;">
+        <div class="work-num">— 02</div>
+        <div class="work-title">Olli</div>
+        <div class="work-cat" data-i18n="work-cat-2">App Design / UX / Branding</div>
+        <div class="work-client" data-i18n="work-client-2">Meal Subscription App</div>
+        <div class="work-year-arrow"><span>2023</span><span class="work-arrow">→</span></div>
+      </a>
+      <a href="muave.html" class="work-item reveal" style="display:grid;">
+        <div class="work-num">— 03</div>
+        <div class="work-title">Muave</div>
+        <div class="work-cat" data-i18n="work-cat-3">Fashion / Brand Identity</div>
+        <div class="work-client" data-i18n="work-client-3">Personal Project</div>
+        <div class="work-year-arrow"><span>2023</span><span class="work-arrow">→</span></div>
+      </a>
+      <a href="ecc.html" class="work-item reveal">
+        <div class="work-num">— 04</div>
+        <div class="work-title">Easy Car Cleaner</div>
+        <div class="work-cat">Print / Label Design</div>
+        <div class="work-client">Easy Car Cleaner</div>
+        <div class="work-year-arrow"><span>2024</span><span class="work-arrow">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIALS -->
+<section id="credentials">
+  <div class="container">
+    <div class="section-meta">
+      <span><span class="section-num">03</span> <span data-i18n="creds-meta-left">&nbsp;— Credentials</span></span>
+      <span data-i18n="creds-meta-right">Education & Continued Practice</span>
+    </div>
+    <h2 class="section-heading reveal" data-i18n-html="creds-heading">Studied. <em>Certified.</em> Self-taught.</h2>
+    <p class="section-sub reveal d1" data-i18n="creds-sub">Formal study, recognised certifications, and the long apprenticeship of doing the work.</p>
+
+    <div class="creds-grid">
+      <div class="creds-side reveal">
+        <h3 data-i18n="edu-label">— Education —</h3>
+        <div class="edu-card">
+          <span class="edu-badge" data-i18n="edu-badge">Departed Early · Self-Directed</span>
+          <h4>Graphic Design <em>(B.A.)</em></h4>
+          <div class="edu-school">Varna Free University</div>
+          <div class="edu-meta" data-i18n="edu-meta">2020 — 2023 · Departed in third year</div>
+          <p data-i18n="edu-desc">Built the foundation in design theory, typography, and visual communication. Left when the curriculum fell behind the work I was already producing independently — the studio became the school.</p>
+        </div>
+      </div>
+      <div class="creds-main reveal d1">
+        <h3 data-i18n="cert-label">— Certifications —</h3>
+        <div class="cert-list">
+          <div class="cert-row">
+            <div class="cert-num">— 01</div>
+            <div class="cert-name">Graphic Design</div>
+            <div class="cert-org">SoftUni Creative</div>
+            <div class="cert-year">2022</div>
+          </div>
+          <div class="cert-row">
+            <div class="cert-num">— 02</div>
+            <div class="cert-name">Web Design & UI</div>
+            <div class="cert-org">SoftUni Creative</div>
+            <div class="cert-year">2022</div>
+          </div>
+          <div class="cert-row">
+            <div class="cert-num">— 03</div>
+            <div class="cert-name">Brand Identity Design</div>
+            <div class="cert-org">SoftUni Creative</div>
+            <div class="cert-year">2021</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-meta">
+      <span><span class="section-num">04</span> <span data-i18n="words-meta-left">&nbsp;— Words</span></span>
+      <span data-i18n="words-meta-right">From those I've worked with</span>
+    </div>
+
+    <div class="testi-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+      <div class="testi-small reveal">
+        <p data-i18n="testi-1-text">We are extremely happy with the work on our restaurant's website and menu! Professional execution, modern design and attention to every detail. Communication was quick and easy, and the final result perfectly reflects our concept. Highly recommended!</p>
+        <div class="testi-author">
+          <span class="name" data-i18n="testi-1-name">— Nina Angelova</span>
+          <span data-i18n="testi-1-role">Restaurant Bogota</span>
+        </div>
+      </div>
+      <div class="testi-small reveal d1">
+        <p data-i18n="testi-2-text">Thanks to the attention to detail and professionalism, I was able to develop my own brand.</p>
+        <div class="testi-author">
+          <span class="name" data-i18n="testi-2-name">— Hristian Simeonov</span>
+          <span data-i18n="testi-2-role">Owner · Easy Car Cleaner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-meta">
+      <span><span class="section-num">05</span> <span data-i18n="contact-meta-left">&nbsp;— Contact</span></span>
+      <span data-i18n="contact-meta-right">Open for work</span>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <h2 class="contact-headline reveal" data-i18n-html="contact-headline">Let's make<br>something<br><em>worth keeping.</em></h2>
+        <p class="contact-intro reveal d1" data-i18n="contact-intro">If you've a brand, a site, or a quiet idea that needs shape — write to me. I read every message myself.</p>
+        <div class="contact-list reveal d2">
+          <a href="mailto:alexanderblagoev01@gmail.com" class="contact-row">
+            <div class="contact-label">— Email</div>
+            <div class="contact-value">alexanderblagoev01@gmail.com</div>
+            <div class="contact-arrow">↗</div>
+          </a>
+          <a href="https://www.linkedin.com/in/alexnader-blagoev-41b928198/" target="_blank" class="contact-row">
+            <div class="contact-label">— LinkedIn</div>
+            <div class="contact-value">/in/alexander-blagoev</div>
+            <div class="contact-arrow">↗</div>
+          </a>
+        </div>
+      </div>
+      <form class="contact-form reveal d1" action="https://formspree.io/f/xqenpwee" method="POST">
+        <div class="form-title">
+          <span><span class="form-num">— 01</span> &nbsp;<span data-i18n="form-title-text">Send a note</span></span>
+          <span>↓</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form-label-name">Your name</label>
+          <input class="form-input" type="text" name="name" data-i18n-placeholder="form-ph-name" placeholder="What should I call you?" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form-label-email">Email</label>
+          <input class="form-input" type="email" name="email" placeholder="you@somewhere.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form-label-project">Project type</label>
+          <input class="form-input" type="text" name="project" data-i18n-placeholder="form-ph-project" placeholder="Brand, web, packaging…">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form-label-message">A few words</label>
+          <textarea class="form-textarea" name="message" data-i18n-placeholder="form-ph-message" placeholder="Tell me a little about it." required></textarea>
+        </div>
+        <button class="form-submit" type="submit" data-i18n="form-submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-big" data-i18n-html="footer-big">Until <em>soon</em>.</div>
+    <div class="footer-bottom">
+      <div data-i18n="footer-copy">© 2026 — Alexander Blagoev. All rights reserved.</div>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/in/alexnader-blagoev-41b928198/" target="_blank">LinkedIn ↗</a>
+        <a href="mailto:alexanderblagoev01@gmail.com">Email ↗</a>
+      </div>
+      <div data-i18n="footer-font">Set in Fraunces & JetBrains Mono</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Always start at top
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  // ── Translations ──────────────────────────────────────────────
+  const translations = {
+    en: {
+      'nav-index': 'Index', 'nav-work': 'Work', 'nav-credentials': 'Credentials', 'nav-words': 'Words', 'nav-contact': 'Contact',
+      'hero-line1': 'Design for', 'hero-line2': 'Screen',
+      'hero-label-1': 'Practising Since', 'hero-val-1': 'Since <span class="accent">2017</span>',
+      'hero-label-2': 'Discipline', 'hero-val-2': 'Graphic <span class="accent">&</span> Web Design',
+      'hero-label-3': 'Currently', 'hero-val-3': 'Open to <span class="accent">commissions</span>',
+      'hero-label-4': 'Based', 'hero-val-4': 'Bulgaria, <span class="accent">remote</span>',
+      'hero-statement': 'A graphic and web designer crafting <em>brands</em>, <em>interfaces</em>, and <em>physical matter</em> for clients who care about the details — working remotely, everywhere.',
+      'about-meta-left': '&nbsp;— Index', 'about-meta-right': 'About the Designer',
+      'about-heading': 'Hands at <em>work</em>, eyes on the <em>detail</em>.', 'about-note': '— A note —',
+      'about-p1': '<em>I am a graphic and web designer</em> working remotely since 2017 across brand identity, digital interfaces, product design, packaging, and fashion. The range is wide by design; I follow the work wherever it leads.',
+      'about-p2': 'I studied Graphic Design at university and left when it became clear I had <strong>outpaced the curriculum</strong>. The real education happened in the work itself — in real briefs, real clients, and the kind of pressure that sharpens you faster than any classroom. I later formalised parts of that knowledge through <em>SoftUni Creative</em>, one of Bulgaria\'s most recognised creative programmes.',
+      'about-p3': 'From restaurant identities to meal-subscription apps, from packaging systems to my own clothing label — I work where <em>visual thinking meets real purpose</em>. Every project is treated as if it will be printed, worn, or lived with for years.',
+      'skills-label': '— Practice / Tools —',
+      'portfolio-meta-left': '&nbsp;— Selected Works',
+      'portfolio-heading': 'A field of <em>finished</em> work.',
+      'portfolio-sub': 'Four projects that show the range. The full archive is available on request — some of it lives in print and deserves to be seen as such.',
+      'work-cat-1': 'Visual Identity / Web / Print', 'work-client-1': 'Restaurant Bogota',
+      'work-cat-2': 'App Design / UX / Branding', 'work-client-2': 'Meal Subscription App',
+      'work-cat-3': 'Fashion / Brand Identity', 'work-client-3': 'Personal Project',
+      'work-cat-4': 'Experimental / Personal', 'work-client-4': 'Self-initiated',
+      'creds-meta-left': '&nbsp;— Credentials', 'creds-meta-right': 'Education & Continued Practice',
+      'creds-heading': 'Studied. <em>Certified.</em> Self-taught.',
+      'creds-sub': 'Formal study, recognised certifications, and the long apprenticeship of doing the work.',
+      'edu-label': '— Education —', 'edu-badge': 'Departed Early · Self-Directed',
+      'edu-meta': '2020 — 2023 · Departed in third year',
+      'edu-desc': 'Built the foundation in design theory, typography, and visual communication. Left when the curriculum fell behind the work I was already producing independently — the studio became the school.',
+      'cert-label': '— Certifications —',
+      'words-meta-left': '&nbsp;— Words', 'words-meta-right': 'From those I\'ve worked with',
+      'testi-quote': 'The kind of designer who listens before drawing — and then draws something you didn\'t know you wanted, but instantly recognise as <em>yours</em>.',
+      'testi-attr-name': 'Client Name', 'testi-attr-role': '· Founder, Studio Name',
+      'testi-1-text': 'We are extremely happy with the work on our restaurant\'s website and menu! Professional execution, modern design and attention to every detail. Communication was quick and easy, and the final result perfectly reflects our concept. Highly recommended!',
+      'testi-1-name': '— Nina Angelova', 'testi-1-role': 'Restaurant Bogota',
+      'testi-2-text': 'Thanks to the attention to detail and professionalism, I was able to develop my own brand.',
+      'testi-2-name': '— Hristian Simeonov', 'testi-2-role': 'Owner · Easy Car Cleaner',
+      'contact-meta-left': '&nbsp;— Contact', 'contact-meta-right': 'Open for work',
+      'contact-headline': 'Let\'s make<br>something<br><em>worth keeping.</em>',
+      'contact-intro': 'If you\'ve a brand, a site, or a quiet idea that needs shape — write to me. I read every message myself.',
+      'form-title-text': 'Send a note',
+      'form-label-name': 'Your name', 'form-ph-name': 'What should I call you?',
+      'form-label-email': 'Email',
+      'form-label-project': 'Project type', 'form-ph-project': 'Brand, web, packaging…',
+      'form-label-message': 'A few words', 'form-ph-message': 'Tell me a little about it.',
+      'form-submit': 'Send Message →',
+      'footer-big': 'Until <em>soon</em>.',
+      'footer-copy': '© 2026 — Alexander Blagoev. All rights reserved.',
+      'footer-font': 'Set in Fraunces & JetBrains Mono',
+      'ticker': 'Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span>',
+      'cycling': ['Identity', 'Experience', 'Purpose', 'Culture', 'Print', 'the Web', 'Brands', 'Tomorrow']
+    },
+    bg: {
+      'nav-index': 'Индекс', 'nav-work': 'Творби', 'nav-credentials': 'Квалификации', 'nav-words': 'Отзиви', 'nav-contact': 'Контакт',
+      'hero-line1': 'Дизайн за', 'hero-line2': 'Екрана',
+      'hero-label-1': 'Практикува от', 'hero-val-1': 'От <span class="accent">2017</span>',
+      'hero-label-2': 'Дисциплина', 'hero-val-2': 'Графичен <span class="accent">&</span> Уеб Дизайн',
+      'hero-label-3': 'Момент', 'hero-val-3': 'Отворен за <span class="accent">поръчки</span>',
+      'hero-label-4': 'Базиран', 'hero-val-4': 'България, <span class="accent">дистанционно</span>',
+      'hero-statement': 'Графичен и уеб дизайнер, създаващ <em>брандове</em>, <em>интерфейси</em> и <em>печатни материали</em> за клиенти, на които детайлите имат значение — работещ дистанционно, навсякъде.',
+      'about-meta-left': '&nbsp;— Индекс', 'about-meta-right': 'За дизайнера',
+      'about-heading': 'Ръце в <em>работата</em>, очи в <em>детайла</em>.', 'about-note': '— Бележка —',
+      'about-p1': '<em>Аз съм графичен и уеб дизайнер</em>, работещ дистанционно от 2017 г. в областта на брандовата идентичност, дигиталните интерфейси, продуктовия дизайн, опаковките и модата. Обхватът е широк по замисъл; следвам работата, накъдето води.',
+      'about-p2': 'Следвах Графичен Дизайн в университет и напуснах, когато стана ясно, че <strong>надраснах учебната програма</strong>. Истинското образование се случи в самата работа — в реални проекти, реални клиенти и натиск, който те оформя по-бързо от всяка класна стая. По-късно формализирах части от тези знания чрез <em>SoftUni Creative</em>, една от най-признатите творчески програми в България.',
+      'about-p3': 'От ресторантски идентичности до приложения за доставка на ястия, от системи за опаковки до собствен моден бранд — работя там, където <em>визуалното мислене среща реалната цел</em>. Всеки проект се третира като нещо, което ще бъде отпечатано, носено или живяно с години.',
+      'skills-label': '— Практика / Инструменти —',
+      'portfolio-meta-left': '&nbsp;— Избрани Творби',
+      'portfolio-heading': 'Поле от <em>завършена</em> работа.',
+      'portfolio-sub': 'Четири проекта, показващи обхвата. Пълният архив е наличен при поискване — част от него живее в печат и заслужава да бъде видян като такъв.',
+      'work-cat-1': 'Визуална Идентичност / Уеб / Печат', 'work-client-1': 'Ресторант Богота',
+      'work-cat-2': 'Дизайн на Приложение / UX / Бранд', 'work-client-2': 'Абонаментно Приложение за Храна',
+      'work-cat-3': 'Мода / Брандова Идентичност', 'work-client-3': 'Личен Проект',
+      'work-cat-4': 'Експериментален / Личен', 'work-client-4': 'Самоинициирано',
+      'creds-meta-left': '&nbsp;— Квалификации', 'creds-meta-right': 'Образование & Продължаваща Практика',
+      'creds-heading': 'Учил. <em>Сертифициран.</em> Самоук.',
+      'creds-sub': 'Формално образование, признати сертификати и дългото чиракуване на самата работа.',
+      'edu-label': '— Образование —', 'edu-badge': 'Напуснал Рано · Самостоятелен',
+      'edu-meta': '2020 — 2023 · Напуснал в трета година',
+      'edu-desc': 'Изградих основите в теорията на дизайна, типографията и визуалната комуникация. Напуснах, когато учебната програма изостана от работата, която вече произвеждах самостоятелно — студиото стана училището.',
+      'cert-label': '— Сертификати —',
+      'words-meta-left': '&nbsp;— Думи', 'words-meta-right': 'От тези, с които съм работил',
+      'testi-quote': 'Типът дизайнер, който слуша преди да рисува — и след това рисува нещо, което не си знаел, че искаш, но веднага разпознаваш като <em>свое</em>.',
+      'testi-attr-name': 'Клиент', 'testi-attr-role': '· Основател, Студио',
+      'testi-1-text': 'Изключително доволни сме от работата по сайта и менюто на нашия ресторант! Професионално изпълнение, модерен дизайн и внимание към всеки детайл. Комуникацията беше бърза и лесна, а крайният резултат напълно отразява нашата концепция. Препоръчваме с две ръце!',
+      'testi-1-name': '— Нина Ангелова', 'testi-1-role': 'Ресторант Богота',
+      'testi-2-text': 'Заради вниманието към детайла и професионализма успях да развия собствения си бранд.',
+      'testi-2-name': '— Христиан Симеонов', 'testi-2-role': 'Собственик · Easy Car Cleaner',
+      'contact-meta-left': '&nbsp;— Контакт', 'contact-meta-right': 'Отворен за работа',
+      'contact-headline': 'Нека направим<br>нещо, което<br><em>си заслужава.</em>',
+      'contact-intro': 'Ако имаш бранд, сайт или тиха идея, която трябва да придобие форма — пиши ми. Чета всяко съобщение лично.',
+      'form-title-text': 'Изпрати съобщение',
+      'form-label-name': 'Твоето име', 'form-ph-name': 'Как да те нарека?',
+      'form-label-email': 'Имейл',
+      'form-label-project': 'Вид проект', 'form-ph-project': 'Бранд, уеб, опаковки…',
+      'form-label-message': 'Няколко думи', 'form-ph-message': 'Разкажи ми малко за него.',
+      'form-submit': 'Изпрати →',
+      'footer-big': 'До <em>скоро</em>.',
+      'footer-copy': '© 2026 — Александър Благоев. Всички права запазени.',
+      'footer-font': 'Шрифтове: Fraunces & JetBrains Mono',
+      'ticker': 'Графичен Дизайн <span class="ticker-star">✦</span> <em>Уеб Дизайн</em> <span class="ticker-star">✦</span> Брандова Идентичност <span class="ticker-star">✦</span> <em>Продуктов Дизайн</em> <span class="ticker-star">✦</span> Опаковки <span class="ticker-star">✦</span> <em>Дизайн на Приложения</em> <span class="ticker-star">✦</span> Мода <span class="ticker-star">✦</span> <em>Визуална Идентичност</em> <span class="ticker-star">✦</span> Печат <span class="ticker-star">✦</span> <em>Редакционен</em> <span class="ticker-star">✦</span>',
+      'cycling': ['Хартия', 'Менюто', 'Опаковката', 'Всеки']
+    }
+  };
+
+  // ── Language ──────────────────────────────────────────────────
+  let currentLang = localStorage.getItem('lang') || 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      if (t[el.dataset.i18nPlaceholder] !== undefined) el.placeholder = t[el.dataset.i18nPlaceholder];
+    });
+    document.getElementById('ticker1').innerHTML = t['ticker'];
+    document.getElementById('ticker2').innerHTML = t['ticker'];
+    document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    document.documentElement.lang = lang;
+    document.body.classList.toggle('lang-bg', lang === 'bg');
+    localStorage.setItem('lang', lang);
+  }
+
+  setLang(currentLang);
+
+  document.getElementById('langToggle').addEventListener('click', () => {
+    setLang(currentLang === 'en' ? 'bg' : 'en');
+  });
+
+  // ── Theme ─────────────────────────────────────────────────────
+  const themeToggle = document.getElementById('themeToggle');
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    themeToggle.textContent = '☾ Dark';
+  }
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    themeToggle.textContent = isLight ? '☾ Dark' : '☀ Light';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  });
+
+  // ── Scroll reveal ─────────────────────────────────────────────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── Typing / cycling hero word ────────────────────────────────
+  let wordIndex = 0, charIndex = 0, isDeleting = false;
+  const wordEl = document.getElementById('cyclingWord');
+
+  function type() {
+    const words = translations[currentLang]['cycling'];
+    const word = words[wordIndex % words.length];
+    if (isDeleting) {
+      wordEl.textContent = word.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      wordEl.textContent = word.substring(0, charIndex + 1);
+      charIndex++;
+    }
+    let delay = isDeleting ? 55 : 110;
+    if (!isDeleting && charIndex === word.length) { delay = 2000; isDeleting = true; }
+    else if (isDeleting && charIndex === 0) { isDeleting = false; wordIndex = (wordIndex + 1) % words.length; delay = 350; }
+    setTimeout(type, delay);
+  }
+
+  setTimeout(type, 1400);
+</script>
+</body>
+</html>

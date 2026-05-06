@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Car Cleaner — Alexander Blagoev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;1,9..144,300..700,30,1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #060606;
+    --paper-warm: #0e0e0e;
+    --paper-raised: #141416;
+    --ink: #e4e8ec;
+    --ink-soft: #8896a2;
+    --muted: #505a62;
+    --chrome: #7aaac8;
+    --chrome-dim: #2a4050;
+    --hairline: rgba(228,232,236,0.08);
+    --hairline-soft: rgba(228,232,236,0.04);
+    --nav-bg: rgba(6,6,6,0.94);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Barlow', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-back {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 0.6rem;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--chrome); }
+  .nav-back svg { width: 14px; height: 14px; }
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 500; font-style: italic;
+  }
+  .nav-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .lang-toggle { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hairline); padding: 0.3rem 0.7rem; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+  .lang-toggle:hover { color: var(--chrome); border-color: var(--chrome); }
+
+  /* CONTAINER */
+  .container { max-width: 1300px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* HERO */
+  .project-hero {
+    border-bottom: 1px solid var(--hairline);
+    position: relative;
+    overflow: hidden;
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .hero-inner {
+    position: relative;
+    padding: 0 2.5rem 5rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .project-meta {
+    display: flex; gap: 3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3.5rem;
+  }
+  .project-meta span { display: flex; flex-direction: column; gap: 0.35rem; }
+  .project-meta strong { color: var(--chrome); font-weight: 400; }
+
+  .ecc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(5.5rem, 13vw, 14rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .ecc-title .line-1 { color: var(--ink); }
+  .ecc-title .line-2 { color: var(--chrome); }
+  .ecc-title .line-3 { color: var(--ink); }
+
+  .hero-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 1.2rem;
+  }
+  .hero-tagline::before {
+    content: '';
+    display: block; width: 40px; height: 1px;
+    background: var(--chrome); flex-shrink: 0;
+  }
+
+  /* BOTTLES FIELD */
+  .bottles-field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* gradient so text stays readable over bottles */
+  .hero-text {
+    position: relative;
+    z-index: 3;
+    max-width: 52%;
+  }
+  .hero-text::before {
+    content: '';
+    position: absolute;
+    inset: -4rem -6rem -3rem -3rem;
+    background: radial-gradient(ellipse at 30% 70%, rgba(6,6,6,0.82) 30%, transparent 80%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .bottle {
+    position: absolute;
+    width: var(--w, 220px);
+    filter: drop-shadow(0 28px 56px rgba(0,0,0,0.75));
+    animation: var(--anim, floatA) var(--dur, 6s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    opacity: var(--op, 1);
+  }
+  .bottle img { width: 100%; height: auto; display: block; }
+
+  @keyframes floatA {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(0px); }
+    50%       { transform: rotate(var(--rot, 0deg)) translateY(-18px); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(-10px); }
+    50%       { transform: rotate(var(--rot, 0deg)) translateY(12px); }
+  }
+  @keyframes floatC {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(5px); }
+    50%       { transform: rotate(var(--rot, 0deg)) translateY(-22px); }
+  }
+
+  /* spread across full hero — behind text AND on the right */
+  .b1  { --w:260px; --rot:-4deg;  --dur:6.8s; --delay:0s;    --anim:floatA; --op:0.75; top:5%;   left:2%;   }
+  .b2  { --w:300px; --rot: 5deg;  --dur:7.2s; --delay:-1.5s; --anim:floatB; --op:1;    top:0%;   right:3%;  }
+  .b3  { --w:220px; --rot:-7deg;  --dur:5.9s; --delay:-3s;   --anim:floatC; --op:0.65; top:15%;  left:28%;  }
+  .b4  { --w:310px; --rot: 3deg;  --dur:7.5s; --delay:-0.8s; --anim:floatA; --op:1;    top:35%;  right:8%;  }
+  .b5  { --w:200px; --rot:-9deg;  --dur:6.3s; --delay:-2.2s; --anim:floatB; --op:0.6;  top:28%;  left:14%;  }
+  .b6  { --w:280px; --rot: 7deg;  --dur:8s;   --delay:-4s;   --anim:floatC; --op:0.9;  top:52%;  right:26%; }
+  .b7  { --w:240px; --rot:-3deg;  --dur:6.6s; --delay:-1s;   --anim:floatA; --op:0.8;  top:60%;  right:2%;  }
+  .b8  { --w:190px; --rot: 8deg;  --dur:7s;   --delay:-3.5s; --anim:floatB; --op:0.55; top:55%;  left:8%;   }
+  .b9  { --w:265px; --rot:-5deg;  --dur:7.8s; --delay:-2s;   --anim:floatC; --op:0.85; top:72%;  right:18%; }
+
+  @media (max-width: 900px) {
+    .project-hero { min-height: auto; }
+    .hero-inner { padding-top: 5rem; }
+    .hero-text { max-width: 100%; }
+    .hero-text::before { display: none; }
+    .bottles-field { display: none; }
+  }
+
+  /* SECTIONS */
+  section { padding: 5.5rem 0; border-bottom: 1px solid var(--hairline); }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--chrome);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* BRIEF */
+  .brief-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 5rem;
+    align-items: start;
+    margin-top: 3.5rem;
+  }
+
+  .brief-roles {
+    display: flex; flex-direction: column; gap: 2.5rem;
+  }
+  .brief-role-item {
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .brief-role-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .brief-role-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .brief-body {
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .brief-body p {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    font-weight: 300;
+    line-height: 1.75;
+    max-width: 620px;
+  }
+  .brief-body p strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* LABEL GRID */
+  .label-intro {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    max-width: 560px;
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .label-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--hairline);
+    border: 1.5px solid var(--hairline);
+  }
+  .label-grid-item {
+    background: var(--paper-raised);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .label-grid-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .label-grid-item:hover img { transform: scale(1.03); }
+
+  /* PHOTO SECTION */
+  .photo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3.5rem;
+    gap: 2rem;
+  }
+  .photo-caption {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 340px;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* EDITORIAL PHOTO GRID */
+  .photo-grid-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .photo-tall {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--paper-raised);
+  }
+  .photo-tall img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .photo-tall:hover img { transform: scale(1.04); }
+
+  .photo-grid-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .photo-square {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--paper-raised);
+  }
+  .photo-square img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .photo-square:hover img { transform: scale(1.04); }
+
+  .photo-wide {
+    aspect-ratio: 16/8;
+    overflow: hidden;
+    background: var(--paper-raised);
+  }
+  .photo-wide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .photo-wide:hover img { transform: scale(1.03); }
+
+  /* KIT SECTION */
+  .kit-section {
+    padding: 5.5rem 0 0;
+    border: none;
+  }
+  .kit-layout {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .kit-photo {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--paper-raised);
+  }
+  .kit-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .kit-text {
+    display: flex; flex-direction: column; gap: 2rem;
+  }
+  .kit-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--chrome);
+  }
+  .kit-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .kit-body {
+    font-size: 1rem; font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .kit-products {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .kit-product {
+    display: flex; align-items: center;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.5rem 0;
+  }
+  .kit-product::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--chrome-dim);
+    flex-shrink: 0;
+  }
+  .kit-product strong { color: var(--ink-soft); font-weight: 400; }
+
+  /* FOOTER */
+  .project-footer {
+    padding: 4rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--hairline);
+  }
+  .footer-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 1.4rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  .footer-nav {
+    display: flex; gap: 2.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer-nav a { transition: color 0.2s; }
+  .footer-nav a:hover { color: var(--chrome); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* DIVIDER */
+  .section-divider {
+    width: 40px; height: 2px;
+    background: var(--chrome-dim);
+    margin-bottom: 2.5rem;
+  }
+
+  /* FRAGRANCE STRIP */
+  .fragrance-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    background: var(--hairline);
+    border: 1.5px solid var(--hairline);
+    margin-top: 6px;
+  }
+  .fragrance-strip-item {
+    aspect-ratio: 3/5;
+    overflow: hidden;
+    background: var(--paper-raised);
+  }
+  .fragrance-strip-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .fragrance-strip-item:hover img { transform: scale(1.06); }
+
+  /* INSTAGRAM TAG */
+  .insta-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.1em;
+    color: var(--chrome);
+    border: 1px solid var(--chrome-dim);
+    padding: 0.4rem 0.9rem;
+    border-radius: 2rem;
+    margin-top: 1.5rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .insta-tag:hover {
+    background: rgba(122,170,200,0.08);
+    border-color: var(--chrome);
+  }
+  .insta-tag svg { width: 12px; height: 12px; fill: currentColor; }
+
+  @media (max-width: 900px) {
+    .brief-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .photo-grid-hero { grid-template-columns: 1fr; }
+    .photo-grid-row { grid-template-columns: 1fr 1fr; }
+    .kit-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .label-grid { grid-template-columns: 1fr 1fr; }
+    .fragrance-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .container { padding: 0 1.25rem; }
+    .project-meta { flex-wrap: wrap; gap: 1.5rem; }
+    .photo-grid-row { grid-template-columns: 1fr; }
+    .photo-header { flex-direction: column; align-items: flex-start; }
+    .photo-caption { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="portfolio-editorial.html" class="nav-back">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
+    <span data-i18n="nav-back">Portfolio</span>
+  </a>
+  <span class="nav-logo">Alexander Blagoev</span>
+  <div class="nav-right">
+    <button class="lang-toggle" id="langToggle">BG</button>
+    <span class="nav-index">04 / 06</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="project-hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="project-meta reveal">
+        <span><span>Project</span><strong>04</strong></span>
+        <span><span>Category</span><strong>Print Design</strong></span>
+        <span><span>Deliverable</span><strong>Label System</strong></span>
+        <span><span>Industry</span><strong>Automotive</strong></span>
+      </div>
+
+      <h1 class="ecc-title reveal reveal-delay-1">
+        <span class="line-1">Easy</span>
+        <span class="line-2">Car</span>
+        <span class="line-3">Cleaner</span>
+      </h1>
+
+      <p class="hero-tagline reveal reveal-delay-2">
+        <span data-i18n="tagline">Car cosmetics brand · Label design system</span>
+      </p>
+    </div>
+
+    <!-- FLOATING BOTTLES -->
+    <div class="bottles-field">
+      <div class="bottle b1"><img src="easycarcleaner_productphotos/no%20bg/1.png" alt="Sweet Aura"></div>
+      <div class="bottle b2"><img src="easycarcleaner_productphotos/no%20bg/2.png" alt="Размразител за стъкла"></div>
+      <div class="bottle b3"><img src="easycarcleaner_productphotos/no%20bg/9.png" alt="Black Code"></div>
+      <div class="bottle b4"><img src="easycarcleaner_productphotos/no%20bg/7.png" alt="Crush"></div>
+      <div class="bottle b5"><img src="easycarcleaner_productphotos/no%20bg/5.png" alt="Leagle"></div>
+      <div class="bottle b6"><img src="easycarcleaner_productphotos/no%20bg/6.png" alt="Exotic Mango"></div>
+      <div class="bottle b7"><img src="easycarcleaner_productphotos/no%20bg/3.png" alt="Polish"></div>
+      <div class="bottle b8"><img src="easycarcleaner_productphotos/no%20bg/4.png" alt="Мляко за табло"></div>
+      <div class="bottle b9"><img src="easycarcleaner_productphotos/no%20bg/8.png" alt="Bugz Off"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIEF -->
+<section>
+  <div class="container">
+    <div class="section-label reveal" data-i18n="sec-overview">Overview</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="section-title reveal reveal-delay-1" data-i18n="sec-brief-title">The Brief</h2>
+
+    <div class="brief-grid">
+      <div class="brief-roles reveal reveal-delay-1">
+        <div class="brief-role-item">
+          <span class="brief-role-label">My Role</span>
+          <span class="brief-role-value" data-i18n="role-1">Label Designer</span>
+        </div>
+        <div class="brief-role-item">
+          <span class="brief-role-label">Output</span>
+          <span class="brief-role-value" data-i18n="role-2">Print-Ready Labels</span>
+        </div>
+        <div class="brief-role-item">
+          <span class="brief-role-label">Products</span>
+          <span class="brief-role-value" data-i18n="role-3">9 Label Variants</span>
+        </div>
+        <div class="brief-role-item">
+          <span class="brief-role-label">Format</span>
+          <span class="brief-role-value" data-i18n="role-4">150ml Spray Bottles</span>
+        </div>
+        <a href="https://www.instagram.com/easy.car.cleaner1" target="_blank" rel="noopener" class="insta-tag">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          @easy.car.cleaner1
+        </a>
+      </div>
+
+      <div class="brief-body reveal reveal-delay-2">
+        <p data-i18n="brief-p1">
+          Easy Car Cleaner is a Bulgarian car cosmetics brand producing a range of spray products for automotive care — from interior fragrances to glass defrosters and insect repellents. The brand needed a complete label design system that could scale across its growing product line.
+        </p>
+        <p data-i18n="brief-p2">
+          Each label was designed to wrap a matte black 150ml spray bottle, featuring the EASY CAR CLEANER wordmark and a distinctive photographic or illustrative artwork panel that communicates each product's character at a glance — bold gradients for fragrances, close-up photography for functional cleaners.
+        </p>
+        <p data-i18n="brief-p3">
+          The result: a cohesive product family with strong shelf presence, where each item is immediately identifiable by its color and artwork, while still reading as one coherent brand system.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LABEL DESIGNS -->
+<section>
+  <div class="container">
+    <div class="section-label reveal" data-i18n="sec-print">Print Design</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="section-title reveal reveal-delay-1" data-i18n="sec-labels-title">Label System</h2>
+    <p class="label-intro reveal reveal-delay-2" data-i18n="labels-intro">
+      Nine labels across two product categories — five car fragrances with distinct artwork, plus functional cleaners for detailing, defosting, and interior care. Each print-ready at production size.
+    </p>
+  </div>
+
+  <div class="container reveal reveal-delay-1">
+    <div class="label-grid">
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-blackcode.png" alt="Black Code fragrance label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-crush.png" alt="Crush fragrance label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-sweetaura.png" alt="Sweet Aura fragrance label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-leagle.png" alt="Leagle fragrance label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-exoticmango.png" alt="Exotic Mango fragrance label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-mlqko.png" alt="Мляко за табло label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-razm.png" alt="Размразител за стъкла label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-polish.png" alt="Полиращ препарат label" loading="lazy">
+      </div>
+      <div class="label-grid-item">
+        <img src="ecc-brand/label-bugzoff.png" alt="Bugz Off insect repellent label" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT PHOTOGRAPHY -->
+<section>
+  <div class="container">
+    <div class="photo-header">
+      <div>
+        <div class="section-label reveal" data-i18n="sec-context">In Context</div>
+        <div class="section-divider reveal reveal-delay-1"></div>
+        <h2 class="section-title reveal reveal-delay-1" data-i18n="sec-products-title">The Products</h2>
+      </div>
+      <p class="photo-caption reveal reveal-delay-2" data-i18n="photo-caption">
+        Labels photographed on final production bottles — studio and lifestyle shots for the brand's social media presence.
+      </p>
+    </div>
+  </div>
+
+  <div class="container reveal">
+    <!-- Row 1: two tall photos side by side -->
+    <div class="photo-grid-hero">
+      <div class="photo-tall">
+        <img src="easycarcleaner_productphotos/487139426_17956636619920129_7520832823073793519_n.jpg"
+             alt="Crush, Black Code, Summer Scent fragrances on smoky dark background"
+             loading="lazy">
+      </div>
+      <div class="photo-tall">
+        <img src="easycarcleaner_productphotos/465896919_17939752232920129_6820737967264063687_n.jpg"
+             alt="Glass defroster bottle with blue squeegee on ice"
+             loading="lazy">
+      </div>
+    </div>
+
+    <!-- Row 2: wide + two squares -->
+    <div class="photo-grid-row">
+      <div class="photo-tall" style="aspect-ratio: auto; min-height: 320px;">
+        <img src="easycarcleaner_productphotos/IMG_0831.png"
+             alt="Sweet Aura, Crush and Black Code fragrances on dark reflective surface"
+             loading="lazy"
+             style="object-position: center center;">
+      </div>
+      <div class="photo-square">
+        <img src="easycarcleaner_productphotos/IMG_0835.png"
+             alt="Spray bottle with ice and snow"
+             loading="lazy">
+      </div>
+      <div class="photo-square">
+        <img src="easycarcleaner_productphotos/IMG_0848.png"
+             alt="Product range on car surface"
+             loading="lazy">
+      </div>
+    </div>
+
+    <!-- Row 3: autumn lifestyle -->
+    <div class="photo-wide" style="margin-top: 6px;">
+      <img src="easycarcleaner_productphotos/IMG_0833.png"
+           alt="Full fragrance lineup laid on autumn leaves"
+           loading="lazy"
+           style="object-position: center 40%;">
+    </div>
+  </div>
+</section>
+
+<!-- THE FULL KIT -->
+<section class="kit-section">
+  <div class="container">
+    <div class="kit-layout">
+      <div class="kit-photo reveal">
+        <img src="easycarcleaner_productphotos/465779758_17939753546920129_2967218668408059801_n.jpg"
+             alt="Easy Car Cleaner full gift kit box with all products"
+             loading="lazy">
+      </div>
+      <div class="kit-text">
+        <div>
+          <div class="kit-label reveal" data-i18n="kit-label">Complete Range</div>
+          <div class="section-divider reveal reveal-delay-1"></div>
+          <h2 class="kit-heading reveal reveal-delay-1" data-i18n="kit-heading">The Full Kit</h2>
+        </div>
+        <p class="kit-body reveal reveal-delay-2" data-i18n="kit-body">
+          The full Easy Car Cleaner lineup packaged as a complete gift kit — cleaners, fragrances, and accessories all carrying the unified label system. The brand card uses the same visual language as the labels, bringing cohesion to the entire product family.
+        </p>
+        <div class="kit-products reveal reveal-delay-2">
+          <div class="kit-product"><strong>Мляко за табло</strong> — dashboard milk</div>
+          <div class="kit-product"><strong>Размразител за стъкла</strong> — glass defroster</div>
+          <div class="kit-product"><strong>Sweet Aura</strong> — interior fragrance</div>
+          <div class="kit-product"><strong>Ароматизатори</strong> — fragrance series · Crush, Black Code, Leagle, Exotic Mango, Summer Scent</div>
+          <div class="kit-product"><strong>Bugz Off</strong> — insect repellent spray</div>
+          <div class="kit-product"><strong>Polish</strong> — exterior detailing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="container">
+  <div class="project-footer">
+    <span class="footer-brand">Easy Car Cleaner</span>
+    <nav class="footer-nav">
+      <a href="bogota.html" data-i18n="footer-prev">← Bogota</a>
+      <a href="portfolio-editorial.html" data-i18n="footer-all">All Projects</a>
+      <a href="muave.html" data-i18n="footer-next">Muave →</a>
+    </nav>
+  </div>
+</div>
+
+<script>
+  // Scroll to top on load
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  // Theme sync (dark mode)
+  const saved = localStorage.getItem('portfolio-theme');
+  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger children of grids for entrance
+  document.querySelectorAll('.label-grid, .photo-grid-hero, .photo-grid-row, .fragrance-strip').forEach(grid => {
+    const items = grid.children;
+    Array.from(items).forEach((item, i) => {
+      item.style.transitionDelay = `${i * 0.06}s`;
+      item.classList.add('reveal');
+      observer.observe(item);
+    });
+  });
+
+  const LANG_ECC = {
+    en: {
+      'nav-back': 'Portfolio',
+      'tagline': 'Car cosmetics brand · Label design system',
+      'sec-overview': 'Overview',
+      'sec-brief-title': 'The Brief',
+      'role-1': 'Label Designer',
+      'role-2': 'Print-Ready Labels',
+      'role-3': '9 Label Variants',
+      'role-4': '150ml Spray Bottles',
+      'brief-p1': 'Easy Car Cleaner is a Bulgarian car cosmetics brand producing a range of spray products for automotive care — from interior fragrances to glass defrosters and insect repellents. The brand needed a complete label design system that could scale across its growing product line.',
+      'brief-p2': 'Each label was designed to wrap a matte black 150ml spray bottle, featuring the EASY CAR CLEANER wordmark and a distinctive photographic or illustrative artwork panel that communicates each product\'s character at a glance — bold gradients for fragrances, close-up photography for functional cleaners.',
+      'brief-p3': 'The result: a cohesive product family with strong shelf presence, where each item is immediately identifiable by its color and artwork, while still reading as one coherent brand system.',
+      'sec-print': 'Print Design',
+      'sec-labels-title': 'Label System',
+      'labels-intro': 'Nine labels across two product categories — five car fragrances with distinct artwork, plus functional cleaners for detailing, defrosting, and interior care. Each print-ready at production size.',
+      'sec-context': 'In Context',
+      'sec-products-title': 'The Products',
+      'photo-caption': 'Labels photographed on final production bottles — studio and lifestyle shots for the brand\'s social media presence.',
+      'kit-label': 'Complete Range',
+      'kit-heading': 'The Full Kit',
+      'kit-body': 'The full Easy Car Cleaner lineup packaged as a complete gift kit — cleaners, fragrances, and accessories all carrying the unified label system. The brand card uses the same visual language as the labels, bringing cohesion to the entire product family.',
+      'footer-prev': '← Bogota',
+      'footer-all': 'All Projects',
+      'footer-next': 'Muave →',
+    },
+    bg: {
+      'nav-back': 'Портфолио',
+      'tagline': 'Бранд за автомобилна козметика · Система за дизайн на етикети',
+      'sec-overview': 'Преглед',
+      'sec-brief-title': 'Брифът',
+      'role-1': 'Дизайнер на Етикети',
+      'role-2': 'Готови за Печат Етикети',
+      'role-3': '9 Варианта Етикети',
+      'role-4': '150мл Спрей Бутилки',
+      'brief-p1': 'Easy Car Cleaner е български бранд за автомобилна козметика, произвеждащ гама от спрей продукти за грижа за автомобила — от интериорни ароматизатори до размразители за стъкла и спрейове против насекоми. Брандът се нуждаеше от цялостна система за дизайн на етикети, която да може да се мащабира заедно с растящата продуктова линия.',
+      'brief-p2': 'Всеки етикет беше проектиран да обвива матово черна 150мл спрей бутилка, с надпис EASY CAR CLEANER и отличителен фотографски или илюстративен арт панел, предаващ характера на продукта с един поглед — смели градиенти за ароматизаторите, едрокадрови снимки за функционалните почистващи продукти.',
+      'brief-p3': 'Резултатът: кохерентно продуктово семейство с ярко присъствие, където всеки продукт е веднага разпознаваем по цвят и илюстрация, при все това четящ се като една единна брандова система.',
+      'sec-print': 'Печатен Дизайн',
+      'sec-labels-title': 'Система от Етикети',
+      'labels-intro': 'Девет етикета в две продуктови категории — пет ароматизатора за автомобили с отличително artwork, плюс функционални почистващи продукти за детайлинг, размразяване и грижа за интериора. Всеки готов за печат в производствен размер.',
+      'sec-context': 'В Контекст',
+      'sec-products-title': 'Продуктите',
+      'photo-caption': 'Етикетите, фотографирани върху финалните производствени бутилки — студийни и лайфстайл снимки за социалните мрежи на бранда.',
+      'kit-label': 'Пълна Гама',
+      'kit-heading': 'Пълният Комплект',
+      'kit-body': 'Пълната гама на Easy Car Cleaner, опакована като подаръчен комплект — почистващи продукти, ароматизатори и аксесоари, носещи единната система от етикети. Брандовата карта използва същия визуален език като етикетите, внасяйки кохерентност в цялото продуктово семейство.',
+      'footer-prev': '← Богота',
+      'footer-all': 'Всички Проекти',
+      'footer-next': 'Muave →',
+    }
+  };
+
+  function applyLang(lang) {
+    const t = LANG_ECC[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+    });
+    document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    document.documentElement.lang = lang;
+    localStorage.setItem('lang', lang);
+  }
+
+  const savedLang = localStorage.getItem('lang') || 'en';
+  applyLang(savedLang);
+  document.getElementById('langToggle').addEventListener('click', () => {
+    applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
+  });
+</script>
+</body>
+</html>

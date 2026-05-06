@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/alexanderblagoev/Desktop/Portfolio/olli/olli1.png)",
+      "WebFetch(domain:www.restorantbogota.bg)",
+      "WebFetch(domain:restorantbogota.bg)",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "Bash(python3 -c ' *)",
+      "Bash(qlmanage -t -s 2400 -o /Users/alexanderblagoev/Desktop/Portfolio/bogota-menu /Users/alexanderblagoev/Documents/nina/nnina.pdf)",
+      "Bash(brew list *)",
+      "Bash(pip3 list *)",
+      "Bash(pip3 install *)",
+      "Bash(python3 -c \"import pypdf; print\\('OK'\\)\")",
+      "Bash(sips --getProperty all /Users/alexanderblagoev/Documents/nina/nnina.pdf)",
+      "Bash(osascript)",
+      "Bash(screencapture -l 21273 /Users/alexanderblagoev/Desktop/Portfolio/bogota-web.png)",
+      "Bash(screencapture -R \"0,148,1512,740\" /Users/alexanderblagoev/Desktop/Portfolio/bogota-web-final.png)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --screenshot=/Users/alexanderblagoev/Desktop/Portfolio/bogota-web.png --window-size=1440,900 --hide-scrollbars https://restorantbogota.bg)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --screenshot=/Users/alexanderblagoev/Desktop/Portfolio/bogota-web.png --window-size=1440,900 --hide-scrollbars --virtual-time-budget=5000 https://restorantbogota.bg)",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(screencapture -l 884931711 /tmp/bogota-chrome-raw.png)",
+      "Bash(sips --getProperty pixelWidth --getProperty pixelHeight /tmp/bogota-chrome-raw.png)",
+      "Bash(osascript -e 'tell application \"Google Chrome\" to activate')",
+      "Bash(screencapture -x /tmp/bogota-chrome-raw.png)",
+      "Bash(python3)",
+      "Read(//Users/alexanderblagoev/Desktop/mueave archive/**)",
+      "Bash(git --version)",
+      "Bash(git config *)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

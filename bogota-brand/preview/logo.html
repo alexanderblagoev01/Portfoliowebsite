@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Logo — Bogota</title>
+<style>
+  @font-face { font-family: "Bahnschrift"; src: url("../fonts/Bahnschrift.ttf") format("truetype"); font-display: block; }
+  @font-face { font-family: "P22 Allyson Pro"; src: url("../fonts/Bogota-3651.otf") format("opentype"); font-style: italic; font-display: block; }
+  html, body { margin: 0; padding: 0; }
+  body { width: 700px; height: 240px; display: flex; align-items: stretch; justify-content: center; padding: 24px; box-sizing: border-box; gap: 20px; }
+  .swatch { flex: 1; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; }
+  .swatch.cream { background: #f5f1ea; border-color: #e6dfd2; }
+  .swatch.dark { background: #10100f; border-color: #10100f; }
+  .lockup { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .script { font-family: 'P22 Allyson Pro', cursive; font-style: italic; font-size: 24px; color: #faab64; line-height: 1; transform: translateX(-4px); margin-bottom: 2px; }
+  .name { font-family: 'Bahnschrift', 'DIN Condensed', sans-serif; font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: 0.04em; }
+  .swatch:not(.dark) .name { color: #10100f; }
+  .swatch.dark .name { color: #ff5c00; }
+  .caps { font-family: 'Bahnschrift', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; margin-top: 8px; }
+  .swatch:not(.dark) .caps { color: #6b6b6b; }
+  .swatch.dark .caps { color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+  <div class="swatch">
+    <div class="lockup">
+      <span class="script">Ресторант</span>
+      <span class="name">БОГОТА</span>
+    </div>
+  </div>
+  <div class="swatch cream">
+    <div class="lockup">
+      <span class="script">Ресторант</span>
+      <span class="name">БОГОТА</span>
+    </div>
+  </div>
+  <div class="swatch dark">
+    <div class="lockup">
+      <span class="script">Ресторант</span>
+      <span class="name">БОГОТА</span>
+    </div>
+  </div>
+</body>
+</html>

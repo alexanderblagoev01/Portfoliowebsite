@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brand Colors</title>
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { width: 700px; height: 200px; display: grid; grid-template-columns: repeat(4, 1fr); font-family: 'Montserrat', sans-serif; }
+  .swatch { display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; box-sizing: border-box; }
+  .swatch .name { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .swatch .hex { font-size: 11px; opacity: 0.85; margin-top: 4px; font-family: ui-monospace, monospace; }
+  .a { background: #10100f; color: #fff; }
+  .b { background: #ff5c00; color: #fff; }
+  .c { background: #faab64; color: #10100f; }
+  .d { background: #fff; color: #10100f; border: 1px solid #eee; }
+</style>
+</head>
+<body>
+  <div class="swatch a"><div class="name">Ink</div><div class="hex">#10100F</div></div>
+  <div class="swatch b"><div class="name">Primary</div><div class="hex">#FF5C00</div></div>
+  <div class="swatch c"><div class="name">Soft Orange</div><div class="hex">#FAAB64</div></div>
+  <div class="swatch d"><div class="name">Paper</div><div class="hex">#FFFFFF</div></div>
+</body>
+</html>
