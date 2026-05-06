@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    { "src": "/", "dest": "/portfolio-editorial.html" },
+    { "src": "/bogota", "dest": "/bogota.html" },
+    { "src": "/muave", "dest": "/muave.html" },
+    { "src": "/ecc", "dest": "/ecc.html" },
+    { "src": "/olli", "dest": "/olli.html" }
+  ]
+}
