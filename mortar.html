@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mortar — Alexander Blagoev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #181818;
+    --paper-warm: #1f1f1f;
+    --graphite: #2a2a2a;
+    --ink: #f0ede8;
+    --ink-soft: #8a8480;
+    --muted: #4a4644;
+    --ember: #ef946c;
+    --ember-dim: rgba(239,148,108,0.12);
+    --hairline: rgba(240,237,232,0.07);
+    --nav-bg: rgba(24,24,24,0.94);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-back {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink-soft);
+    display: flex; align-items: center; gap: 0.6rem;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--ember); }
+  .nav-back svg { width: 14px; height: 14px; }
+  .nav-logo {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-index {
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); font-family: 'Inter', monospace;
+  }
+  .lang-toggle {
+    font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; font-weight: 500;
+    color: var(--muted); background: none;
+    border: 1px solid var(--hairline); padding: 0.3rem 0.7rem;
+    cursor: pointer; transition: color 0.2s, border-color 0.2s;
+  }
+  .lang-toggle:hover { color: var(--ember); border-color: var(--ember); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    padding: 8rem 2.5rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle grid texture */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--hairline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* radial fade over grid */
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 20%, var(--paper) 80%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2.5rem;
+    max-width: 900px;
+  }
+
+  /* WIP badge */
+  .wip-badge {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ember);
+    border: 1px solid rgba(239,148,108,0.35);
+    background: var(--ember-dim);
+    padding: 0.45rem 1.1rem;
+    border-radius: 100px;
+  }
+  .wip-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ember);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Logo mark */
+  .mortar-mark {
+    width: min(160px, 28vw);
+    height: auto;
+    filter: drop-shadow(0 0 40px rgba(239,148,108,0.25));
+  }
+
+  /* Wordmark */
+  .mortar-wordmark {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-size: clamp(4rem, 12vw, 11rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  .hero-desc {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    font-weight: 300;
+    color: var(--ink-soft);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  /* STATS strip */
+  .hero-stats {
+    display: flex; gap: 0;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  .hero-stat {
+    padding: 1.2rem 2.5rem;
+    display: flex; flex-direction: column; gap: 0.3rem;
+    border-right: 1px solid var(--hairline);
+    text-align: left;
+  }
+  .hero-stat:last-child { border-right: none; }
+  .stat-label {
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-value {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--ember);
+    letter-spacing: 0.02em;
+  }
+
+  /* ABOUT SECTION */
+  .about-section {
+    border-top: 1px solid var(--hairline);
+    padding: 6rem 0;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .about-left {
+    display: flex; flex-direction: column; gap: 3rem;
+    position: sticky; top: 8rem;
+  }
+
+  .section-eyebrow {
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 0.8rem;
+  }
+  .section-heading {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .feature-list {
+    display: flex; flex-direction: column; gap: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .feature-item {
+    display: flex; align-items: flex-start; gap: 1.2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .feature-num {
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding-top: 0.2rem;
+    flex-shrink: 0;
+    width: 2rem;
+  }
+  .feature-content { display: flex; flex-direction: column; gap: 0.3rem; }
+  .feature-title {
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .feature-desc {
+    font-size: 0.88rem; font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .about-body {
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .about-body p {
+    font-size: 1.05rem; font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+  .about-body strong { color: var(--ink); font-weight: 500; }
+
+  /* LAUNCH SECTION */
+  .launch-section {
+    border-top: 1px solid var(--hairline);
+    padding: 5rem 0;
+    text-align: center;
+  }
+  .launch-inner {
+    max-width: 600px; margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center; gap: 2rem;
+  }
+  .launch-year {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-size: clamp(5rem, 14vw, 12rem);
+    line-height: 0.9;
+    color: var(--graphite);
+    letter-spacing: -0.02em;
+    user-select: none;
+  }
+  .launch-label {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .launch-sub {
+    font-size: 1rem; font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  .project-footer {
+    border-top: 1px solid var(--hairline);
+    padding: 3rem 0;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-brand {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-size: 1.1rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  .footer-nav {
+    display: flex; gap: 2.5rem;
+    font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer-nav a { transition: color 0.2s; }
+  .footer-nav a:hover { color: var(--ember); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .hero { padding: 7rem 1.25rem 4rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-left { position: static; }
+    .hero-stats { flex-direction: column; }
+    .hero-stat { border-right: none; border-bottom: 1px solid var(--hairline); }
+    .hero-stat:last-child { border-bottom: none; }
+    .container { padding: 0 1.25rem; }
+    .footer-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="portfolio-editorial.html" class="nav-back">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M9 2L4 7l5 5"/>
+    </svg>
+    <span data-i18n="nav-back">Portfolio</span>
+  </a>
+  <span class="nav-logo">Alexander Blagoev</span>
+  <div class="nav-right">
+    <button class="lang-toggle" id="langToggle">BG</button>
+    <span class="nav-index">05 / 06</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="wip-badge">
+      <span class="wip-dot"></span>
+      <span data-i18n="wip-badge">In Development</span>
+    </div>
+
+    <img src="mortar-logo.svg" class="mortar-mark" alt="Mortar icon">
+
+    <h1 class="mortar-wordmark">Mortar</h1>
+
+    <p class="hero-desc" data-i18n="hero-desc">
+      A software solution for construction management — built to bring structure to the chaos of building sites, teams, and timelines.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-label" data-i18n="stat-1-label">Category</span>
+        <span class="stat-value" data-i18n="stat-1-value">Software</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-label" data-i18n="stat-2-label">Industry</span>
+        <span class="stat-value" data-i18n="stat-2-value">Construction</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-label" data-i18n="stat-3-label">Status</span>
+        <span class="stat-value" data-i18n="stat-3-value">Building</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-label" data-i18n="stat-4-label">Launch</span>
+        <span class="stat-value">2025</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-left">
+        <div>
+          <div class="section-eyebrow" data-i18n="about-eyebrow">The Product</div>
+          <h2 class="section-heading" data-i18n="about-heading">What is<br>Mortar?</h2>
+        </div>
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="feature-num">01</span>
+            <div class="feature-content">
+              <span class="feature-title" data-i18n="f1-title">Project Management</span>
+              <span class="feature-desc" data-i18n="f1-desc">Track every phase of a construction project from groundwork to handover.</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-num">02</span>
+            <div class="feature-content">
+              <span class="feature-title" data-i18n="f2-title">Team Coordination</span>
+              <span class="feature-desc" data-i18n="f2-desc">Assign tasks, track crews, and keep every contractor in sync.</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-num">03</span>
+            <div class="feature-content">
+              <span class="feature-title" data-i18n="f3-title">Site Documentation</span>
+              <span class="feature-desc" data-i18n="f3-desc">Logs, reports, and records — all in one place, always up to date.</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-num">04</span>
+            <div class="feature-content">
+              <span class="feature-title" data-i18n="f4-title">Budget Tracking</span>
+              <span class="feature-desc" data-i18n="f4-desc">Real-time cost visibility so nothing slips past the numbers.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-body">
+        <p data-i18n="about-p1">
+          Construction is one of the last industries still running on spreadsheets, phone calls, and paper. <strong>Mortar is the fix</strong> — a focused, fast, and practical management tool built specifically for the realities of building.
+        </p>
+        <p data-i18n="about-p2">
+          From small contractors to larger site operations, Mortar brings together project timelines, team assignments, material tracking, and client communication into a single platform that actually works the way construction does.
+        </p>
+        <p data-i18n="about-p3">
+          The design is deliberately clean and direct — because the people using it are on sites, not at desks. Every feature earns its place. Nothing is there for show.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LAUNCH -->
+<section class="launch-section">
+  <div class="launch-inner">
+    <p class="launch-label" data-i18n="launch-label">Expected Launch</p>
+    <div class="launch-year">2025</div>
+    <p class="launch-sub" data-i18n="launch-sub">
+      Currently in active development. Design and engineering underway — more to share soon.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="project-footer">
+  <div class="footer-inner">
+    <span class="footer-brand">Mortar</span>
+    <nav class="footer-nav">
+      <a href="ecc.html" data-i18n="footer-prev">← Easy Car Cleaner</a>
+      <a href="portfolio-editorial.html" data-i18n="footer-all">All Projects</a>
+    </nav>
+  </div>
+</div>
+
+<script>
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  const LANG_MORTAR = {
+    en: {
+      'nav-back': 'Portfolio',
+      'wip-badge': 'In Development',
+      'hero-desc': 'A software solution for construction management — built to bring structure to the chaos of building sites, teams, and timelines.',
+      'stat-1-label': 'Category', 'stat-1-value': 'Software',
+      'stat-2-label': 'Industry', 'stat-2-value': 'Construction',
+      'stat-3-label': 'Status',   'stat-3-value': 'Building',
+      'stat-4-label': 'Launch',
+      'about-eyebrow': 'The Product',
+      'about-heading': 'What is\nMortar?',
+      'f1-title': 'Project Management',
+      'f1-desc': 'Track every phase of a construction project from groundwork to handover.',
+      'f2-title': 'Team Coordination',
+      'f2-desc': 'Assign tasks, track crews, and keep every contractor in sync.',
+      'f3-title': 'Site Documentation',
+      'f3-desc': 'Logs, reports, and records — all in one place, always up to date.',
+      'f4-title': 'Budget Tracking',
+      'f4-desc': 'Real-time cost visibility so nothing slips past the numbers.',
+      'about-p1': 'Construction is one of the last industries still running on spreadsheets, phone calls, and paper. Mortar is the fix — a focused, fast, and practical management tool built specifically for the realities of building.',
+      'about-p2': 'From small contractors to larger site operations, Mortar brings together project timelines, team assignments, material tracking, and client communication into a single platform that actually works the way construction does.',
+      'about-p3': 'The design is deliberately clean and direct — because the people using it are on sites, not at desks. Every feature earns its place. Nothing is there for show.',
+      'launch-label': 'Expected Launch',
+      'launch-sub': 'Currently in active development. Design and engineering underway — more to share soon.',
+      'footer-prev': '← Easy Car Cleaner',
+      'footer-all': 'All Projects',
+    },
+    bg: {
+      'nav-back': 'Портфолио',
+      'wip-badge': 'В Разработка',
+      'hero-desc': 'Софтуерно решение за управление на строителството — създадено да внесе ред в хаоса на строителни обекти, екипи и срокове.',
+      'stat-1-label': 'Категория', 'stat-1-value': 'Софтуер',
+      'stat-2-label': 'Индустрия', 'stat-2-value': 'Строителство',
+      'stat-3-label': 'Статус',    'stat-3-value': 'В Изграждане',
+      'stat-4-label': 'Пускане',
+      'about-eyebrow': 'Продуктът',
+      'about-heading': 'Какво е\nMortar?',
+      'f1-title': 'Управление на Проекти',
+      'f1-desc': 'Проследявай всяка фаза на строителен проект — от основите до предаването.',
+      'f2-title': 'Координация на Екипи',
+      'f2-desc': 'Разпределяй задачи, следи бригади и поддържай всички изпълнители в синхрон.',
+      'f3-title': 'Документация на Обект',
+      'f3-desc': 'Дневници, доклади и записи — на едно място, винаги актуални.',
+      'f4-title': 'Проследяване на Бюджет',
+      'f4-desc': 'Видимост върху разходите в реално време, за да не се изплъзне нищо.',
+      'about-p1': 'Строителството е една от последните индустрии, все още работеща с таблици, телефонни обаждания и хартия. Mortar е решението — фокусиран, бърз и практичен инструмент за управление, създаден специално за реалностите на строителството.',
+      'about-p2': 'От малки изпълнители до по-мащабни обекти, Mortar обединява графиците на проектите, разпределението на екипите, проследяването на материали и комуникацията с клиенти в една платформа, която работи така, както работи строителството.',
+      'about-p3': 'Дизайнът е умишлено изчистен и директен — защото хората, които го ползват, са на обекта, не зад бюро. Всяка функция заслужава мястото си. Нищо не е за показ.',
+      'launch-label': 'Очаквано Пускане',
+      'launch-sub': 'В активна разработка. Дизайн и инженерство в ход — скоро ще има какво да покажем.',
+      'footer-prev': '← Easy Car Cleaner',
+      'footer-all': 'Всички Проекти',
+    }
+  };
+
+  function applyLang(lang) {
+    const t = LANG_MORTAR[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+    });
+    document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    document.documentElement.lang = lang;
+    localStorage.setItem('lang', lang);
+  }
+
+  const savedLang = localStorage.getItem('lang') || 'en';
+  applyLang(savedLang);
+  document.getElementById('langToggle').addEventListener('click', () => {
+    applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
+  });
+</script>
+</body>
+</html>

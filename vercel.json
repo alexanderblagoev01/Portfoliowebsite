@@ -6,6 +6,7 @@
     { "src": "/bogota", "dest": "/bogota.html" },
     { "src": "/muave", "dest": "/muave.html" },
     { "src": "/ecc", "dest": "/ecc.html" },
-    { "src": "/olli", "dest": "/olli.html" }
+    { "src": "/olli", "dest": "/olli.html" },
+    { "src": "/mortar", "dest": "/mortar.html" }
   ]
 }
