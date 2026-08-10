@@ -249,6 +249,16 @@
   .project-title { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s forwards; }
   .project-tagline { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
 
+  /* LANG TOGGLE */
+  .lang-toggle {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400;
+    color: var(--muted); background: none;
+    border: 1px solid var(--hairline); padding: 0.28rem 0.65rem;
+    cursor: pointer; transition: color 0.2s, border-color 0.2s;
+  }
+  .lang-toggle:hover { color: var(--terracotta); border-color: var(--terracotta); }
+
   /* RESPONSIVE */
   @media(max-width:1000px) {
     .container { padding: 0 1.5rem; }
@@ -270,21 +280,24 @@
 
 <!-- NAV -->
 <nav>
-  <a href="portfolio-editorial.html" class="nav-back">← Back to Portfolio</a>
+  <a href="portfolio-editorial.html" class="nav-back" data-i18n="nav-back">← Portfolio</a>
   <a href="portfolio-editorial.html" class="nav-logo">Alexander Blagoev</a>
-  <span class="nav-index">02 / 04</span>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <button class="lang-toggle" id="langToggle">BG</button>
+    <span class="nav-index">02 / 05</span>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="project-hero">
   <div class="container">
     <div class="project-meta">
-      <span><strong>Category</strong>App Design / UX / Branding</span>
-      <span><strong>Year</strong>2023</span>
-      <span><strong>Type</strong>Concept Project</span>
+      <span><strong data-i18n="meta-cat-label">Category</strong><span data-i18n="meta-cat">App Design / UX / Branding</span></span>
+      <span><strong data-i18n="meta-year-label">Year</strong>2023</span>
+      <span><strong data-i18n="meta-type-label">Type</strong><span data-i18n="meta-type">Concept Project</span></span>
     </div>
     <h1 class="project-title"><em>Olli</em></h1>
-    <p class="project-tagline">A meal subscription app that brings the ingredients to your door — and teaches you how to cook them.</p>
+    <p class="project-tagline" data-i18n="tagline">A meal subscription app that brings the ingredients to your door — and teaches you how to cook them.</p>
   </div>
 </section>
 
@@ -314,17 +327,17 @@
 <section class="section">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">01</span> &nbsp;— The Concept</span>
+      <span><span class="num">01</span> &nbsp;— <span data-i18n="s1-label">The Concept</span></span>
       <span>Olli / 2023</span>
     </div>
     <div class="about-grid">
-      <div class="about-heading reveal">
+      <div class="about-heading reveal" data-i18n-html="about-heading">
         Cooking made <em>simple.</em><br>Ingredients made <em>personal.</em>
       </div>
       <div class="about-text reveal d1">
-        <p>Olli is a <em>meal subscription service</em> built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
-        <p>The app goes beyond delivery. Each recipe comes with a <strong>step-by-step cooking tutorial</strong> built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
-        <p>The design challenge was building something that felt <em>warm and approachable</em> without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.</p>
+        <p data-i18n="about-p1">Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
+        <p data-i18n="about-p2">The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
+        <p data-i18n="about-p3">The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.</p>
       </div>
     </div>
   </div>
@@ -334,7 +347,7 @@
 <section class="feature" style="background: var(--paper-warm);">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">02</span> &nbsp;— Recipe Discovery</span>
+      <span><span class="num">02</span> &nbsp;— <span data-i18n="s2-label">Recipe Discovery</span></span>
     </div>
     <div class="feature-grid">
       <div class="feature-phones reveal">
@@ -352,9 +365,9 @@
         </div>
       </div>
       <div class="feature-text reveal d1">
-        <div class="feature-num">— Feature 01</div>
-        <h2 class="feature-heading">Browse, pick, <em>cook.</em></h2>
-        <p class="feature-desc">The recipe selection screen is the heart of Olli. Users scroll through a curated weekly menu, filter by dietary preference, prep time, or cuisine — and simply tap to add to their box. The UI keeps decisions effortless, letting the food do the talking.</p>
+        <div class="feature-num" data-i18n="f1-num">— Feature 01</div>
+        <h2 class="feature-heading" data-i18n-html="f1-heading">Browse, pick, <em>cook.</em></h2>
+        <p class="feature-desc" data-i18n="f1-desc">The recipe selection screen is the heart of Olli. Users scroll through a curated weekly menu, filter by dietary preference, prep time, or cuisine — and simply tap to add to their box. The UI keeps decisions effortless, letting the food do the talking.</p>
       </div>
     </div>
   </div>
@@ -364,7 +377,7 @@
 <section class="feature">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">03</span> &nbsp;— Cooking Mode</span>
+      <span><span class="num">03</span> &nbsp;— <span data-i18n="s3-label">Cooking Mode</span></span>
     </div>
     <div class="feature-grid reverse">
       <div class="feature-phones reveal">
@@ -382,9 +395,9 @@
         </div>
       </div>
       <div class="feature-text reveal d1">
-        <div class="feature-num">— Feature 02</div>
-        <h2 class="feature-heading">Step by step, <em>nothing missed.</em></h2>
-        <p class="feature-desc">Once the ingredients arrive, cooking mode takes over. Each recipe breaks down into timed, visual steps — keeping the experience <em>calm and focused</em>. No scrolling up to re-read. No second-guessing quantities. Just one step at a time, until it's on the plate.</p>
+        <div class="feature-num" data-i18n="f2-num">— Feature 02</div>
+        <h2 class="feature-heading" data-i18n-html="f2-heading">Step by step, <em>nothing missed.</em></h2>
+        <p class="feature-desc" data-i18n="f2-desc">Once the ingredients arrive, cooking mode takes over. Each recipe breaks down into timed, visual steps — keeping the experience calm and focused. No scrolling up to re-read. No second-guessing quantities. Just one step at a time, until it's on the plate.</p>
       </div>
     </div>
   </div>
@@ -394,7 +407,7 @@
 <section class="feature" style="background: var(--paper-warm);">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">04</span> &nbsp;— Subscription & Order</span>
+      <span><span class="num">04</span> &nbsp;— <span data-i18n="s4-label">Subscription & Order</span></span>
     </div>
     <div class="feature-grid">
       <div class="feature-phones reveal">
@@ -412,9 +425,9 @@
         </div>
       </div>
       <div class="feature-text reveal d1">
-        <div class="feature-num">— Feature 03</div>
-        <h2 class="feature-heading">Your box, <em>your terms.</em></h2>
-        <p class="feature-desc">Olli's subscription model is built around <em>flexibility</em>. Pause for a week, swap a recipe, change your delivery day — all from one clean screen. No hidden steps, no buried settings. The interface makes managing your box as easy as choosing what to cook.</p>
+        <div class="feature-num" data-i18n="f3-num">— Feature 03</div>
+        <h2 class="feature-heading" data-i18n-html="f3-heading">Your box, <em>your terms.</em></h2>
+        <p class="feature-desc" data-i18n="f3-desc">Olli's subscription model is built around flexibility. Pause for a week, swap a recipe, change your delivery day — all from one clean screen. No hidden steps, no buried settings. The interface makes managing your box as easy as choosing what to cook.</p>
       </div>
     </div>
   </div>
@@ -424,8 +437,8 @@
 <section class="screens-section">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">05</span> &nbsp;— All Screens</span>
-      <span>10 screens</span>
+      <span><span class="num">05</span> &nbsp;— <span data-i18n="s5-label">All Screens</span></span>
+      <span data-i18n="s5-count">10 screens</span>
     </div>
     <div class="screens-grid">
       <div class="phone-wrap reveal"><div class="phone"><div class="phone-screen"><img src="olli/olli1.png" alt="Olli screen 1"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
@@ -444,18 +457,84 @@
 
 <!-- NEXT PROJECT -->
 <div class="container">
-  <a href="portfolio-editorial.html#portfolio" class="next-project">
+  <a href="bogota.html" class="next-project">
     <div>
-      <div class="next-label">— Next Project</div>
-      <div class="next-title">Restaurant Bogota</div>
+      <div class="next-label" data-i18n="next-label">— Next Project</div>
+      <div class="next-title" data-i18n="next-title">Restaurant Bogota</div>
     </div>
     <span class="next-arrow">→</span>
   </a>
 </div>
 
 <script>
-  // Inherit theme preference from main portfolio
-  if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  const LANG_OLLI = {
+    en: {
+      'nav-back': '← Portfolio',
+      'meta-cat-label': 'Category', 'meta-cat': 'App Design / UX / Branding',
+      'meta-year-label': 'Year', 'meta-type-label': 'Type', 'meta-type': 'Concept Project',
+      'tagline': 'A meal subscription app that brings the ingredients to your door — and teaches you how to cook them.',
+      's1-label': 'The Concept',
+      'about-heading': 'Cooking made <em>simple.</em><br>Ingredients made <em>personal.</em>',
+      'about-p1': 'Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.',
+      'about-p2': 'The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.',
+      'about-p3': 'The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.',
+      's2-label': 'Recipe Discovery',
+      'f1-num': '— Feature 01', 'f1-heading': 'Browse, pick, <em>cook.</em>',
+      'f1-desc': 'The recipe selection screen is the heart of Olli. Users scroll through a curated weekly menu, filter by dietary preference, prep time, or cuisine — and simply tap to add to their box. The UI keeps decisions effortless, letting the food do the talking.',
+      's3-label': 'Cooking Mode',
+      'f2-num': '— Feature 02', 'f2-heading': 'Step by step, <em>nothing missed.</em>',
+      'f2-desc': 'Once the ingredients arrive, cooking mode takes over. Each recipe breaks down into timed, visual steps — keeping the experience calm and focused. No scrolling up to re-read. No second-guessing quantities. Just one step at a time, until it\'s on the plate.',
+      's4-label': 'Subscription & Order',
+      'f3-num': '— Feature 03', 'f3-heading': 'Your box, <em>your terms.</em>',
+      'f3-desc': 'Olli\'s subscription model is built around flexibility. Pause for a week, swap a recipe, change your delivery day — all from one clean screen. No hidden steps, no buried settings. The interface makes managing your box as easy as choosing what to cook.',
+      's5-label': 'All Screens', 's5-count': '10 screens',
+      'next-label': '— Next Project', 'next-title': 'Restaurant Bogota',
+    },
+    bg: {
+      'nav-back': '← Портфолио',
+      'meta-cat-label': 'Категория', 'meta-cat': 'App дизайн / UX / Брандинг',
+      'meta-year-label': 'Година', 'meta-type-label': 'Тип', 'meta-type': 'Концептуален Проект',
+      'tagline': 'Абонаментно приложение за хранене, което доставя продуктите до вратата ти — и те учи как да ги приготвиш.',
+      's1-label': 'Концепцията',
+      'about-heading': 'Готвенето — <em>просто.</em><br>Продуктите — <em>лично.</em>',
+      'about-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Потребителите разглеждат подбрани рецепти, избират какво искат да приготвят тази седмица, и точните продукти пристигат до вратата им — нищо повече, нищо пропиляно.',
+      'about-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, проектирано да те води през процеса, без да напускаш приложението.',
+      'about-p3': 'Дизайнерското предизвикателство беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти и прави кухнята по-малко плашеща.',
+      's2-label': 'Избор на Рецепти',
+      'f1-num': '— Функция 01', 'f1-heading': 'Разгледай, избери, <em>готви.</em>',
+      'f1-desc': 'Екранът за избор на рецепти е сърцето на Olli. Потребителите превъртат седмичното меню, филтрират по хранителни предпочитания, време за приготвяне или кухня — и просто докосват, за да добавят към кутията си. Интерфейсът прави решенията безусилни, оставяйки храната да говори.',
+      's3-label': 'Режим на Готвене',
+      'f2-num': '— Функция 02', 'f2-heading': 'Стъпка по стъпка, <em>нищо пропуснато.</em>',
+      'f2-desc': 'Щом продуктите пристигнат, режимът за готвене поема. Всяка рецепта се разбива на визуални стъпки с таймер — поддържайки изживяването спокойно и фокусирано. Без превъртане назад за препрочитане. Без съмнения в количествата. Само една стъпка наведнъж, докато не е в чинията.',
+      's4-label': 'Абонамент и Поръчка',
+      'f3-num': '— Функция 03', 'f3-heading': 'Твоята кутия, <em>твоите условия.</em>',
+      'f3-desc': 'Абонаментният модел на Olli е изграден около гъвкавостта. Паузирай за седмица, смени рецепта, промени деня за доставка — всичко от един изчистен екран. Без скрити стъпки, без заровени настройки. Интерфейсът прави управлението на кутията толкова лесно, колкото избирането на какво да готвиш.',
+      's5-label': 'Всички Екрани', 's5-count': '10 екрана',
+      'next-label': '— Следващ Проект', 'next-title': 'Ресторант Богота',
+    }
+  };
+
+  function applyLang(lang) {
+    const t = LANG_OLLI[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
+    });
+    document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    document.documentElement.lang = lang;
+    localStorage.setItem('lang', lang);
+  }
+
+  const savedLang = localStorage.getItem('lang') || 'en';
+  applyLang(savedLang);
+  document.getElementById('langToggle').addEventListener('click', () => {
+    applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
+  });
 
   // Scroll reveal
   const io = new IntersectionObserver((entries) => {
