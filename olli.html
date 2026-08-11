@@ -36,8 +36,8 @@
   img { display: block; max-width: 100%; }
 
   /* Canvas: 1512-wide design column, centred */
-  .canvas { width: calc(1512 * var(--s)); margin: 0 auto; position: relative; }
-  .bleed  { width: 100vw; margin-left: calc(50% - 50vw); }
+  /* overflow clips the bleeding photo to the canvas edge on wide screens */
+  .canvas { width: calc(1512 * var(--s)); margin: 0 auto; position: relative; overflow: hidden; }
 
   /* ===== NAV (not in the Figma — portfolio chrome, styled to match) ===== */
   nav {
@@ -74,11 +74,15 @@
   .logo-row { padding-top: calc(348 * var(--s)); display: flex; justify-content: center; }
   .logo-row .mark { width: calc(281 * var(--s)); height: calc(169 * var(--s)); }
 
-  /* ===== 2. Ghost strip — y986, h170, mark tiled at period 313 ===== */
+  /* ===== 2 + 3. Hero — headline with the tiled mark sitting behind it ===== */
+  .hero { position: relative; margin-top: calc(410 * var(--s)); }
+
   .ghost-strip {
-    margin-top: calc(470 * var(--s));
-    height: calc(170 * var(--s));
-    display: flex; align-items: center; gap: calc(32 * var(--s));
+    position: absolute; z-index: 0;
+    top: 50%; left: 0; transform: translateY(-50%);
+    width: 100%; height: calc(170 * var(--s));
+    display: flex; align-items: center; justify-content: center;
+    gap: calc(32 * var(--s));
     overflow: hidden; pointer-events: none; user-select: none;
   }
   .ghost-strip .mark {
@@ -87,9 +91,8 @@
     --mk: var(--ghost); --lf: var(--ghost);
   }
 
-  /* ===== 3. Hero headline — cap-top y1191, 2 lines, line-height 144 ===== */
   .hero-head {
-    margin-top: calc(6 * var(--s));
+    position: relative; z-index: 1;
     text-align: center;
     font-weight: 700;
     font-size: calc(96.5 * var(--s));
@@ -102,13 +105,20 @@
   /* ===== 4. Concept block — headings left @113, photo bleeding off the right ===== */
   .concept { position: relative; margin-top: calc(876 * var(--s)); }
 
-  /* photo: full asset 1415 × 1151 placed at (685, 2070) on the canvas */
+  /* photo: full asset 1415 × 1151 placed at (685, 2070) on the canvas.
+     Rotated 30° clockwise so the flat crop across the top of the shot runs
+     up and off the right edge; the mask fades that same edge (it lives in the
+     image's own space, so it stays parallel to the crop) — no hard cut-off. */
   .hands {
     position: absolute; z-index: 0;
-    left: calc(685 * var(--s));
-    top: calc(-257 * var(--s));
+    left: calc(742 * var(--s));
+    top: calc(-300 * var(--s));
     width: calc(1415 * var(--s));
+    transform: rotate(30deg);
+    transform-origin: 50% 55%;
     filter: grayscale(1) contrast(1.06);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 15%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 15%);
     pointer-events: none;
   }
 
@@ -255,13 +265,15 @@
 
     .logo-row { padding-top: 7rem; }
     .logo-row .mark { width: 130px; height: 78px; }
-    .ghost-strip { margin-top: 4.5rem; height: 66px; gap: 12px; }
-    .ghost-strip .mark { width: 110px; height: 66px; }
 
-    .hero-head { margin-top: 1.6rem; font-size: 2.5rem; line-height: 1.16; letter-spacing: -0.02em; padding: 0 1.2rem; }
+    .hero { margin-top: 4rem; }
+    .ghost-strip { height: 84px; gap: 12px; }
+    .ghost-strip .mark { width: 140px; height: 84px; }
+
+    .hero-head { font-size: 2.5rem; line-height: 1.16; letter-spacing: -0.02em; padding: 0 1.2rem; }
 
     .concept { margin-top: 5rem; }
-    .hands { position: static; width: 118%; margin: 0 0 2rem -9%; }
+    .hands { position: static; width: 118%; margin: 0 0 2rem -9%; transform: none; }
     .concept-inner { padding: 0 1.2rem; }
     .h-big { font-size: 2.4rem; line-height: 1.06; letter-spacing: -0.02em; }
     .script { font-size: 2.7rem; }
@@ -318,14 +330,14 @@
     </svg>
   </div>
 
-  <!-- 2 — ghost strip -->
-  <div class="ghost-strip bleed" id="ghostStrip"></div>
-
-  <!-- 3 — hero headline -->
-  <h1 class="hero-head">
-    <span data-i18n="hero-1">Bringing your cooking</span><br>
-    <span data-i18n="hero-2">skills to the</span> <span class="lime" data-i18n="hero-3">maximum</span>
-  </h1>
+  <!-- 2 + 3 — hero headline, tiled mark behind it -->
+  <div class="hero">
+    <div class="ghost-strip" id="ghostStrip" aria-hidden="true"></div>
+    <h1 class="hero-head">
+      <span data-i18n="hero-1">Bringing your cooking</span><br>
+      <span data-i18n="hero-2">skills to the</span> <span class="lime" data-i18n="hero-3">maximum</span>
+    </h1>
+  </div>
 
   <!-- 4 — concept -->
   <section class="concept">
