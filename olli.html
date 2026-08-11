@@ -144,7 +144,24 @@
   .stack .line:nth-child(3) { margin-top: calc(46 * var(--s)); }
 
   /* ===== 5. "Soooo… What's Olli?" — y3455 + body copy ===== */
-  .what { margin-top: calc(468 * var(--s)); padding-left: calc(113 * var(--s)); }
+  .what {
+    position: relative;
+    margin-top: calc(468 * var(--s));
+    padding-left: calc(113 * var(--s));
+  }
+  .what h2, .what .copy { position: relative; z-index: 1; }
+
+  /* The angled handset, bleeding off the right edge (the canvas clips it).
+     The asset carries ~28% transparent padding on its left, so the phone's
+     visible edge lands at 512 + 0.28*1100 ≈ 820 on the canvas. */
+  .phone-side {
+    position: absolute; z-index: 0;
+    left: calc(512 * var(--s));
+    top: calc(130 * var(--s));
+    width: calc(1100 * var(--s));
+    pointer-events: none;
+  }
+
   .what h2 {
     font-weight: 700;
     font-size: calc(96.5 * var(--s));
@@ -154,7 +171,7 @@
   }
   .what .copy {
     margin-top: calc(38 * var(--s));
-    max-width: calc(1258 * var(--s));
+    max-width: calc(700 * var(--s));
     font-weight: 600;
     font-size: calc(32.2 * var(--s));
     line-height: calc(48 * var(--s));
@@ -197,39 +214,25 @@
     color: rgba(238,238,238,0.72);
   }
 
-  /* phones */
+  /* phones — the device frame is baked into each export, so these are
+     just transparent PNGs with a shadow cast off the frame silhouette */
   .phones { display: flex; gap: calc(40 * var(--s)); justify-content: center; align-items: flex-end; }
+  .phones .pw { width: calc(300 * var(--s)); }
   .phones .pw:nth-child(2) { transform: translateY(calc(-46 * var(--s))); }
-  .ph {
-    position: relative; width: var(--pw); aspect-ratio: 393 / 852;
-    background: #0a0a0a;
-    border-radius: calc(var(--pw) * 0.13);
-    padding: calc(var(--pw) * 0.034);
-    box-shadow:
-      inset 0 0 0 1.5px rgba(255,255,255,0.13),
-      0 0 0 1px rgba(0,0,0,0.7),
-      0 calc(40 * var(--s)) calc(80 * var(--s)) rgba(0,0,0,0.5);
+  .pw img {
+    width: 100%; height: auto; display: block;
+    filter: drop-shadow(0 calc(26 * var(--s)) calc(50 * var(--s)) rgba(0,0,0,0.55));
   }
-  .ph::before {
-    content: ''; position: absolute; z-index: 5;
-    top: calc(var(--pw) * 0.046); left: 50%; transform: translateX(-50%);
-    width: calc(var(--pw) * 0.30); height: calc(var(--pw) * 0.068);
-    background: #0a0a0a; border-radius: 999px;
-  }
-  .ph-screen { width: 100%; height: 100%; border-radius: calc(var(--pw) * 0.1); overflow: hidden; background: #111; }
-  .ph-screen img { width: 100%; height: 100%; object-fit: cover; }
-
-  .feature .phones .ph { --pw: calc(300 * var(--s)); }
 
   /* all screens grid */
   .screens { padding: calc(120 * var(--s)) calc(113 * var(--s)) calc(160 * var(--s)); }
   .screens-grid {
     margin-top: calc(80 * var(--s));
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: calc(48 * var(--s)); align-items: end;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: calc(72 * var(--s)) calc(56 * var(--s)); align-items: end;
   }
+  .screens-grid .pw { width: 100%; }
   .screens-grid .pw:nth-child(even) { transform: translateY(calc(-34 * var(--s))); }
-  .screens-grid .ph { --pw: 100%; }
 
   /* next project */
   .next {
@@ -284,6 +287,7 @@
     .what h2 { font-size: 2.2rem; line-height: 1.08; letter-spacing: -0.02em; }
     .what .copy { margin-top: 1.5rem; font-size: 1rem; line-height: 1.65; max-width: none; }
     .what .copy p + p { margin-top: 1rem; }
+    .phone-side { position: static; width: 128%; margin: 2.5rem -14% 0 0; }
 
     .work { margin-top: 4rem; }
     .sec-label { padding: 0 1.2rem 0.8rem; font-size: 0.62rem; letter-spacing: 0.14em; }
@@ -358,6 +362,7 @@
 
   <!-- 5 — what's olli -->
   <section class="what">
+    <img class="phone-side" src="olli/phone-side.png" alt="The Olli app icon on an iPhone home screen">
     <h2 data-i18n="what-h">Soooo… What’s Olli?</h2>
     <div class="copy">
       <p data-i18n="what-p1">Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
@@ -373,8 +378,8 @@
     <section class="feature">
       <div class="feature-grid">
         <div class="phones reveal">
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt="Allergen selection"></div></div></div>
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt="Taste preferences"></div></div></div>
+          <div class="pw"><img src="olli/allergens.png" alt="Allergen selection"></div>
+          <div class="pw"><img src="olli/prefer.png" alt="Taste preferences"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f1-eye">Feature 01</div>
@@ -388,13 +393,13 @@
     <section class="feature">
       <div class="feature-grid flip">
         <div class="phones reveal">
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt="Plan size"></div></div></div>
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt="Recipe picker"></div></div></div>
+          <div class="pw"><img src="olli/customize.png" alt="Plan size"></div>
+          <div class="pw"><img src="olli/purchase.png" alt="Order confirmation"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f2-eye">Feature 02</div>
-          <h3 class="f-head"><span data-i18n="f2-h1">Browse, pick,</span> <span class="script" data-i18n="f2-cook">cook</span><span data-i18n="f2-h2">.</span></h3>
-          <p class="f-desc" data-i18n="f2-d">Set how many people you cook for and how many recipes you want — the price updates as you go. Then choose from a curated grid, each meal tagged with its cook time and whether it's New or Hall of Fame.</p>
+          <h3 class="f-head"><span data-i18n="f2-h1">Priced as you</span> <span class="script" data-i18n="f2-cook">build</span> <span data-i18n="f2-h2">it.</span></h3>
+          <p class="f-desc" data-i18n="f2-d">Set how many people you cook for and how many recipes you want — servings, price per serving and the weekly total all update as you go. No surprises at checkout, and the receipt says exactly when the box lands.</p>
         </div>
       </div>
     </section>
@@ -403,8 +408,8 @@
     <section class="feature">
       <div class="feature-grid">
         <div class="phones reveal">
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt="Home feed"></div></div></div>
-          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt="Account"></div></div></div>
+          <div class="pw"><img src="olli/home.png" alt="Home feed"></div>
+          <div class="pw"><img src="olli/profile.png" alt="Account"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f3-eye">Feature 03</div>
@@ -415,15 +420,14 @@
     </section>
 
     <section class="screens">
-      <div class="sec-label" style="padding-left:0;padding-right:0;"><span><span class="n">04</span> &nbsp;— <span data-i18n="s4">All Screens</span></span><span data-i18n="s4-c">7 screens</span></div>
+      <div class="sec-label" style="padding-left:0;padding-right:0;"><span><span class="n">04</span> &nbsp;— <span data-i18n="s4">All Screens</span></span><span data-i18n="s4-c">6 screens</span></div>
       <div class="screens-grid">
-        <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt=""></div></div></div>
-        <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt=""></div></div></div>
-        <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt=""></div></div></div>
-        <div class="pw reveal d3"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt=""></div></div></div>
-        <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli5.png" alt=""></div></div></div>
-        <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt=""></div></div></div>
-        <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt=""></div></div></div>
+        <div class="pw reveal"><img src="olli/allergens.png" alt="Allergen selection"></div>
+        <div class="pw reveal d1"><img src="olli/prefer.png" alt="Taste preferences"></div>
+        <div class="pw reveal d2"><img src="olli/customize.png" alt="Plan size"></div>
+        <div class="pw reveal d3"><img src="olli/purchase.png" alt="Order confirmation"></div>
+        <div class="pw reveal"><img src="olli/home.png" alt="Home feed"></div>
+        <div class="pw reveal d1"><img src="olli/profile.png" alt="Account"></div>
       </div>
     </section>
 
@@ -466,11 +470,11 @@
       'what-p1': 'Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.',
       'what-p2': 'The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.',
       'what-p3': 'The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.',
-      's1': 'Onboarding', 's2': 'Your Weekly Box', 's3': 'The Kitchen', 's4': 'All Screens', 's4-c': '7 screens',
+      's1': 'Onboarding', 's2': 'Your Weekly Box', 's3': 'The Kitchen', 's4': 'All Screens', 's4-c': '6 screens',
       'f1-eye': 'Feature 01', 'f1-h1': 'Built', 'f1-around': 'around', 'f1-h2': 'you.',
       'f1-d': 'Onboarding builds a profile that actually matters. Pick your allergens and how you like to eat — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and every week is filtered to match. The whole thing takes under two minutes.',
-      'f2-eye': 'Feature 02', 'f2-h1': 'Browse, pick,', 'f2-cook': 'cook', 'f2-h2': '.',
-      'f2-d': 'Set how many people you cook for and how many recipes you want — the price updates as you go. Then choose from a curated grid, each meal tagged with its cook time and whether it’s New or Hall of Fame.',
+      'f2-eye': 'Feature 02', 'f2-h1': 'Priced as you', 'f2-cook': 'build', 'f2-h2': 'it.',
+      'f2-d': 'Set how many people you cook for and how many recipes you want — servings, price per serving and the weekly total all update as you go. No surprises at checkout, and the receipt says exactly when the box lands.',
       'f3-eye': 'Feature 03', 'f3-h1': 'Your box, your', 'f3-terms': 'terms', 'f3-h2': '.',
       'f3-d': 'The home feed greets you by name and shows when the box lands. Your plan, orders and appearance settings all live on one screen — nothing buried, nothing to hunt for.',
       'next-l': 'Next Project', 'next-t': 'Restaurant Bogota',
@@ -484,11 +488,11 @@
       'what-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Разглеждаш подбрани рецепти, избираш какво искаш да сготвиш тази седмица, и точните продукти пристигат до вратата ти — нищо повече, нищо пропиляно.',
       'what-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, създадено да те води през процеса, без да напускаш приложението.',
       'what-p3': 'Предизвикателството беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти и прави кухнята по-малко плашеща.',
-      's1': 'Регистрация', 's2': 'Седмичната Кутия', 's3': 'Кухнята', 's4': 'Всички Екрани', 's4-c': '7 екрана',
+      's1': 'Регистрация', 's2': 'Седмичната Кутия', 's3': 'Кухнята', 's4': 'Всички Екрани', 's4-c': '6 екрана',
       'f1-eye': 'Функция 01', 'f1-h1': 'Създаден', 'f1-around': 'около', 'f1-h2': 'теб.',
       'f1-d': 'Регистрацията изгражда профил, който наистина има значение. Избираш алергени и как обичаш да се храниш — Месо и зеленчуци, Здравословно, Вегетарианско, Риба — и всяка седмица се филтрира според теб. Отнема под две минути.',
-      'f2-eye': 'Функция 02', 'f2-h1': 'Разгледай, избери,', 'f2-cook': 'сготви', 'f2-h2': '.',
-      'f2-d': 'Задаваш за колко души готвиш и колко рецепти искаш — цената се обновява в движение. После избираш от подбрана мрежа, всяко ястие с време за приготвяне и етикет Ново или Зала на славата.',
+      'f2-eye': 'Функция 02', 'f2-h1': 'Цената расте с', 'f2-cook': 'избора', 'f2-h2': 'ти.',
+      'f2-d': 'Задаваш за колко души готвиш и колко рецепти искаш — порциите, цената на порция и седмичната обща сума се обновяват в движение. Без изненади на касата, а разписката казва точно кога пристига кутията.',
       'f3-eye': 'Функция 03', 'f3-h1': 'Твоята кутия, твоите', 'f3-terms': 'условия', 'f3-h2': '.',
       'f3-d': 'Началният екран те поздравява по име и показва кога пристига кутията. Планът, поръчките и настройките живеят на един екран — нищо заровено, нищо за търсене.',
       'next-l': 'Следващ Проект', 'next-t': 'Ресторант Богота',
