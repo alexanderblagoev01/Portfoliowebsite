@@ -169,12 +169,16 @@
 
   /* The angled handset, bleeding off the right edge (the canvas clips it).
      The asset carries ~28% transparent padding on its left, so the phone's
-     visible edge lands at 512 + 0.28*1100 ≈ 820 on the canvas. */
+     visible edge lands at 700 + 0.28*860 ≈ 940 on the canvas. The phone body
+     runs to the bottom of the asset, so the mask fades that edge out rather
+     than letting it end on a hard line. */
   .phone-side {
     position: absolute; z-index: 0;
-    left: calc(512 * var(--s));
-    top: calc(130 * var(--s));
-    width: calc(1100 * var(--s));
+    left: calc(700 * var(--s));
+    top: calc(150 * var(--s));
+    width: calc(860 * var(--s));
+    -webkit-mask-image: linear-gradient(to bottom, #000 64%, transparent 97%);
+            mask-image: linear-gradient(to bottom, #000 64%, transparent 97%);
     pointer-events: none;
   }
 
