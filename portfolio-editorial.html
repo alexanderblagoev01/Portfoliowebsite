@@ -476,9 +476,40 @@
     .hero-info { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; align-items: flex-start; }
   }
+
+  /* ===== Desktop-first notice — only shown on small screens ===== */
+  .mobile-notice { display: none; }
+  @media (max-width: 900px) {
+    .mobile-notice {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+      background: rgba(18,18,18,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.14);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.72rem; line-height: 1.45; letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.74);
+    }
+    .mobile-notice[hidden] { display: none; }
+    .mobile-notice button {
+      margin-left: auto; flex: 0 0 auto;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,255,255,0.12); border: 0;
+      color: rgba(255,255,255,0.85);
+      font: inherit; font-size: 0.95rem; line-height: 1;
+      cursor: pointer;
+    }
+  }
 </style>
 </head>
 <body>
+<div class="mobile-notice" id="mobileNotice" role="note">
+  <span data-i18n="m-notice">Designed for desktop — best viewed on a larger screen.</span>
+  <button type="button" id="mobileNoticeClose" aria-label="Dismiss">×</button>
+</div>
+
 
 <!-- TOP BAR -->
 <div class="topbar"></div>
@@ -792,6 +823,7 @@
   // ── Translations ──────────────────────────────────────────────
   const translations = {
     en: {
+      'm-notice': 'Designed for desktop — best viewed on a larger screen.',
       'nav-index': 'Index', 'nav-work': 'Work', 'nav-credentials': 'Credentials', 'nav-words': 'Words', 'nav-contact': 'Contact',
       'hero-line1': 'Design for', 'hero-line2': 'Screen',
       'hero-label-1': 'Practising Since', 'hero-val-1': 'Since <span class="accent">2017</span>',
@@ -842,6 +874,7 @@
       'cycling': ['Identity', 'Experience', 'Purpose', 'Culture', 'Print', 'the Web', 'Brands', 'Tomorrow']
     },
     bg: {
+      'm-notice': 'Създаден за десктоп — най-добре на по-голям екран.',
       'nav-index': 'Индекс', 'nav-work': 'Творби', 'nav-credentials': 'Квалификации', 'nav-words': 'Отзиви', 'nav-contact': 'Контакт',
       'hero-line1': 'Дизайн за', 'hero-line2': 'Екрана',
       'hero-label-1': 'Практикува от', 'hero-val-1': 'От <span class="accent">2017</span>',
@@ -962,6 +995,18 @@
   }
 
   setTimeout(type, 1400);
+</script>
+
+<script>
+  (function () {
+    var n = document.getElementById('mobileNotice');
+    if (!n) return;
+    if (localStorage.getItem('deskNoticeDismissed') === '1') { n.hidden = true; return; }
+    document.getElementById('mobileNoticeClose').addEventListener('click', function () {
+      n.hidden = true;
+      localStorage.setItem('deskNoticeDismissed', '1');
+    });
+  })();
 </script>
 </body>
 </html>

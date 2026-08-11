@@ -260,9 +260,40 @@
   @media(max-width:600px) {
     .palette-grid { grid-template-columns: repeat(3, 1fr); }
   }
+
+  /* ===== Desktop-first notice — only shown on small screens ===== */
+  .mobile-notice { display: none; }
+  @media (max-width: 900px) {
+    .mobile-notice {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+      background: rgba(18,18,18,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.14);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.72rem; line-height: 1.45; letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.74);
+    }
+    .mobile-notice[hidden] { display: none; }
+    .mobile-notice button {
+      margin-left: auto; flex: 0 0 auto;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,255,255,0.12); border: 0;
+      color: rgba(255,255,255,0.85);
+      font: inherit; font-size: 0.95rem; line-height: 1;
+      cursor: pointer;
+    }
+  }
 </style>
 </head>
 <body>
+<div class="mobile-notice" id="mobileNotice" role="note">
+  <span data-i18n="m-notice">Designed for desktop — best viewed on a larger screen.</span>
+  <button type="button" id="mobileNoticeClose" aria-label="Dismiss">×</button>
+</div>
+
 
 <!-- NAV -->
 <nav>
@@ -544,6 +575,7 @@
   // Language toggle
   const LANG_BOGOTA = {
     en: {
+      'm-notice': 'Designed for desktop — best viewed on a larger screen.',
       'nav-back': '← Back to Portfolio',
       'm-project': 'Project', 'm-category': 'Category', 'm-cat': 'Visual Identity',
       'm-deliverable': 'Deliverable', 'm-del': 'Web / Menu / Print',
@@ -576,6 +608,7 @@
       'next-label': '— Next Project',
     },
     bg: {
+      'm-notice': 'Създаден за десктоп — най-добре на по-голям екран.',
       'nav-back': '← Обратно към Портфолио',
       'm-project': 'Проект', 'm-category': 'Категория', 'm-cat': 'Визуална Идентичност',
       'm-deliverable': 'Резултат', 'm-del': 'Уеб / Меню / Печат',
@@ -627,6 +660,18 @@
   document.getElementById('langToggle').addEventListener('click', () => {
     applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
   });
+</script>
+
+<script>
+  (function () {
+    var n = document.getElementById('mobileNotice');
+    if (!n) return;
+    if (localStorage.getItem('deskNoticeDismissed') === '1') { n.hidden = true; return; }
+    document.getElementById('mobileNoticeClose').addEventListener('click', function () {
+      n.hidden = true;
+      localStorage.setItem('deskNoticeDismissed', '1');
+    });
+  })();
 </script>
 </body>
 </html>
