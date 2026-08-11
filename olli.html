@@ -313,16 +313,10 @@
     transition-delay: var(--d, 0s);
   }
 
-  /* "maximum" — white, then each letter turns lime with a glow as it lands */
-  .hero-head .lime .ch { display: inline-block; color: var(--white); }
-  .hero-head .lime.in .ch { animation: limeGlow .85s ease-out forwards; animation-delay: var(--cd, 0s); }
-  @keyframes limeGlow {
-    0%   { color: var(--white); text-shadow: none; }
-    40%  { color: #dcecA0;
-           text-shadow: 0 0 calc(22 * var(--s)) rgba(158,178,43,.95),
-                        0 0 calc(58 * var(--s)) rgba(158,178,43,.5); }
-    100% { color: var(--lime); text-shadow: none; }
-  }
+  /* "maximum" — each letter is driven straight off scroll position by JS,
+     white -> lime with the glow peaking mid-transition. Colour and shadow
+     are set inline per frame, so there's no keyframe here. */
+  .hero-head .lime .ch { display: inline-block; color: var(--white); will-change: color, text-shadow; }
 
   /* script words — wiped in left-to-right, as if written */
   /* inline-block so clip-path has a proper box to work against */
@@ -673,23 +667,67 @@
       const s = document.createElement('span');
       s.className = 'ch';
       s.textContent = ch === ' ' ? ' ' : ch;
-      /* held white until the headline has settled, then lime, letter by letter */
-      s.style.setProperty('--cd', (0.95 + i * 0.06).toFixed(2) + 's');
       el.appendChild(s);
     });
   }
 
+  /* "maximum" scrubs off scroll position rather than playing on a timer:
+     each letter crosses white -> lime as the word travels up the viewport,
+     with the glow peaking halfway through that letter's own transition. */
+  function scrubMaximum() {
+    const wrap = document.querySelector('.hero-head .lime');
+    if (!wrap || reduced) return;
+    const WHITE = [255, 255, 255], LIME = [158, 178, 43];
+    const SPAN = 0.55;          // share of the scroll range one letter takes
+    let queued = false;
+
+    function paint() {
+      queued = false;
+      const chars = wrap.querySelectorAll('.ch');
+      if (!chars.length) return;
+      const top = wrap.getBoundingClientRect().top;
+      const from = innerHeight * 0.88;   // starts turning at 88% down the screen
+      const to   = innerHeight * 0.32;   // fully lime by 32%
+      const p = Math.min(1, Math.max(0, (from - top) / (from - to)));
+
+      chars.forEach((ch, i) => {
+        const start = (i / chars.length) * (1 - SPAN);
+        const t = Math.min(1, Math.max(0, (p - start) / SPAN));
+        const c = WHITE.map((w, k) => Math.round(w + (LIME[k] - w) * t));
+        ch.style.color = `rgb(${c[0]},${c[1]},${c[2]})`;
+        const g = Math.sin(t * Math.PI);          // 0 at both ends, 1 mid-way
+        ch.style.textShadow = g > 0.02
+          ? `0 0 ${(24 * g).toFixed(1)}px rgba(158,178,43,${(0.95 * g).toFixed(2)}),
+             0 0 ${(60 * g).toFixed(1)}px rgba(158,178,43,${(0.5 * g).toFixed(2)})`
+          : 'none';
+      });
+    }
+
+    function onScroll() {
+      if (!queued) { queued = true; requestAnimationFrame(paint); }
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    paint();
+    return paint;
+  }
+
   if (!reduced) {
-    /* hero — runs on load, it's above the fold */
+    /* hero */
     splitMaximum();
+    const repaintMaximum = scrubMaximum();
+    document.getElementById('langToggle').addEventListener('click', () => {
+      requestAnimationFrame(() => repaintMaximum && repaintMaximum());
+    });
     const mark = document.getElementById('olliMark');
     mark.classList.add('is-mark');
     animate('.project-meta > span', 'is-reveal', 0.07);
-    animate('.hero-head > span', 'is-line', 0.14, 0.35);
+    /* headline rises when scrolled to, so the scrubbed word isn't already
+       sitting there fully lime by the time it's first seen */
+    animate('.hero-head > span', 'is-line', 0.12);
     requestAnimationFrame(() => {
       mark.classList.add('in');
-      document.querySelectorAll('.project-meta > span, .hero-head > span')
-        .forEach(el => el.classList.add('in'));
+      document.querySelectorAll('.project-meta > span').forEach(el => el.classList.add('in'));
     });
 
     /* concept block */
