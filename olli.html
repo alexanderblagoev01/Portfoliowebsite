@@ -328,10 +328,13 @@
   .hero-head .lime .ch { display: inline-block; color: var(--white); will-change: color, text-shadow; }
 
   /* script words — wiped in left-to-right, as if written */
-  /* inline-block so clip-path has a proper box to work against */
-  .script.is-write { display: inline-block; clip-path: inset(0 101% -12% -3%); }
+  /* inline-block so clip-path has a proper box to work against. Caveat's
+     glyphs overflow their advance width (tails, ascenders), so the reveal
+     overshoots the box generously on every side except the wiping edge —
+     clip-path only ever affects this element, so the overshoot is free. */
+  .script.is-write { display: inline-block; clip-path: inset(-50% 101% -50% -12%); }
   .script.is-write.in { animation: writeOn .95s cubic-bezier(.62,.03,.32,1) forwards; animation-delay: var(--d, 0s); }
-  @keyframes writeOn { to { clip-path: inset(0 -5% -12% -3%); } }
+  @keyframes writeOn { to { clip-path: inset(-50% -50% -50% -12%); } }
 
   /* the angled handset slides in from the right */
   .phone-side.is-slide { opacity: 0; transform: translateX(calc(120 * var(--s))); }
