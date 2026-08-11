@@ -19,8 +19,14 @@
     --muted:  rgba(238,238,238,0.42);
     --hair:   rgba(238,238,238,0.10);
 
-    /* 1 design px. Locked to the 1512 canvas, scales down on narrow screens. */
-    --s: min(1.08px, calc(100vw / 1512));
+    /* 1 design px. Locked to the 1512 canvas, scales down on narrow screens.
+       Capped at 1px — scaling past the authored size just made everything
+       oversized on large monitors. */
+    --s: min(1px, calc(100vw / 1512));
+
+    /* Scale for the big bleeding artwork. Also answers to viewport height,
+       so a short 16:9 screen doesn't get media taller than the screen. */
+    --m: min(1px, calc(100vw / 1512), calc(100vh / 900));
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -128,9 +134,12 @@
      image's own space, so it stays parallel to the crop) — no hard cut-off. */
   .hands {
     position: absolute; z-index: 0;
-    left: calc(742 * var(--s));
-    top: calc(-300 * var(--s));
-    width: calc(1415 * var(--s));
+    /* Pinned to the canvas's right edge, not its left: positioned from the
+       left, shrinking would drag the bowl inboard and it would stop bleeding
+       on short viewports. */
+    right: calc(-645 * var(--m));
+    top: calc(-213 * var(--m));
+    width: calc(1200 * var(--m));
     transform: rotate(30deg);
     transform-origin: 50% 55%;
     filter: grayscale(1) contrast(1.06);
@@ -175,9 +184,9 @@
      than letting it end on a hard line. */
   .phone-side {
     position: absolute; z-index: 0;
-    left: calc(700 * var(--s));
-    top: calc(150 * var(--s));
-    width: calc(860 * var(--s));
+    right: calc(-58 * var(--m));
+    top: calc(170 * var(--m));
+    width: calc(800 * var(--m));
     -webkit-mask-image: linear-gradient(to bottom, #000 64%, transparent 97%);
             mask-image: linear-gradient(to bottom, #000 64%, transparent 97%);
     pointer-events: none;
