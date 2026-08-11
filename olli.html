@@ -6,392 +6,290 @@
 <title>Olli — Alexander Blagoev</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Barlow+Condensed:wght@700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* ===== Design tokens taken from the Figma file (canvas 1512 × 4323) ===== */
   :root {
-    --paper: #2e2b33;
-    --paper-warm: #363339;
-    --paper-deep: #252228;
-    --ink: #ffffff;
-    --ink-soft: #b0acba;
-    --muted: #6a6570;
-    --lime: #a8c83c;
-    --lime-dim: rgba(168,200,60,0.1);
-    --lime-glow: rgba(168,200,60,0.18);
-    --hairline: rgba(255,255,255,0.07);
-    --hairline-soft: rgba(255,255,255,0.04);
-    --nav-bg: rgba(46,43,51,0.94);
+    --paper:  #3e363f;
+    --ghost:  #39323a;
+    --lime:   #9eb22b;
+    --leaf:   #feea00;
+    --white:  #ffffff;
+    --off:    #eeeeee;
+    --muted:  rgba(238,238,238,0.42);
+    --hair:   rgba(238,238,238,0.10);
+
+    /* 1 design px. Locked to the 1512 canvas, scales down on narrow screens. */
+    --s: min(1.08px, calc(100vw / 1512));
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--paper);
-    color: var(--ink);
-    font-family: 'Barlow', sans-serif;
-    font-size: 17px;
-    line-height: 1.6;
+    color: var(--off);
+    font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
   a { color: inherit; text-decoration: none; }
   img { display: block; max-width: 100%; }
 
-  /* NAV */
+  /* Canvas: 1512-wide design column, centred */
+  .canvas { width: calc(1512 * var(--s)); margin: 0 auto; position: relative; }
+  .bleed  { width: 100vw; margin-left: calc(50% - 50vw); }
+
+  /* ===== NAV (not in the Figma — portfolio chrome, styled to match) ===== */
   nav {
-    position: sticky; top: 0; z-index: 20;
-    background: var(--nav-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--hairline);
-    padding: 1.2rem 2.5rem;
+    position: fixed; inset: 0 0 auto 0; z-index: 30;
+    background: rgba(62,54,63,0.9);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--hair);
+    padding: 1.1rem 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .nav-back {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); display: flex; align-items: center; gap: 0.6rem;
+  .nav-back, .nav-index {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
     transition: color 0.2s;
   }
   .nav-back:hover { color: var(--lime); }
-  .nav-logo {
-    font-family: 'Barlow', sans-serif;
-    font-size: 1rem; font-weight: 600; letter-spacing: 0.01em;
-  }
+  .nav-logo { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; color: var(--off); }
   .nav-right { display: flex; align-items: center; gap: 1rem; }
-  .nav-index {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
-  }
   .lang-toggle {
-    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
-    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400;
+    font-family: 'Poppins', sans-serif; font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--muted); background: none;
-    border: 1px solid var(--hairline); padding: 0.28rem 0.65rem;
+    border: 1px solid var(--hair); padding: 0.32rem 0.7rem; border-radius: 2px;
     cursor: pointer; transition: color 0.2s, border-color 0.2s;
   }
   .lang-toggle:hover { color: var(--lime); border-color: var(--lime); }
 
-  /* CONTAINER */
-  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
+  /* ===== The olli mark ===== */
+  .mark { display: block; }
+  .mark .body { fill: var(--mk, #9eb22b); }
+  .mark .leaf { fill: var(--lf, #feea00); }
 
-  /* ========= HERO ========= */
-  .hero {
-    background: var(--paper-deep);
-    padding: 7rem 0 0;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 1px solid var(--hairline);
+  /* ===== 1. Logo — y348, 281 × 169, centred ===== */
+  .logo-row { padding-top: calc(348 * var(--s)); display: flex; justify-content: center; }
+  .logo-row .mark { width: calc(281 * var(--s)); height: calc(169 * var(--s)); }
+
+  /* ===== 2. Ghost strip — y986, h170, mark tiled at period 313 ===== */
+  .ghost-strip {
+    margin-top: calc(470 * var(--s));
+    height: calc(170 * var(--s));
+    display: flex; align-items: center; gap: calc(32 * var(--s));
+    overflow: hidden; pointer-events: none; user-select: none;
+  }
+  .ghost-strip .mark {
+    flex: 0 0 auto;
+    width: calc(281 * var(--s)); height: calc(170 * var(--s));
+    --mk: var(--ghost); --lf: var(--ghost);
   }
 
-  /* Giant wordmark repeating background */
-  .hero-bg-text {
-    position: absolute;
-    top: 2rem; left: -2%;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(8rem, 18vw, 18rem);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    text-transform: lowercase;
-    color: rgba(255,255,255,0.04);
-    white-space: nowrap;
-    user-select: none;
+  /* ===== 3. Hero headline — cap-top y1191, 2 lines, line-height 144 ===== */
+  .hero-head {
+    margin-top: calc(6 * var(--s));
+    text-align: center;
+    font-weight: 700;
+    font-size: calc(96.5 * var(--s));
+    line-height: calc(144 * var(--s));
+    letter-spacing: 0;
+    color: var(--white);
+  }
+  .hero-head .lime { color: var(--lime); }
+
+  /* ===== 4. Concept block — headings left @113, photo bleeding off the right ===== */
+  .concept { position: relative; margin-top: calc(876 * var(--s)); }
+
+  /* photo: full asset 1415 × 1151 placed at (685, 2070) on the canvas */
+  .hands {
+    position: absolute; z-index: 0;
+    left: calc(685 * var(--s));
+    top: calc(-257 * var(--s));
+    width: calc(1415 * var(--s));
+    filter: grayscale(1) contrast(1.06);
     pointer-events: none;
   }
 
-  .hero-inner {
-    position: relative; z-index: 2;
-    padding: 0 2.5rem;
-    max-width: 1280px; margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: end;
-  }
+  .concept-inner { position: relative; z-index: 1; padding-left: calc(113 * var(--s)); }
 
-  .hero-text { padding-bottom: 5rem; }
+  .h-big {
+    font-weight: 700;
+    font-size: calc(96.5 * var(--s));
+    line-height: calc(96.5 * var(--s));
+    letter-spacing: 0;
+    color: var(--white);
+  }
+  .script {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: calc(93 * var(--s));
+    letter-spacing: 0;
+    color: var(--lime);
+  }
+  .stack { margin-top: calc(171 * var(--s)); }
+  .stack .line { display: block; }
+  .stack .line:nth-child(2) { margin-top: calc(50 * var(--s)); }
+  .stack .line:nth-child(3) { margin-top: calc(46 * var(--s)); }
 
-  .hero-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--lime); margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0.8rem;
+  /* ===== 5. "Soooo… What's Olli?" — y3455 + body copy ===== */
+  .what { margin-top: calc(468 * var(--s)); padding-left: calc(113 * var(--s)); }
+  .what h2 {
+    font-weight: 700;
+    font-size: calc(96.5 * var(--s));
+    line-height: calc(96.5 * var(--s));
+    letter-spacing: 0;
+    color: var(--off);
   }
-  .hero-eyebrow::before {
-    content: '';
-    display: block; width: 2rem; height: 1px;
-    background: var(--lime);
+  .what .copy {
+    margin-top: calc(38 * var(--s));
+    max-width: calc(1258 * var(--s));
+    font-weight: 600;
+    font-size: calc(32.2 * var(--s));
+    line-height: calc(48 * var(--s));
+    letter-spacing: 0;
+    color: var(--off);
   }
+  .what .copy p + p { margin-top: 0; }
 
-  .hero-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(4rem, 10vw, 9rem);
-    line-height: 0.9;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    color: var(--ink);
-    margin-bottom: 1.5rem;
-  }
-  .hero-title .accent { color: var(--lime); }
+  /* ================= BELOW THE FIGMA — app screens, same language ================= */
+  .work { margin-top: calc(214 * var(--s)); }
 
-  .hero-tagline {
-    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
-    font-weight: 400;
-    color: var(--ink-soft);
-    max-width: 480px;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
+  .sec-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0 calc(113 * var(--s)) calc(24 * var(--s));
+    border-bottom: 1px solid var(--hair);
+    font-size: calc(20 * var(--s)); font-weight: 600;
+    letter-spacing: calc(2.6 * var(--s)); text-transform: uppercase;
+    color: var(--muted);
   }
-  .hero-tagline em { font-style: italic; color: var(--lime); font-weight: 400; }
+  .sec-label .n { color: var(--lime); }
 
-  .hero-meta {
-    display: flex; gap: 3rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); border-top: 1px solid var(--hairline);
-    padding-top: 1.5rem;
-  }
-  .hero-meta span { display: flex; flex-direction: column; gap: 0.3rem; }
-  .hero-meta strong { color: var(--lime); font-weight: 400; }
-
-  /* Hero phones */
-  .hero-phones {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 1.5rem;
-    padding-bottom: 0;
-  }
-  .hero-phones .pw:nth-child(1) { transform: rotate(-5deg) translateY(30px); }
-  .hero-phones .pw:nth-child(2) { transform: translateY(-10px); z-index: 2; }
-  .hero-phones .pw:nth-child(3) { transform: rotate(5deg) translateY(30px); }
-  .hero-phones .pw:nth-child(1) .ph,
-  .hero-phones .pw:nth-child(3) .ph { --pw: 185px; }
-  .hero-phones .pw:nth-child(2) .ph { --pw: 225px; }
-
-  /* ========= PHONE MOCKUP ========= */
-  .pw { position: relative; display: inline-block; }
-  .ph {
-    position: relative;
-    width: var(--pw, 220px);
-    aspect-ratio: 393 / 852;
-    background: #0a0a0a;
-    border-radius: calc(var(--pw, 220px) * 0.13);
-    padding: calc(var(--pw, 220px) * 0.036);
-    box-shadow:
-      inset 0 0 0 1.5px rgba(255,255,255,0.12),
-      0 0 0 1px rgba(0,0,0,0.7),
-      0 40px 80px rgba(0,0,0,0.6),
-      0 8px 16px rgba(0,0,0,0.35);
-  }
-  /* Dynamic Island */
-  .ph::before {
-    content: '';
-    position: absolute;
-    top: calc(var(--pw, 220px) * 0.048);
-    left: 50%; transform: translateX(-50%);
-    width: calc(var(--pw, 220px) * 0.31);
-    height: calc(var(--pw, 220px) * 0.07);
-    background: #0a0a0a;
-    border-radius: 999px;
-    z-index: 5;
-  }
-  /* Power button */
-  .ph::after {
-    content: '';
-    position: absolute;
-    right: calc(var(--pw, 220px) * -0.027);
-    top: calc(var(--pw, 220px) * 0.31);
-    width: calc(var(--pw, 220px) * 0.024);
-    height: calc(var(--pw, 220px) * 0.17);
-    background: #222;
-    border-radius: 2px;
-  }
-  .ph-screen {
-    width: 100%; height: 100%;
-    border-radius: calc(var(--pw, 220px) * 0.1);
-    overflow: hidden;
-    background: #111;
-    position: relative;
-  }
-  .ph-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ph-vol {
-    position: absolute;
-    left: calc(var(--pw, 220px) * -0.027);
-    width: calc(var(--pw, 220px) * 0.024);
-    background: #222;
-    border-radius: 2px;
-  }
-  .ph-vol.v1 { top: calc(var(--pw, 220px) * 0.21); height: calc(var(--pw, 220px) * 0.09); }
-  .ph-vol.v2 { top: calc(var(--pw, 220px) * 0.34); height: calc(var(--pw, 220px) * 0.09); }
-  .ph-vol.v3 { top: calc(var(--pw, 220px) * 0.13); height: calc(var(--pw, 220px) * 0.055); }
-
-  /* ========= SECTION BASE ========= */
-  .section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 3rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--hairline-soft);
-    display: flex; justify-content: space-between;
-  }
-  .section-label .num { color: var(--lime); }
-
-  /* ========= ABOUT ========= */
-  .about-section { background: var(--paper-warm); overflow: hidden; }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: center;
-  }
-
-  .about-left { display: flex; flex-direction: column; gap: 2.5rem; }
-
-  .about-heading {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-  }
-  .about-heading .lime { color: var(--lime); }
-  .about-heading .italic { font-style: italic; }
-
-  .about-text p {
-    font-size: 1.05rem; line-height: 1.8;
-    color: var(--ink-soft); margin-bottom: 1.2rem;
-    font-weight: 400;
-  }
-  .about-text p:last-child { margin-bottom: 0; }
-  .about-text strong { color: var(--ink); font-weight: 600; }
-
-  /* Hands photo */
-  .hands-photo {
-    position: relative;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding-top: 2rem;
-  }
-  .hands-photo img {
-    width: 90%;
-    max-width: 480px;
-    height: auto;
-    display: block;
-    transform: translateX(2.5rem);
-  }
-
-  /* ========= FEATURE ========= */
-  .feature-section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
-  .feature-section.alt { background: var(--paper-warm); }
-
-  .feature-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: center;
-  }
+  .feature { padding: calc(150 * var(--s)) calc(113 * var(--s)); }
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(120 * var(--s)); align-items: center; }
   .feature-grid.flip { direction: rtl; }
   .feature-grid.flip > * { direction: ltr; }
 
-  .feature-phones {
-    display: flex; gap: 1.5rem;
-    align-items: flex-end;
-    justify-content: center;
+  .f-eyebrow {
+    font-size: calc(20 * var(--s)); font-weight: 600;
+    letter-spacing: calc(2.6 * var(--s)); text-transform: uppercase;
+    color: var(--lime); margin-bottom: calc(22 * var(--s));
   }
-  .feature-phones .pw:nth-child(2) { transform: translateY(-24px); }
-  .feature-phones .ph { --pw: 195px; }
+  .f-head {
+    font-weight: 700; font-size: calc(64 * var(--s)); line-height: calc(70 * var(--s));
+    letter-spacing: calc(-1.4 * var(--s)); color: var(--white);
+    margin-bottom: calc(28 * var(--s));
+  }
+  .f-head .script { font-size: calc(72 * var(--s)); }
+  .f-desc {
+    font-weight: 500; font-size: calc(24 * var(--s)); line-height: calc(38 * var(--s));
+    color: rgba(238,238,238,0.72);
+  }
 
-  .feature-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--lime); margin-bottom: 1rem;
+  /* phones */
+  .phones { display: flex; gap: calc(40 * var(--s)); justify-content: center; align-items: flex-end; }
+  .phones .pw:nth-child(2) { transform: translateY(calc(-46 * var(--s))); }
+  .ph {
+    position: relative; width: var(--pw); aspect-ratio: 393 / 852;
+    background: #0a0a0a;
+    border-radius: calc(var(--pw) * 0.13);
+    padding: calc(var(--pw) * 0.034);
+    box-shadow:
+      inset 0 0 0 1.5px rgba(255,255,255,0.13),
+      0 0 0 1px rgba(0,0,0,0.7),
+      0 calc(40 * var(--s)) calc(80 * var(--s)) rgba(0,0,0,0.5);
   }
-  .feature-heading {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2.2rem, 4vw, 3.8rem);
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
+  .ph::before {
+    content: ''; position: absolute; z-index: 5;
+    top: calc(var(--pw) * 0.046); left: 50%; transform: translateX(-50%);
+    width: calc(var(--pw) * 0.30); height: calc(var(--pw) * 0.068);
+    background: #0a0a0a; border-radius: 999px;
   }
-  .feature-heading .lime { color: var(--lime); }
-  .feature-heading .italic { font-style: italic; }
-  .feature-desc {
-    font-size: 1.05rem; line-height: 1.8;
-    color: var(--ink-soft); font-weight: 400;
-  }
-  .feature-desc strong { color: var(--ink); font-weight: 600; }
+  .ph-screen { width: 100%; height: 100%; border-radius: calc(var(--pw) * 0.1); overflow: hidden; background: #111; }
+  .ph-screen img { width: 100%; height: 100%; object-fit: cover; }
 
-  /* ========= SCREENS GRID ========= */
-  .screens-section { padding: 6rem 0; background: var(--paper-deep); }
+  .feature .phones .ph { --pw: calc(300 * var(--s)); }
+
+  /* all screens grid */
+  .screens { padding: calc(120 * var(--s)) calc(113 * var(--s)) calc(160 * var(--s)); }
   .screens-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    align-items: end;
+    margin-top: calc(80 * var(--s));
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: calc(48 * var(--s)); align-items: end;
   }
-  .screens-grid .pw:nth-child(even) { transform: translateY(-20px); }
-  .screens-grid .ph { --pw: 200px; }
+  .screens-grid .pw:nth-child(even) { transform: translateY(calc(-34 * var(--s))); }
+  .screens-grid .ph { --pw: 100%; }
 
-  /* ========= NEXT PROJECT ========= */
-  .next-project {
-    border-top: 1px solid var(--hairline);
-    padding: 4rem 0;
+  /* next project */
+  .next {
+    margin: 0 calc(113 * var(--s));
+    border-top: 1px solid var(--hair);
+    padding: calc(90 * var(--s)) 0 calc(110 * var(--s));
     display: flex; justify-content: space-between; align-items: center;
   }
   .next-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 0.6rem;
+    font-size: calc(20 * var(--s)); font-weight: 600;
+    letter-spacing: calc(2.6 * var(--s)); text-transform: uppercase;
+    color: var(--muted); margin-bottom: calc(14 * var(--s));
   }
   .next-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2rem, 5vw, 4rem);
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    transition: color 0.2s;
+    font-weight: 700; font-size: calc(80 * var(--s)); line-height: 1;
+    letter-spacing: calc(-1.8 * var(--s)); color: var(--white); transition: color 0.2s;
   }
-  .next-project:hover .next-title { color: var(--lime); }
-  .next-arrow { font-size: 2.5rem; color: var(--muted); transition: transform 0.3s, color 0.3s; }
-  .next-project:hover .next-arrow { transform: translateX(12px); color: var(--lime); }
+  .next:hover .next-title { color: var(--lime); }
+  .next-arrow { font-size: calc(64 * var(--s)); color: var(--muted); transition: transform 0.3s, color 0.3s; }
+  .next:hover .next-arrow { transform: translateX(calc(20 * var(--s))); color: var(--lime); }
 
-  /* ========= REVEAL ========= */
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
-  .reveal.d1 { transition-delay: 0.1s; }
-  .reveal.d2 { transition-delay: 0.2s; }
-  .reveal.d3 { transition-delay: 0.3s; }
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.d1 { transition-delay: .1s; } .reveal.d2 { transition-delay: .2s; } .reveal.d3 { transition-delay: .3s; }
   .reveal.in { opacity: 1; transform: none; }
 
-  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-  .hero-eyebrow { animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-  .hero-title { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
-  .hero-tagline { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.22s forwards; }
-  .hero-meta { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.34s forwards; }
+  /* ===== Mobile: keep the design's character, restore readable type ===== */
+  @media (max-width: 820px) {
+    :root { --s: calc(100vw / 1512); }
+    nav { padding: 0.9rem 1.2rem; }
+    .nav-logo { display: none; }
+    .canvas { width: 100%; }
 
-  /* RESPONSIVE */
-  @media(max-width:1000px) {
-    .container, .hero-inner { padding: 0 1.5rem; }
-    nav { padding: 1rem 1.5rem; }
-    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
-    .hero-phones { display: none; }
-    .about-grid, .feature-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .logo-row { padding-top: 7rem; }
+    .logo-row .mark { width: 130px; height: 78px; }
+    .ghost-strip { margin-top: 4.5rem; height: 66px; gap: 12px; }
+    .ghost-strip .mark { width: 110px; height: 66px; }
+
+    .hero-head { margin-top: 1.6rem; font-size: 2.5rem; line-height: 1.16; letter-spacing: -0.02em; padding: 0 1.2rem; }
+
+    .concept { margin-top: 5rem; }
+    .hands { position: static; width: 118%; margin: 0 0 2rem -9%; }
+    .concept-inner { padding: 0 1.2rem; }
+    .h-big { font-size: 2.4rem; line-height: 1.06; letter-spacing: -0.02em; }
+    .script { font-size: 2.7rem; }
+    .stack { margin-top: 2.6rem; }
+    .stack .line + .line { margin-top: 0.5rem; }
+
+    .what { margin-top: 4.5rem; padding: 0 1.2rem; }
+    .what h2 { font-size: 2.2rem; line-height: 1.08; letter-spacing: -0.02em; }
+    .what .copy { margin-top: 1.5rem; font-size: 1rem; line-height: 1.65; max-width: none; }
+    .what .copy p + p { margin-top: 1rem; }
+
+    .work { margin-top: 4rem; }
+    .sec-label { padding: 0 1.2rem 0.8rem; font-size: 0.62rem; letter-spacing: 0.14em; }
+    .feature { padding: 3rem 1.2rem; }
+    .feature-grid { grid-template-columns: 1fr; gap: 2.4rem; }
     .feature-grid.flip { direction: ltr; }
-    .screens-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media(max-width:600px) {
-    .screens-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero-text { padding-bottom: 3rem; }
-    .section { padding: 4rem 0; }
-    .feature-section { padding: 4rem 0; }
+    .f-eyebrow { font-size: 0.62rem; letter-spacing: 0.14em; margin-bottom: 0.7rem; }
+    .f-head { font-size: 1.9rem; line-height: 1.1; margin-bottom: 0.9rem; }
+    .f-head .script { font-size: 2.1rem; }
+    .f-desc { font-size: 0.95rem; line-height: 1.65; }
+    .phones { gap: 1rem; }
+    .feature .phones .ph { --pw: 40vw; }
+    .screens { padding: 3rem 1.2rem 4rem; }
+    .screens-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+    .next { margin: 0 1.2rem; padding: 2.4rem 0 3rem; }
+    .next-label { font-size: 0.62rem; letter-spacing: 0.14em; }
+    .next-title { font-size: 1.9rem; }
+    .next-arrow { font-size: 1.8rem; }
   }
 </style>
 </head>
@@ -407,248 +305,181 @@
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-bg-text" aria-hidden="true">olli olli olli olli olli olli olli</div>
-  <div class="hero-inner">
-    <div class="hero-text">
-      <div class="hero-eyebrow" data-i18n="hero-eyebrow">App Design / UX / Branding</div>
-      <h1 class="hero-title">Bringing<br>cooking to<br>the <span class="accent" data-i18n="hero-title-accent">maximum.</span></h1>
-      <p class="hero-tagline" data-i18n="hero-tagline">A meal subscription app that brings <em>fresh ingredients</em> to your door — and teaches you exactly how to cook them.</p>
-      <div class="hero-meta">
-        <span><strong data-i18n="meta-cat-label">Category</strong><span data-i18n="meta-cat">App Design / UX</span></span>
-        <span><strong data-i18n="meta-year-label">Year</strong>2023</span>
-        <span><strong data-i18n="meta-type-label">Type</strong><span data-i18n="meta-type">Concept Project</span></span>
-      </div>
-    </div>
-    <div class="hero-phones reveal d1">
-      <div class="pw">
-        <div class="ph">
-          <div class="ph-screen"><img src="olli/olli1.png" alt="Olli onboarding"></div>
-          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-        </div>
-      </div>
-      <div class="pw">
-        <div class="ph">
-          <div class="ph-screen"><img src="olli/olli6.png" alt="Olli home"></div>
-          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-        </div>
-      </div>
-      <div class="pw">
-        <div class="ph">
-          <div class="ph-screen"><img src="olli/olli4.png" alt="Olli recipes"></div>
-          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="canvas">
 
-<!-- ABOUT -->
-<section class="section about-section">
-  <div class="container">
-    <div class="section-label">
-      <span><span class="num">01</span> &nbsp;— <span data-i18n="s1-label">The Concept</span></span>
-      <span>Olli / 2023</span>
-    </div>
-    <div class="about-grid">
-      <div class="about-left reveal">
-        <div class="about-heading">
-          <span data-i18n="about-h1">Cooking</span><br>
-          <span class="lime italic" data-i18n="about-h2">made</span><br>
-          <span data-i18n="about-h3">simple.</span><br>
-          <br>
-          <span data-i18n="about-h4">Ingredients</span><br>
-          <span class="lime italic" data-i18n="about-h5">made</span><br>
-          <span data-i18n="about-h6">personal.</span>
-        </div>
-        <div class="about-text">
-          <p data-i18n="about-p1">Olli is a meal subscription service built around the idea that cooking should feel like a <strong>choice, not a chore</strong>. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
-          <p data-i18n="about-p2">The app goes beyond delivery. Each recipe comes with a <strong>step-by-step cooking tutorial</strong> built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
-          <p data-i18n="about-p3">The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.</p>
-        </div>
-      </div>
-      <div class="hands-photo reveal d1">
-        <img src="olli/olli-hands.png" alt="Hands preparing ingredients">
-      </div>
-    </div>
+  <!-- 1 — logo (vectors traced from the Figma file) -->
+  <div class="logo-row">
+    <svg class="mark" id="olliMark" viewBox="0 0 1123 677" aria-label="Olli">
+      <rect class="body" x="0" y="72" width="321" height="605" rx="160.5"/>
+      <path class="body" d="M417,0 A163,163 0 0 1 580,163 L580,677 A163,163 0 0 1 417,514 Z"/>
+      <path class="body" d="M659,0 A164,164 0 0 1 823,164 L823,677 A164,164 0 0 1 659,513 Z"/>
+      <rect class="body" x="920" y="203" width="164" height="474"/>
+      <path class="leaf" d="M1103,0 L1107,7 L1111,14 L1114,21 L1117,28 L1119,35 L1120,42 L1121,49 L1122,56 L1122,63 L1121,70 L1120,77 L1119,84 L1117,91 L1115,98 L1112,105 L1108,112 L1104,119 L1099,126 L1093,133 L1086,140 L1078,147 L1069,154 L1057,161 L1043,168 L1023,175 L980,175 L960,168 L948,161 L940,154 L933,147 L928,140 L925,133 L922,126 L921,119 L920,112 L921,105 L922,98 L924,91 L927,84 L932,77 L938,70 L945,63 L956,56 L972,49 L990,42 L1009,35 L1028,28 L1046,21 L1065,14 L1083,7 L1102,0 Z"/>
+    </svg>
   </div>
-</section>
 
-<!-- FEATURE 1: Onboarding -->
-<section class="feature-section">
-  <div class="container">
-    <div class="section-label">
-      <span><span class="num">02</span> &nbsp;— <span data-i18n="s2-label">Onboarding</span></span>
-    </div>
-    <div class="feature-grid">
-      <div class="feature-phones reveal">
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli1.png" alt="Allergen selection"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli2.png" alt="Profile preferences"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-      </div>
-      <div class="reveal d1">
-        <div class="feature-eyebrow" data-i18n="f1-eyebrow">— Feature 01</div>
-        <h2 class="feature-heading"><span data-i18n="f1-h1">Built</span> <span class="lime italic" data-i18n="f1-h2">around</span><br><span data-i18n="f1-h3">you.</span></h2>
-        <p class="feature-desc" data-i18n="f1-desc">Olli's onboarding sets up a profile that actually matters. Select your allergens, dietary preferences — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and the app filters your weekly selection accordingly. The whole setup takes under two minutes.</p>
+  <!-- 2 — ghost strip -->
+  <div class="ghost-strip bleed" id="ghostStrip"></div>
+
+  <!-- 3 — hero headline -->
+  <h1 class="hero-head">
+    <span data-i18n="hero-1">Bringing your cooking</span><br>
+    <span data-i18n="hero-2">skills to the</span> <span class="lime" data-i18n="hero-3">maximum</span>
+  </h1>
+
+  <!-- 4 — concept -->
+  <section class="concept">
+    <img class="hands" src="olli/hands.png" alt="Hands lifting oyster mushrooms from a bowl">
+    <div class="concept-inner">
+      <h2 class="h-big">
+        <span data-i18n="c-1">Cooking</span>
+        <span class="script" data-i18n="c-made">made</span>
+        <span data-i18n="c-2">simple.</span>
+      </h2>
+      <div class="h-big stack">
+        <span class="line" data-i18n="c-3">Ingredients</span>
+        <span class="line script" data-i18n="c-made2">made</span>
+        <span class="line" data-i18n="c-4">personal.</span>
       </div>
     </div>
+  </section>
+
+  <!-- 5 — what's olli -->
+  <section class="what">
+    <h2 data-i18n="what-h">Soooo… What’s Olli?</h2>
+    <div class="copy">
+      <p data-i18n="what-p1">Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
+      <p data-i18n="what-p2">The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
+      <p data-i18n="what-p3">The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.</p>
+    </div>
+  </section>
+
+  <!-- ============ below the Figma ============ -->
+  <div class="work">
+
+    <div class="sec-label"><span><span class="n">01</span> &nbsp;— <span data-i18n="s1">Onboarding</span></span><span>Olli / 2023</span></div>
+    <section class="feature">
+      <div class="feature-grid">
+        <div class="phones reveal">
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt="Allergen selection"></div></div></div>
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt="Taste preferences"></div></div></div>
+        </div>
+        <div class="reveal d1">
+          <div class="f-eyebrow" data-i18n="f1-eye">Feature 01</div>
+          <h3 class="f-head"><span data-i18n="f1-h1">Built</span> <span class="script" data-i18n="f1-around">around</span> <span data-i18n="f1-h2">you.</span></h3>
+          <p class="f-desc" data-i18n="f1-d">Onboarding builds a profile that actually matters. Pick your allergens and how you like to eat — Meat &amp; Veggies, Fit &amp; Wholesome, Veggie, Pescatarian — and every week is filtered to match. The whole thing takes under two minutes.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="sec-label"><span><span class="n">02</span> &nbsp;— <span data-i18n="s2">Your Weekly Box</span></span></div>
+    <section class="feature">
+      <div class="feature-grid flip">
+        <div class="phones reveal">
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt="Plan size"></div></div></div>
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt="Recipe picker"></div></div></div>
+        </div>
+        <div class="reveal d1">
+          <div class="f-eyebrow" data-i18n="f2-eye">Feature 02</div>
+          <h3 class="f-head"><span data-i18n="f2-h1">Browse, pick,</span> <span class="script" data-i18n="f2-cook">cook</span><span data-i18n="f2-h2">.</span></h3>
+          <p class="f-desc" data-i18n="f2-d">Set how many people you cook for and how many recipes you want — the price updates as you go. Then choose from a curated grid, each meal tagged with its cook time and whether it's New or Hall of Fame.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="sec-label"><span><span class="n">03</span> &nbsp;— <span data-i18n="s3">The Kitchen</span></span></div>
+    <section class="feature">
+      <div class="feature-grid">
+        <div class="phones reveal">
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt="Home feed"></div></div></div>
+          <div class="pw"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt="Account"></div></div></div>
+        </div>
+        <div class="reveal d1">
+          <div class="f-eyebrow" data-i18n="f3-eye">Feature 03</div>
+          <h3 class="f-head"><span data-i18n="f3-h1">Your box, your</span> <span class="script" data-i18n="f3-terms">terms</span><span data-i18n="f3-h2">.</span></h3>
+          <p class="f-desc" data-i18n="f3-d">The home feed greets you by name and shows when the box lands. Your plan, orders and appearance settings all live on one screen — nothing buried, nothing to hunt for.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screens">
+      <div class="sec-label" style="padding-left:0;padding-right:0;"><span><span class="n">04</span> &nbsp;— <span data-i18n="s4">All Screens</span></span><span data-i18n="s4-c">7 screens</span></div>
+      <div class="screens-grid">
+        <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt=""></div></div></div>
+        <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt=""></div></div></div>
+        <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt=""></div></div></div>
+        <div class="pw reveal d3"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt=""></div></div></div>
+        <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli5.png" alt=""></div></div></div>
+        <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt=""></div></div></div>
+        <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt=""></div></div></div>
+      </div>
+    </section>
+
+    <a href="bogota.html" class="next">
+      <div>
+        <div class="next-label" data-i18n="next-l">Next Project</div>
+        <div class="next-title" data-i18n="next-t">Restaurant Bogota</div>
+      </div>
+      <span class="next-arrow">→</span>
+    </a>
   </div>
-</section>
-
-<!-- FEATURE 2: Plan size + recipes -->
-<section class="feature-section alt">
-  <div class="container">
-    <div class="section-label">
-      <span><span class="num">03</span> &nbsp;— <span data-i18n="s3-label">Recipe Discovery</span></span>
-    </div>
-    <div class="feature-grid flip">
-      <div class="feature-phones reveal">
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli3.png" alt="Plan size"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli4.png" alt="Recipe picker"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-      </div>
-      <div class="reveal d1">
-        <div class="feature-eyebrow" data-i18n="f2-eyebrow">— Feature 02</div>
-        <h2 class="feature-heading"><span data-i18n="f2-h1">Browse,</span><br><span data-i18n="f2-h2">pick,</span> <span class="lime italic" data-i18n="f2-h3">cook.</span></h2>
-        <p class="feature-desc" data-i18n="f2-desc">Choose how many people you're cooking for and how many recipes you want per week — the pricing updates in real time. Then pick from a curated grid of meals, each with a photo, cook time, and "Hall of Fame" or "New" tags to help you decide. You only see recipes that match your profile.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURE 3: Home + Account -->
-<section class="feature-section">
-  <div class="container">
-    <div class="section-label">
-      <span><span class="num">04</span> &nbsp;— <span data-i18n="s4-label">The Kitchen</span></span>
-    </div>
-    <div class="feature-grid">
-      <div class="feature-phones reveal">
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli6.png" alt="Home feed"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-        <div class="pw">
-          <div class="ph">
-            <div class="ph-screen"><img src="olli/olli7.png" alt="Account page"></div>
-            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
-          </div>
-        </div>
-      </div>
-      <div class="reveal d1">
-        <div class="feature-eyebrow" data-i18n="f3-eyebrow">— Feature 03</div>
-        <h2 class="feature-heading"><span data-i18n="f3-h1">Your box,</span><br><span class="lime italic" data-i18n="f3-h2">your</span> <span data-i18n="f3-h3">terms.</span></h2>
-        <p class="feature-desc" data-i18n="f3-desc">The home feed greets you by name, shows your next delivery, and surfaces Top Picks alongside your profile-matched recipes. The account screen keeps your plan details, order history, and appearance settings all in one clean view — no buried menus, no hunting around.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ALL SCREENS -->
-<section class="screens-section">
-  <div class="container">
-    <div class="section-label">
-      <span><span class="num">05</span> &nbsp;— <span data-i18n="s5-label">All Screens</span></span>
-      <span data-i18n="s5-count">7 screens</span>
-    </div>
-    <div class="screens-grid">
-      <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal d3"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli5.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-      <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- NEXT -->
-<div class="container">
-  <a href="bogota.html" class="next-project">
-    <div>
-      <div class="next-label" data-i18n="next-label">— Next Project</div>
-      <div class="next-title" data-i18n="next-title">Restaurant Bogota</div>
-    </div>
-    <span class="next-arrow">→</span>
-  </a>
 </div>
 
 <script>
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
 
+  /* fill the ghost strip with as many copies of the mark as the viewport needs */
+  (function () {
+    const strip = document.getElementById('ghostStrip');
+    const mark = document.getElementById('olliMark');
+    const unit = mark.getBoundingClientRect().width + 32 * (mark.getBoundingClientRect().width / 281);
+    const need = Math.ceil(window.innerWidth / Math.max(unit, 1)) + 2;
+    for (let i = 0; i < need; i++) {
+      const c = mark.cloneNode(true);
+      c.removeAttribute('id');
+      c.removeAttribute('aria-label');
+      c.setAttribute('aria-hidden', 'true');
+      strip.appendChild(c);
+    }
+  })();
+
   const LANG_OLLI = {
     en: {
       'nav-back': '← Portfolio',
-      'hero-eyebrow': 'App Design / UX / Branding',
-      'hero-title-accent': 'maximum.',
-      'hero-tagline': 'A meal subscription app that brings fresh ingredients to your door — and teaches you exactly how to cook them.',
-      'meta-cat-label': 'Category', 'meta-cat': 'App Design / UX',
-      'meta-year-label': 'Year', 'meta-type-label': 'Type', 'meta-type': 'Concept Project',
-      's1-label': 'The Concept',
-      'about-h1': 'Cooking', 'about-h2': 'made', 'about-h3': 'simple.',
-      'about-h4': 'Ingredients', 'about-h5': 'made', 'about-h6': 'personal.',
-      'about-p1': 'Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.',
-      'about-p2': 'The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.',
-      'about-p3': 'The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.',
-      's2-label': 'Onboarding',
-      'f1-eyebrow': '— Feature 01', 'f1-h1': 'Built', 'f1-h2': 'around', 'f1-h3': 'you.',
-      'f1-desc': 'Olli\'s onboarding sets up a profile that actually matters. Select your allergens, dietary preferences — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and the app filters your weekly selection accordingly. The whole setup takes under two minutes.',
-      's3-label': 'Recipe Discovery',
-      'f2-eyebrow': '— Feature 02', 'f2-h1': 'Browse,', 'f2-h2': 'pick,', 'f2-h3': 'cook.',
-      'f2-desc': 'Choose how many people you\'re cooking for and how many recipes you want per week — the pricing updates in real time. Then pick from a curated grid of meals, each with a photo, cook time, and "Hall of Fame" or "New" tags to help you decide. You only see recipes that match your profile.',
-      's4-label': 'The Kitchen',
-      'f3-eyebrow': '— Feature 03', 'f3-h1': 'Your box,', 'f3-h2': 'your', 'f3-h3': 'terms.',
-      'f3-desc': 'The home feed greets you by name, shows your next delivery, and surfaces Top Picks alongside your profile-matched recipes. The account screen keeps your plan details, order history, and appearance settings all in one clean view — no buried menus, no hunting around.',
-      's5-label': 'All Screens', 's5-count': '7 screens',
-      'next-label': '— Next Project', 'next-title': 'Restaurant Bogota',
+      'hero-1': 'Bringing your cooking', 'hero-2': 'skills to the', 'hero-3': 'maximum',
+      'c-1': 'Cooking', 'c-made': 'made', 'c-2': 'simple.',
+      'c-3': 'Ingredients', 'c-made2': 'made', 'c-4': 'personal.',
+      'what-h': 'Soooo… What’s Olli?',
+      'what-p1': 'Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.',
+      'what-p2': 'The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.',
+      'what-p3': 'The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.',
+      's1': 'Onboarding', 's2': 'Your Weekly Box', 's3': 'The Kitchen', 's4': 'All Screens', 's4-c': '7 screens',
+      'f1-eye': 'Feature 01', 'f1-h1': 'Built', 'f1-around': 'around', 'f1-h2': 'you.',
+      'f1-d': 'Onboarding builds a profile that actually matters. Pick your allergens and how you like to eat — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and every week is filtered to match. The whole thing takes under two minutes.',
+      'f2-eye': 'Feature 02', 'f2-h1': 'Browse, pick,', 'f2-cook': 'cook', 'f2-h2': '.',
+      'f2-d': 'Set how many people you cook for and how many recipes you want — the price updates as you go. Then choose from a curated grid, each meal tagged with its cook time and whether it’s New or Hall of Fame.',
+      'f3-eye': 'Feature 03', 'f3-h1': 'Your box, your', 'f3-terms': 'terms', 'f3-h2': '.',
+      'f3-d': 'The home feed greets you by name and shows when the box lands. Your plan, orders and appearance settings all live on one screen — nothing buried, nothing to hunt for.',
+      'next-l': 'Next Project', 'next-t': 'Restaurant Bogota',
     },
     bg: {
       'nav-back': '← Портфолио',
-      'hero-eyebrow': 'App Дизайн / UX / Брандинг',
-      'hero-title-accent': 'максимум.',
-      'hero-tagline': 'Абонаментно приложение за храна, което доставя пресни продукти до вратата ти — и те учи точно как да ги приготвиш.',
-      'meta-cat-label': 'Категория', 'meta-cat': 'App Дизайн / UX',
-      'meta-year-label': 'Година', 'meta-type-label': 'Тип', 'meta-type': 'Концептуален Проект',
-      's1-label': 'Концепцията',
-      'about-h1': 'Готвене', 'about-h2': 'направено', 'about-h3': 'просто.',
-      'about-h4': 'Продукти', 'about-h5': 'направени', 'about-h6': 'лично.',
-      'about-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Потребителите разглеждат рецепти, избират какво искат за седмицата, и точните продукти пристигат до вратата им — нищо повече, нищо пропиляно.',
-      'about-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, проектирано да те води без да напускаш приложението.',
-      'about-p3': 'Дизайнерското предизвикателство беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти.',
-      's2-label': 'Регистрация',
-      'f1-eyebrow': '— Функция 01', 'f1-h1': 'Създаден', 'f1-h2': 'около', 'f1-h3': 'теб.',
-      'f1-desc': 'Регистрацията в Olli създава профил, който наистина има значение. Избери алергени и хранителни предпочитания — Месо и зеленчуци, Здравословно, Вегетарианско, Риба — и приложението филтрира седмичната ти селекция. Целият процес отнема под две минути.',
-      's3-label': 'Избор на Рецепти',
-      'f2-eyebrow': '— Функция 02', 'f2-h1': 'Разгледай,', 'f2-h2': 'избери,', 'f2-h3': 'готви.',
-      'f2-desc': 'Избери за колко души готвиш и колко рецепти искаш на седмица — цената се актуализира в реално време. После избирай от подбрана мрежа от ястия, всяко с снимка, време за приготвяне и тагове "Зала на славата" или "Ново". Виждаш само рецепти, съответстващи на профила ти.',
-      's4-label': 'Кухнята',
-      'f3-eyebrow': '— Функция 03', 'f3-h1': 'Твоята кутия,', 'f3-h2': 'твоите', 'f3-h3': 'условия.',
-      'f3-desc': 'Началният екран те поздравява по име, показва следващата доставка и предлага Топ избори заедно с рецепти от профила ти. Профилният екран съдържа детайлите за плана, историята на поръчките и настройките — всичко на едно място, без скрити менюта.',
-      's5-label': 'Всички Екрани', 's5-count': '7 екрана',
-      'next-label': '— Следващ Проект', 'next-title': 'Ресторант Богота',
+      'hero-1': 'Издигаме готвенето', 'hero-2': 'ти до', 'hero-3': 'максимум',
+      'c-1': 'Готвене', 'c-made': 'на', 'c-2': 'ясно.',
+      'c-3': 'Продукти', 'c-made2': 'точно', 'c-4': 'за теб.',
+      'what-h': 'Е добре… Какво е Olli?',
+      'what-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Разглеждаш подбрани рецепти, избираш какво искаш да сготвиш тази седмица, и точните продукти пристигат до вратата ти — нищо повече, нищо пропиляно.',
+      'what-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, създадено да те води през процеса, без да напускаш приложението.',
+      'what-p3': 'Предизвикателството беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти и прави кухнята по-малко плашеща.',
+      's1': 'Регистрация', 's2': 'Седмичната Кутия', 's3': 'Кухнята', 's4': 'Всички Екрани', 's4-c': '7 екрана',
+      'f1-eye': 'Функция 01', 'f1-h1': 'Създаден', 'f1-around': 'около', 'f1-h2': 'теб.',
+      'f1-d': 'Регистрацията изгражда профил, който наистина има значение. Избираш алергени и как обичаш да се храниш — Месо и зеленчуци, Здравословно, Вегетарианско, Риба — и всяка седмица се филтрира според теб. Отнема под две минути.',
+      'f2-eye': 'Функция 02', 'f2-h1': 'Разгледай, избери,', 'f2-cook': 'сготви', 'f2-h2': '.',
+      'f2-d': 'Задаваш за колко души готвиш и колко рецепти искаш — цената се обновява в движение. После избираш от подбрана мрежа, всяко ястие с време за приготвяне и етикет Ново или Зала на славата.',
+      'f3-eye': 'Функция 03', 'f3-h1': 'Твоята кутия, твоите', 'f3-terms': 'условия', 'f3-h2': '.',
+      'f3-d': 'Началният екран те поздравява по име и показва кога пристига кутията. Планът, поръчките и настройките живеят на един екран — нищо заровено, нищо за търсене.',
+      'next-l': 'Следващ Проект', 'next-t': 'Ресторант Богота',
     }
   };
 
@@ -661,15 +492,13 @@
     document.documentElement.lang = lang;
     localStorage.setItem('lang', lang);
   }
-
-  const savedLang = localStorage.getItem('lang') || 'en';
-  applyLang(savedLang);
+  applyLang(localStorage.getItem('lang') || 'en');
   document.getElementById('langToggle').addEventListener('click', () => {
     applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
   });
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
