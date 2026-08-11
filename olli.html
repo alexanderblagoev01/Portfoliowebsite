@@ -6,250 +6,63 @@
 <title>Olli — Alexander Blagoev</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;0,9..144,300..700,30,1;1,9..144,300..700,30,0;1,9..144,300..700,30,1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Barlow+Condensed:wght@700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #1e1e1c;
-    --paper-warm: #252523;
-    --ink: #ede8df;
-    --ink-soft: #b8b0a4;
-    --muted: #7a726a;
-    --terracotta: #c4643e;
-    --ochre: #c99a50;
-    --sage: #8a9880;
-    --hairline: rgba(237,232,223,0.1);
-    --hairline-soft: rgba(237,232,223,0.05);
-    --nav-bg: rgba(30,30,28,0.92);
-  }
-  body.light {
-    --paper: #f1ebe0;
-    --paper-warm: #ebe3d4;
-    --ink: #2a221c;
-    --ink-soft: #4a3f36;
-    --muted: #88766a;
-    --terracotta: #b85c3c;
-    --ochre: #c19550;
-    --sage: #7d8a6e;
-    --hairline: rgba(42,34,28,0.14);
-    --hairline-soft: rgba(42,34,28,0.07);
-    --nav-bg: rgba(241,235,224,0.92);
+    --paper: #2e2b33;
+    --paper-warm: #363339;
+    --paper-deep: #252228;
+    --ink: #ffffff;
+    --ink-soft: #b0acba;
+    --muted: #6a6570;
+    --lime: #a8c83c;
+    --lime-dim: rgba(168,200,60,0.1);
+    --lime-glow: rgba(168,200,60,0.18);
+    --hairline: rgba(255,255,255,0.07);
+    --hairline-soft: rgba(255,255,255,0.04);
+    --nav-bg: rgba(46,43,51,0.94);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { background: var(--paper); color: var(--ink); font-family: 'Fraunces', serif; font-size: 17px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Barlow', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
   a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
 
   /* NAV */
   nav {
     position: sticky; top: 0; z-index: 20;
     background: var(--nav-bg);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--hairline);
     padding: 1.2rem 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
-    transition: background-color 0.5s ease;
   }
   .nav-back {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--muted); display: flex; align-items: center; gap: 0.6rem;
     transition: color 0.2s;
   }
-  .nav-back:hover { color: var(--terracotta); }
-  .nav-logo { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 500; font-style: italic; }
-  .nav-index { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-
-  /* CONTAINER */
-  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
-
-  /* HERO */
-  .project-hero { padding: 6rem 0 4rem; border-bottom: 1px solid var(--hairline); }
-  .project-meta {
-    display: flex; gap: 3rem;
+  .nav-back:hover { color: var(--lime); }
+  .nav-logo {
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem; font-weight: 600; letter-spacing: 0.01em;
+  }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-index {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 3rem;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
   }
-  .project-meta span { display: flex; flex-direction: column; gap: 0.4rem; }
-  .project-meta strong { color: var(--terracotta); font-weight: 400; }
-  .project-title {
-    font-family: 'Fraunces', serif; font-weight: 300;
-    font-size: clamp(5rem, 16vw, 14rem);
-    line-height: 0.88; letter-spacing: -0.04em;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-    margin-bottom: 2rem;
-  }
-  .project-title em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .project-tagline {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 300;
-    color: var(--muted); max-width: 600px; line-height: 1.5;
-  }
-
-  /* PHONE MOCKUP */
-  .phone-wrap {
-    position: relative;
-    display: inline-block;
-  }
-  .phone {
-    position: relative;
-    width: var(--pw, 240px);
-    aspect-ratio: 780 / 1688;
-    background: #111;
-    border-radius: calc(var(--pw, 240px) * 0.135);
-    padding: calc(var(--pw, 240px) * 0.038);
-    box-shadow:
-      inset 0 0 0 1.5px rgba(255,255,255,0.14),
-      0 0 0 1px rgba(0,0,0,0.6),
-      0 40px 80px rgba(0,0,0,0.55),
-      0 8px 20px rgba(0,0,0,0.3);
-  }
-  /* Dynamic Island */
-  .phone::before {
-    content: '';
-    position: absolute;
-    top: calc(var(--pw, 240px) * 0.055);
-    left: 50%; transform: translateX(-50%);
-    width: calc(var(--pw, 240px) * 0.33);
-    height: calc(var(--pw, 240px) * 0.075);
-    background: #111;
-    border-radius: 999px;
-    z-index: 5;
-  }
-  /* Power button */
-  .phone::after {
-    content: '';
-    position: absolute;
-    right: calc(var(--pw, 240px) * -0.028);
-    top: calc(var(--pw, 240px) * 0.32);
-    width: calc(var(--pw, 240px) * 0.025);
-    height: calc(var(--pw, 240px) * 0.18);
-    background: #2a2a2a;
-    border-radius: 2px;
-  }
-  .phone-screen {
-    width: 100%; height: 100%;
-    border-radius: calc(var(--pw, 240px) * 0.1);
-    overflow: hidden; background: #000;
-    position: relative;
-  }
-  .phone-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  /* Vol buttons (pseudo via wrapper) */
-  .phone-vol {
-    position: absolute;
-    left: calc(var(--pw, 240px) * -0.028);
-    width: calc(var(--pw, 240px) * 0.025);
-    background: #2a2a2a;
-    border-radius: 2px;
-  }
-  .phone-vol.v1 { top: calc(var(--pw, 240px) * 0.22); height: calc(var(--pw, 240px) * 0.1); }
-  .phone-vol.v2 { top: calc(var(--pw, 240px) * 0.36); height: calc(var(--pw, 240px) * 0.1); }
-  .phone-vol.v3 { top: calc(var(--pw, 240px) * 0.14); height: calc(var(--pw, 240px) * 0.06); }
-
-  /* HERO PHONES — 3 staggered */
-  .phones-hero {
-    padding: 6rem 0;
-    border-bottom: 1px solid var(--hairline);
-    display: flex; justify-content: center; align-items: flex-end;
-    gap: 3rem;
-    background: var(--paper-warm);
-    overflow: hidden;
-  }
-  .phones-hero .phone-wrap:nth-child(1) { transform: rotate(-6deg) translateY(40px); }
-  .phones-hero .phone-wrap:nth-child(2) { transform: translateY(-20px); z-index: 2; }
-  .phones-hero .phone-wrap:nth-child(3) { transform: rotate(6deg) translateY(40px); }
-  .phones-hero .phone-wrap:nth-child(1) .phone,
-  .phones-hero .phone-wrap:nth-child(3) .phone { --pw: 210px; }
-  .phones-hero .phone-wrap:nth-child(2) .phone { --pw: 260px; }
-
-  /* ABOUT SECTION */
-  .section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
-  .section-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 2rem; padding-bottom: 1rem;
-    border-bottom: 1px solid var(--hairline-soft);
-    display: flex; justify-content: space-between;
-  }
-  .section-label .num { color: var(--terracotta); }
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
-  .about-heading {
-    font-family: 'Fraunces', serif; font-weight: 300;
-    font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.05;
-    letter-spacing: -0.025em;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-    margin-bottom: 2rem;
-  }
-  .about-heading em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .about-text p { font-size: 1.1rem; line-height: 1.75; color: var(--ink-soft); margin-bottom: 1.4rem; }
-  .about-text em { font-style: italic; color: var(--ink); }
-  .about-text strong { font-weight: 500; font-style: italic; color: var(--ink); }
-
-  /* FEATURE ROW */
-  .feature { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
-  .feature-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 6rem; align-items: center;
-  }
-  .feature-grid.reverse { direction: rtl; }
-  .feature-grid.reverse > * { direction: ltr; }
-  .feature-phones { display: flex; gap: 2rem; align-items: flex-end; justify-content: center; }
-  .feature-phones .phone-wrap:nth-child(2) { transform: translateY(-30px); }
-  .feature-phones .phone { --pw: 200px; }
-  .feature-text {}
-  .feature-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1rem; }
-  .feature-heading {
-    font-family: 'Fraunces', serif; font-weight: 300;
-    font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.1;
-    letter-spacing: -0.02em; margin-bottom: 1.5rem;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-  .feature-heading em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .feature-desc { font-size: 1.05rem; line-height: 1.75; color: var(--ink-soft); }
-  .feature-desc em { font-style: italic; color: var(--ink); }
-
-  /* FULL GRID */
-  .screens-section { padding: 6rem 0; }
-  .screens-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 2rem;
-    align-items: end;
-  }
-  .screens-grid .phone-wrap:nth-child(even) { transform: translateY(-24px); }
-  .screens-grid .phone { --pw: 180px; }
-
-  /* NEXT PROJECT */
-  .next-project {
-    border-top: 1px solid var(--hairline);
-    padding: 4rem 0;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .next-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  .next-title {
-    font-family: 'Fraunces', serif; font-weight: 300;
-    font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-    transition: color 0.25s;
-  }
-  .next-title:hover { color: var(--terracotta); font-style: italic; }
-  .next-arrow { font-size: 2rem; color: var(--muted); transition: transform 0.3s, color 0.3s; }
-  .next-project:hover .next-arrow { transform: translateX(12px); color: var(--terracotta); }
-
-  /* REVEAL */
-  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
-  .reveal.d1 { transition-delay: 0.1s; }
-  .reveal.d2 { transition-delay: 0.2s; }
-  .reveal.in { opacity: 1; transform: none; }
-
-  /* FADE IN ON LOAD */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-  .project-meta { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
-  .project-title { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s forwards; }
-  .project-tagline { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
-
-  /* LANG TOGGLE */
   .lang-toggle {
     font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
     letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400;
@@ -257,22 +70,327 @@
     border: 1px solid var(--hairline); padding: 0.28rem 0.65rem;
     cursor: pointer; transition: color 0.2s, border-color 0.2s;
   }
-  .lang-toggle:hover { color: var(--terracotta); border-color: var(--terracotta); }
+  .lang-toggle:hover { color: var(--lime); border-color: var(--lime); }
+
+  /* CONTAINER */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* ========= HERO ========= */
+  .hero {
+    background: var(--paper-deep);
+    padding: 7rem 0 0;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  /* Giant wordmark repeating background */
+  .hero-bg-text {
+    position: absolute;
+    top: 2rem; left: -2%;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(8rem, 18vw, 18rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    color: rgba(255,255,255,0.04);
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 2;
+    padding: 0 2.5rem;
+    max-width: 1280px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: end;
+  }
+
+  .hero-text { padding-bottom: 5rem; }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--lime); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 2rem; height: 1px;
+    background: var(--lime);
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+  .hero-title .accent { color: var(--lime); }
+
+  .hero-tagline {
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    font-weight: 400;
+    color: var(--ink-soft);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+  .hero-tagline em { font-style: italic; color: var(--lime); font-weight: 400; }
+
+  .hero-meta {
+    display: flex; gap: 3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); border-top: 1px solid var(--hairline);
+    padding-top: 1.5rem;
+  }
+  .hero-meta span { display: flex; flex-direction: column; gap: 0.3rem; }
+  .hero-meta strong { color: var(--lime); font-weight: 400; }
+
+  /* Hero phones */
+  .hero-phones {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding-bottom: 0;
+  }
+  .hero-phones .pw:nth-child(1) { transform: rotate(-5deg) translateY(30px); }
+  .hero-phones .pw:nth-child(2) { transform: translateY(-10px); z-index: 2; }
+  .hero-phones .pw:nth-child(3) { transform: rotate(5deg) translateY(30px); }
+  .hero-phones .pw:nth-child(1) .ph,
+  .hero-phones .pw:nth-child(3) .ph { --pw: 185px; }
+  .hero-phones .pw:nth-child(2) .ph { --pw: 225px; }
+
+  /* ========= PHONE MOCKUP ========= */
+  .pw { position: relative; display: inline-block; }
+  .ph {
+    position: relative;
+    width: var(--pw, 220px);
+    aspect-ratio: 393 / 852;
+    background: #0a0a0a;
+    border-radius: calc(var(--pw, 220px) * 0.13);
+    padding: calc(var(--pw, 220px) * 0.036);
+    box-shadow:
+      inset 0 0 0 1.5px rgba(255,255,255,0.12),
+      0 0 0 1px rgba(0,0,0,0.7),
+      0 40px 80px rgba(0,0,0,0.6),
+      0 8px 16px rgba(0,0,0,0.35);
+  }
+  /* Dynamic Island */
+  .ph::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--pw, 220px) * 0.048);
+    left: 50%; transform: translateX(-50%);
+    width: calc(var(--pw, 220px) * 0.31);
+    height: calc(var(--pw, 220px) * 0.07);
+    background: #0a0a0a;
+    border-radius: 999px;
+    z-index: 5;
+  }
+  /* Power button */
+  .ph::after {
+    content: '';
+    position: absolute;
+    right: calc(var(--pw, 220px) * -0.027);
+    top: calc(var(--pw, 220px) * 0.31);
+    width: calc(var(--pw, 220px) * 0.024);
+    height: calc(var(--pw, 220px) * 0.17);
+    background: #222;
+    border-radius: 2px;
+  }
+  .ph-screen {
+    width: 100%; height: 100%;
+    border-radius: calc(var(--pw, 220px) * 0.1);
+    overflow: hidden;
+    background: #111;
+    position: relative;
+  }
+  .ph-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph-vol {
+    position: absolute;
+    left: calc(var(--pw, 220px) * -0.027);
+    width: calc(var(--pw, 220px) * 0.024);
+    background: #222;
+    border-radius: 2px;
+  }
+  .ph-vol.v1 { top: calc(var(--pw, 220px) * 0.21); height: calc(var(--pw, 220px) * 0.09); }
+  .ph-vol.v2 { top: calc(var(--pw, 220px) * 0.34); height: calc(var(--pw, 220px) * 0.09); }
+  .ph-vol.v3 { top: calc(var(--pw, 220px) * 0.13); height: calc(var(--pw, 220px) * 0.055); }
+
+  /* ========= SECTION BASE ========= */
+  .section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--hairline-soft);
+    display: flex; justify-content: space-between;
+  }
+  .section-label .num { color: var(--lime); }
+
+  /* ========= ABOUT ========= */
+  .about-section { background: var(--paper-warm); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7rem;
+    align-items: center;
+  }
+
+  .about-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .about-heading .lime { color: var(--lime); }
+  .about-heading .italic { font-style: italic; }
+
+  .about-text p {
+    font-size: 1.05rem; line-height: 1.8;
+    color: var(--ink-soft); margin-bottom: 1.4rem;
+    font-weight: 400;
+  }
+  .about-text strong { color: var(--ink); font-weight: 600; }
+
+  /* Hands photo placeholder */
+  .hands-photo {
+    aspect-ratio: 4/5;
+    background: var(--paper-deep);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.8rem;
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+    position: relative;
+  }
+  .hands-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.1);
+  }
+
+  /* ========= FEATURE ========= */
+  .feature-section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  .feature-section.alt { background: var(--paper-warm); }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .feature-grid.flip { direction: rtl; }
+  .feature-grid.flip > * { direction: ltr; }
+
+  .feature-phones {
+    display: flex; gap: 1.5rem;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .feature-phones .pw:nth-child(2) { transform: translateY(-24px); }
+  .feature-phones .ph { --pw: 195px; }
+
+  .feature-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--lime); margin-bottom: 1rem;
+  }
+  .feature-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .feature-heading .lime { color: var(--lime); }
+  .feature-heading .italic { font-style: italic; }
+  .feature-desc {
+    font-size: 1.05rem; line-height: 1.8;
+    color: var(--ink-soft); font-weight: 400;
+  }
+  .feature-desc strong { color: var(--ink); font-weight: 600; }
+
+  /* ========= SCREENS GRID ========= */
+  .screens-section { padding: 6rem 0; background: var(--paper-deep); }
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    align-items: end;
+  }
+  .screens-grid .pw:nth-child(even) { transform: translateY(-20px); }
+  .screens-grid .ph { --pw: 200px; }
+
+  /* ========= NEXT PROJECT ========= */
+  .next-project {
+    border-top: 1px solid var(--hairline);
+    padding: 4rem 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .next-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.6rem;
+  }
+  .next-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 4rem);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    transition: color 0.2s;
+  }
+  .next-project:hover .next-title { color: var(--lime); }
+  .next-arrow { font-size: 2.5rem; color: var(--muted); transition: transform 0.3s, color 0.3s; }
+  .next-project:hover .next-arrow { transform: translateX(12px); color: var(--lime); }
+
+  /* ========= REVEAL ========= */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.d1 { transition-delay: 0.1s; }
+  .reveal.d2 { transition-delay: 0.2s; }
+  .reveal.d3 { transition-delay: 0.3s; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  .hero-eyebrow { animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .hero-title { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
+  .hero-tagline { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.22s forwards; }
+  .hero-meta { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.34s forwards; }
 
   /* RESPONSIVE */
   @media(max-width:1000px) {
-    .container { padding: 0 1.5rem; }
-    nav { padding: 1.2rem 1.5rem; }
+    .container, .hero-inner { padding: 0 1.5rem; }
+    nav { padding: 1rem 1.5rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-phones { display: none; }
     .about-grid, .feature-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .feature-grid.reverse { direction: ltr; }
+    .feature-grid.flip { direction: ltr; }
     .screens-grid { grid-template-columns: repeat(3, 1fr); }
-    .phones-hero { gap: 1.5rem; }
   }
   @media(max-width:600px) {
     .screens-grid { grid-template-columns: repeat(2, 1fr); }
-    .phones-hero .phone-wrap:nth-child(1),
-    .phones-hero .phone-wrap:nth-child(3) { display: none; }
-    .phones-hero .phone-wrap:nth-child(2) { transform: none; }
+    .hero-text { padding-bottom: 3rem; }
+    .section { padding: 4rem 0; }
+    .feature-section { padding: 4rem 0; }
   }
 </style>
 </head>
@@ -281,153 +399,163 @@
 <!-- NAV -->
 <nav>
   <a href="portfolio-editorial.html" class="nav-back" data-i18n="nav-back">← Portfolio</a>
-  <a href="portfolio-editorial.html" class="nav-logo">Alexander Blagoev</a>
-  <div style="display:flex;align-items:center;gap:1rem;">
+  <span class="nav-logo">Alexander Blagoev</span>
+  <div class="nav-right">
     <button class="lang-toggle" id="langToggle">BG</button>
     <span class="nav-index">02 / 05</span>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="project-hero">
-  <div class="container">
-    <div class="project-meta">
-      <span><strong data-i18n="meta-cat-label">Category</strong><span data-i18n="meta-cat">App Design / UX / Branding</span></span>
-      <span><strong data-i18n="meta-year-label">Year</strong>2023</span>
-      <span><strong data-i18n="meta-type-label">Type</strong><span data-i18n="meta-type">Concept Project</span></span>
+<div class="hero">
+  <div class="hero-bg-text" aria-hidden="true">olli olli olli olli olli olli olli</div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow" data-i18n="hero-eyebrow">App Design / UX / Branding</div>
+      <h1 class="hero-title">Bringing<br>cooking to<br>the <span class="accent" data-i18n="hero-title-accent">maximum.</span></h1>
+      <p class="hero-tagline" data-i18n="hero-tagline">A meal subscription app that brings <em>fresh ingredients</em> to your door — and teaches you exactly how to cook them.</p>
+      <div class="hero-meta">
+        <span><strong data-i18n="meta-cat-label">Category</strong><span data-i18n="meta-cat">App Design / UX</span></span>
+        <span><strong data-i18n="meta-year-label">Year</strong>2023</span>
+        <span><strong data-i18n="meta-type-label">Type</strong><span data-i18n="meta-type">Concept Project</span></span>
+      </div>
     </div>
-    <h1 class="project-title"><em>Olli</em></h1>
-    <p class="project-tagline" data-i18n="tagline">A meal subscription app that brings the ingredients to your door — and teaches you how to cook them.</p>
-  </div>
-</section>
-
-<!-- HERO PHONES -->
-<div class="phones-hero">
-  <div class="phone-wrap reveal">
-    <div class="phone">
-      <div class="phone-screen"><img src="olli/olli2.png" alt="Olli screen"></div>
-      <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
-    </div>
-  </div>
-  <div class="phone-wrap reveal d1">
-    <div class="phone">
-      <div class="phone-screen"><img src="olli/olli1.png" alt="Olli screen"></div>
-      <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
-    </div>
-  </div>
-  <div class="phone-wrap reveal d2">
-    <div class="phone">
-      <div class="phone-screen"><img src="olli/olli3.png" alt="Olli screen"></div>
-      <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+    <div class="hero-phones reveal d1">
+      <div class="pw">
+        <div class="ph">
+          <div class="ph-screen"><img src="olli/olli1.png" alt="Olli onboarding"></div>
+          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
+        </div>
+      </div>
+      <div class="pw">
+        <div class="ph">
+          <div class="ph-screen"><img src="olli/olli6.png" alt="Olli home"></div>
+          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
+        </div>
+      </div>
+      <div class="pw">
+        <div class="ph">
+          <div class="ph-screen"><img src="olli/olli4.png" alt="Olli recipes"></div>
+          <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ABOUT -->
-<section class="section">
+<section class="section about-section">
   <div class="container">
     <div class="section-label">
       <span><span class="num">01</span> &nbsp;— <span data-i18n="s1-label">The Concept</span></span>
       <span>Olli / 2023</span>
     </div>
     <div class="about-grid">
-      <div class="about-heading reveal" data-i18n-html="about-heading">
-        Cooking made <em>simple.</em><br>Ingredients made <em>personal.</em>
+      <div class="reveal">
+        <div class="about-heading">
+          <span data-i18n="about-h1">Cooking</span><br>
+          <span class="lime italic" data-i18n="about-h2">made</span><br>
+          <span data-i18n="about-h3">simple.</span><br>
+          <br>
+          <span data-i18n="about-h4">Ingredients</span><br>
+          <span class="lime italic" data-i18n="about-h5">made</span><br>
+          <span data-i18n="about-h6">personal.</span>
+        </div>
       </div>
       <div class="about-text reveal d1">
-        <p data-i18n="about-p1">Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
-        <p data-i18n="about-p2">The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
+        <p data-i18n="about-p1">Olli is a meal subscription service built around the idea that cooking should feel like a <strong>choice, not a chore</strong>. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.</p>
+        <p data-i18n="about-p2">The app goes beyond delivery. Each recipe comes with a <strong>step-by-step cooking tutorial</strong> built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.</p>
         <p data-i18n="about-p3">The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURE 1 -->
-<section class="feature" style="background: var(--paper-warm);">
+<!-- FEATURE 1: Onboarding -->
+<section class="feature-section">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">02</span> &nbsp;— <span data-i18n="s2-label">Recipe Discovery</span></span>
+      <span><span class="num">02</span> &nbsp;— <span data-i18n="s2-label">Onboarding</span></span>
     </div>
     <div class="feature-grid">
       <div class="feature-phones reveal">
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli4.png" alt="Olli recipe screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli1.png" alt="Allergen selection"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli5.png" alt="Olli recipe screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli2.png" alt="Profile preferences"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
       </div>
-      <div class="feature-text reveal d1">
-        <div class="feature-num" data-i18n="f1-num">— Feature 01</div>
-        <h2 class="feature-heading" data-i18n-html="f1-heading">Browse, pick, <em>cook.</em></h2>
-        <p class="feature-desc" data-i18n="f1-desc">The recipe selection screen is the heart of Olli. Users scroll through a curated weekly menu, filter by dietary preference, prep time, or cuisine — and simply tap to add to their box. The UI keeps decisions effortless, letting the food do the talking.</p>
+      <div class="reveal d1">
+        <div class="feature-eyebrow" data-i18n="f1-eyebrow">— Feature 01</div>
+        <h2 class="feature-heading"><span data-i18n="f1-h1">Built</span> <span class="lime italic" data-i18n="f1-h2">around</span><br><span data-i18n="f1-h3">you.</span></h2>
+        <p class="feature-desc" data-i18n="f1-desc">Olli's onboarding sets up a profile that actually matters. Select your allergens, dietary preferences — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and the app filters your weekly selection accordingly. The whole setup takes under two minutes.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURE 2 -->
-<section class="feature">
+<!-- FEATURE 2: Plan size + recipes -->
+<section class="feature-section alt">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">03</span> &nbsp;— <span data-i18n="s3-label">Cooking Mode</span></span>
+      <span><span class="num">03</span> &nbsp;— <span data-i18n="s3-label">Recipe Discovery</span></span>
     </div>
-    <div class="feature-grid reverse">
+    <div class="feature-grid flip">
       <div class="feature-phones reveal">
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli6.png" alt="Olli cooking screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli3.png" alt="Plan size"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli7.png" alt="Olli cooking screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli4.png" alt="Recipe picker"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
       </div>
-      <div class="feature-text reveal d1">
-        <div class="feature-num" data-i18n="f2-num">— Feature 02</div>
-        <h2 class="feature-heading" data-i18n-html="f2-heading">Step by step, <em>nothing missed.</em></h2>
-        <p class="feature-desc" data-i18n="f2-desc">Once the ingredients arrive, cooking mode takes over. Each recipe breaks down into timed, visual steps — keeping the experience calm and focused. No scrolling up to re-read. No second-guessing quantities. Just one step at a time, until it's on the plate.</p>
+      <div class="reveal d1">
+        <div class="feature-eyebrow" data-i18n="f2-eyebrow">— Feature 02</div>
+        <h2 class="feature-heading"><span data-i18n="f2-h1">Browse,</span><br><span data-i18n="f2-h2">pick,</span> <span class="lime italic" data-i18n="f2-h3">cook.</span></h2>
+        <p class="feature-desc" data-i18n="f2-desc">Choose how many people you're cooking for and how many recipes you want per week — the pricing updates in real time. Then pick from a curated grid of meals, each with a photo, cook time, and "Hall of Fame" or "New" tags to help you decide. You only see recipes that match your profile.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURE 3 -->
-<section class="feature" style="background: var(--paper-warm);">
+<!-- FEATURE 3: Home + Account -->
+<section class="feature-section">
   <div class="container">
     <div class="section-label">
-      <span><span class="num">04</span> &nbsp;— <span data-i18n="s4-label">Subscription & Order</span></span>
+      <span><span class="num">04</span> &nbsp;— <span data-i18n="s4-label">The Kitchen</span></span>
     </div>
     <div class="feature-grid">
       <div class="feature-phones reveal">
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli8.png" alt="Olli order screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli6.png" alt="Home feed"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
-        <div class="phone-wrap">
-          <div class="phone">
-            <div class="phone-screen"><img src="olli/olli9.png" alt="Olli order screen"></div>
-            <div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div>
+        <div class="pw">
+          <div class="ph">
+            <div class="ph-screen"><img src="olli/olli7.png" alt="Account page"></div>
+            <div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div>
           </div>
         </div>
       </div>
-      <div class="feature-text reveal d1">
-        <div class="feature-num" data-i18n="f3-num">— Feature 03</div>
-        <h2 class="feature-heading" data-i18n-html="f3-heading">Your box, <em>your terms.</em></h2>
-        <p class="feature-desc" data-i18n="f3-desc">Olli's subscription model is built around flexibility. Pause for a week, swap a recipe, change your delivery day — all from one clean screen. No hidden steps, no buried settings. The interface makes managing your box as easy as choosing what to cook.</p>
+      <div class="reveal d1">
+        <div class="feature-eyebrow" data-i18n="f3-eyebrow">— Feature 03</div>
+        <h2 class="feature-heading"><span data-i18n="f3-h1">Your box,</span><br><span class="lime italic" data-i18n="f3-h2">your</span> <span data-i18n="f3-h3">terms.</span></h2>
+        <p class="feature-desc" data-i18n="f3-desc">The home feed greets you by name, shows your next delivery, and surfaces Top Picks alongside your profile-matched recipes. The account screen keeps your plan details, order history, and appearance settings all in one clean view — no buried menus, no hunting around.</p>
       </div>
     </div>
   </div>
@@ -438,24 +566,21 @@
   <div class="container">
     <div class="section-label">
       <span><span class="num">05</span> &nbsp;— <span data-i18n="s5-label">All Screens</span></span>
-      <span data-i18n="s5-count">10 screens</span>
+      <span data-i18n="s5-count">7 screens</span>
     </div>
     <div class="screens-grid">
-      <div class="phone-wrap reveal"><div class="phone"><div class="phone-screen"><img src="olli/olli1.png" alt="Olli screen 1"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d1"><div class="phone"><div class="phone-screen"><img src="olli/olli2.png" alt="Olli screen 2"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d2"><div class="phone"><div class="phone-screen"><img src="olli/olli3.png" alt="Olli screen 3"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal"><div class="phone"><div class="phone-screen"><img src="olli/olli4.png" alt="Olli screen 4"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d1"><div class="phone"><div class="phone-screen"><img src="olli/olli5.png" alt="Olli screen 5"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal"><div class="phone"><div class="phone-screen"><img src="olli/olli6.png" alt="Olli screen 6"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d1"><div class="phone"><div class="phone-screen"><img src="olli/olli7.png" alt="Olli screen 7"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d2"><div class="phone"><div class="phone-screen"><img src="olli/olli8.png" alt="Olli screen 8"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal"><div class="phone"><div class="phone-screen"><img src="olli/olli9.png" alt="Olli screen 9"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
-      <div class="phone-wrap reveal d1"><div class="phone"><div class="phone-screen"><img src="olli/olli10.png" alt="Olli screen 10"></div><div class="phone-vol v1"></div><div class="phone-vol v2"></div><div class="phone-vol v3"></div></div></div>
+      <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli1.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli2.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli3.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal d3"><div class="ph"><div class="ph-screen"><img src="olli/olli4.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal"><div class="ph"><div class="ph-screen"><img src="olli/olli5.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal d1"><div class="ph"><div class="ph-screen"><img src="olli/olli6.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
+      <div class="pw reveal d2"><div class="ph"><div class="ph-screen"><img src="olli/olli7.png" alt=""></div><div class="ph-vol v1"></div><div class="ph-vol v2"></div><div class="ph-vol v3"></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- NEXT PROJECT -->
+<!-- NEXT -->
 <div class="container">
   <a href="bogota.html" class="next-project">
     <div>
@@ -473,46 +598,52 @@
   const LANG_OLLI = {
     en: {
       'nav-back': '← Portfolio',
-      'meta-cat-label': 'Category', 'meta-cat': 'App Design / UX / Branding',
+      'hero-eyebrow': 'App Design / UX / Branding',
+      'hero-title-accent': 'maximum.',
+      'hero-tagline': 'A meal subscription app that brings fresh ingredients to your door — and teaches you exactly how to cook them.',
+      'meta-cat-label': 'Category', 'meta-cat': 'App Design / UX',
       'meta-year-label': 'Year', 'meta-type-label': 'Type', 'meta-type': 'Concept Project',
-      'tagline': 'A meal subscription app that brings the ingredients to your door — and teaches you how to cook them.',
       's1-label': 'The Concept',
-      'about-heading': 'Cooking made <em>simple.</em><br>Ingredients made <em>personal.</em>',
+      'about-h1': 'Cooking', 'about-h2': 'made', 'about-h3': 'simple.',
+      'about-h4': 'Ingredients', 'about-h5': 'made', 'about-h6': 'personal.',
       'about-p1': 'Olli is a meal subscription service built around the idea that cooking should feel like a choice, not a chore. Users browse a curated selection of recipes, pick what they want to make that week, and the exact ingredients arrive at their door — nothing more, nothing wasted.',
       'about-p2': 'The app goes beyond delivery. Each recipe comes with a step-by-step cooking tutorial built directly into the interface — timed, visual, and designed to guide you through the process without ever leaving the app.',
       'about-p3': 'The design challenge was building something that felt warm and approachable without losing the clean confidence of a premium product. The result is an interface that respects your time and makes the kitchen feel less intimidating.',
-      's2-label': 'Recipe Discovery',
-      'f1-num': '— Feature 01', 'f1-heading': 'Browse, pick, <em>cook.</em>',
-      'f1-desc': 'The recipe selection screen is the heart of Olli. Users scroll through a curated weekly menu, filter by dietary preference, prep time, or cuisine — and simply tap to add to their box. The UI keeps decisions effortless, letting the food do the talking.',
-      's3-label': 'Cooking Mode',
-      'f2-num': '— Feature 02', 'f2-heading': 'Step by step, <em>nothing missed.</em>',
-      'f2-desc': 'Once the ingredients arrive, cooking mode takes over. Each recipe breaks down into timed, visual steps — keeping the experience calm and focused. No scrolling up to re-read. No second-guessing quantities. Just one step at a time, until it\'s on the plate.',
-      's4-label': 'Subscription & Order',
-      'f3-num': '— Feature 03', 'f3-heading': 'Your box, <em>your terms.</em>',
-      'f3-desc': 'Olli\'s subscription model is built around flexibility. Pause for a week, swap a recipe, change your delivery day — all from one clean screen. No hidden steps, no buried settings. The interface makes managing your box as easy as choosing what to cook.',
-      's5-label': 'All Screens', 's5-count': '10 screens',
+      's2-label': 'Onboarding',
+      'f1-eyebrow': '— Feature 01', 'f1-h1': 'Built', 'f1-h2': 'around', 'f1-h3': 'you.',
+      'f1-desc': 'Olli\'s onboarding sets up a profile that actually matters. Select your allergens, dietary preferences — Meat & Veggies, Fit & Wholesome, Veggie, Pescatarian — and the app filters your weekly selection accordingly. The whole setup takes under two minutes.',
+      's3-label': 'Recipe Discovery',
+      'f2-eyebrow': '— Feature 02', 'f2-h1': 'Browse,', 'f2-h2': 'pick,', 'f2-h3': 'cook.',
+      'f2-desc': 'Choose how many people you\'re cooking for and how many recipes you want per week — the pricing updates in real time. Then pick from a curated grid of meals, each with a photo, cook time, and "Hall of Fame" or "New" tags to help you decide. You only see recipes that match your profile.',
+      's4-label': 'The Kitchen',
+      'f3-eyebrow': '— Feature 03', 'f3-h1': 'Your box,', 'f3-h2': 'your', 'f3-h3': 'terms.',
+      'f3-desc': 'The home feed greets you by name, shows your next delivery, and surfaces Top Picks alongside your profile-matched recipes. The account screen keeps your plan details, order history, and appearance settings all in one clean view — no buried menus, no hunting around.',
+      's5-label': 'All Screens', 's5-count': '7 screens',
       'next-label': '— Next Project', 'next-title': 'Restaurant Bogota',
     },
     bg: {
       'nav-back': '← Портфолио',
-      'meta-cat-label': 'Категория', 'meta-cat': 'App дизайн / UX / Брандинг',
+      'hero-eyebrow': 'App Дизайн / UX / Брандинг',
+      'hero-title-accent': 'максимум.',
+      'hero-tagline': 'Абонаментно приложение за храна, което доставя пресни продукти до вратата ти — и те учи точно как да ги приготвиш.',
+      'meta-cat-label': 'Категория', 'meta-cat': 'App Дизайн / UX',
       'meta-year-label': 'Година', 'meta-type-label': 'Тип', 'meta-type': 'Концептуален Проект',
-      'tagline': 'Абонаментно приложение за хранене, което доставя продуктите до вратата ти — и те учи как да ги приготвиш.',
       's1-label': 'Концепцията',
-      'about-heading': 'Готвенето — <em>просто.</em><br>Продуктите — <em>лично.</em>',
-      'about-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Потребителите разглеждат подбрани рецепти, избират какво искат да приготвят тази седмица, и точните продукти пристигат до вратата им — нищо повече, нищо пропиляно.',
-      'about-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, проектирано да те води през процеса, без да напускаш приложението.',
-      'about-p3': 'Дизайнерското предизвикателство беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти и прави кухнята по-малко плашеща.',
-      's2-label': 'Избор на Рецепти',
-      'f1-num': '— Функция 01', 'f1-heading': 'Разгледай, избери, <em>готви.</em>',
-      'f1-desc': 'Екранът за избор на рецепти е сърцето на Olli. Потребителите превъртат седмичното меню, филтрират по хранителни предпочитания, време за приготвяне или кухня — и просто докосват, за да добавят към кутията си. Интерфейсът прави решенията безусилни, оставяйки храната да говори.',
-      's3-label': 'Режим на Готвене',
-      'f2-num': '— Функция 02', 'f2-heading': 'Стъпка по стъпка, <em>нищо пропуснато.</em>',
-      'f2-desc': 'Щом продуктите пристигнат, режимът за готвене поема. Всяка рецепта се разбива на визуални стъпки с таймер — поддържайки изживяването спокойно и фокусирано. Без превъртане назад за препрочитане. Без съмнения в количествата. Само една стъпка наведнъж, докато не е в чинията.',
-      's4-label': 'Абонамент и Поръчка',
-      'f3-num': '— Функция 03', 'f3-heading': 'Твоята кутия, <em>твоите условия.</em>',
-      'f3-desc': 'Абонаментният модел на Olli е изграден около гъвкавостта. Паузирай за седмица, смени рецепта, промени деня за доставка — всичко от един изчистен екран. Без скрити стъпки, без заровени настройки. Интерфейсът прави управлението на кутията толкова лесно, колкото избирането на какво да готвиш.',
-      's5-label': 'Всички Екрани', 's5-count': '10 екрана',
+      'about-h1': 'Готвене', 'about-h2': 'направено', 'about-h3': 'просто.',
+      'about-h4': 'Продукти', 'about-h5': 'направени', 'about-h6': 'лично.',
+      'about-p1': 'Olli е абонаментна услуга за храна, изградена около идеята, че готвенето трябва да е избор, а не задължение. Потребителите разглеждат рецепти, избират какво искат за седмицата, и точните продукти пристигат до вратата им — нищо повече, нищо пропиляно.',
+      'about-p2': 'Приложението надхвърля доставката. Всяка рецепта идва с ръководство стъпка по стъпка, вградено директно в интерфейса — с таймер, визуално, проектирано да те води без да напускаш приложението.',
+      'about-p3': 'Дизайнерското предизвикателство беше да се създаде нещо топло и достъпно, без да се губи чистото самочувствие на премиум продукт. Резултатът е интерфейс, който уважава времето ти.',
+      's2-label': 'Регистрация',
+      'f1-eyebrow': '— Функция 01', 'f1-h1': 'Създаден', 'f1-h2': 'около', 'f1-h3': 'теб.',
+      'f1-desc': 'Регистрацията в Olli създава профил, който наистина има значение. Избери алергени и хранителни предпочитания — Месо и зеленчуци, Здравословно, Вегетарианско, Риба — и приложението филтрира седмичната ти селекция. Целият процес отнема под две минути.',
+      's3-label': 'Избор на Рецепти',
+      'f2-eyebrow': '— Функция 02', 'f2-h1': 'Разгледай,', 'f2-h2': 'избери,', 'f2-h3': 'готви.',
+      'f2-desc': 'Избери за колко души готвиш и колко рецепти искаш на седмица — цената се актуализира в реално време. После избирай от подбрана мрежа от ястия, всяко с снимка, време за приготвяне и тагове "Зала на славата" или "Ново". Виждаш само рецепти, съответстващи на профила ти.',
+      's4-label': 'Кухнята',
+      'f3-eyebrow': '— Функция 03', 'f3-h1': 'Твоята кутия,', 'f3-h2': 'твоите', 'f3-h3': 'условия.',
+      'f3-desc': 'Началният екран те поздравява по име, показва следващата доставка и предлага Топ избори заедно с рецепти от профила ти. Профилният екран съдържа детайлите за плана, историята на поръчките и настройките — всичко на едно място, без скрити менюта.',
+      's5-label': 'Всички Екрани', 's5-count': '7 екрана',
       'next-label': '— Следващ Проект', 'next-title': 'Ресторант Богота',
     }
   };
@@ -521,9 +652,6 @@
     const t = LANG_OLLI[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
-    });
-    document.querySelectorAll('[data-i18n-html]').forEach(el => {
-      if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml];
     });
     document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
     document.documentElement.lang = lang;
@@ -536,7 +664,6 @@
     applyLang(localStorage.getItem('lang') === 'en' ? 'bg' : 'en');
   });
 
-  // Scroll reveal
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.1 });
