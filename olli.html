@@ -65,6 +65,22 @@
   }
   .lang-toggle:hover { color: var(--lime); border-color: var(--lime); }
 
+  /* ===== Project meta strip =====
+     Absolutely placed in the empty band above the logo, so none of the
+     Figma-derived y-coordinates below it shift. */
+  .project-meta {
+    position: absolute; z-index: 2;
+    top: calc(150 * var(--s));
+    left: calc(113 * var(--s));
+    display: flex; gap: calc(56 * var(--s));
+    font-size: calc(15 * var(--s)); font-weight: 600;
+    letter-spacing: calc(2.2 * var(--s));
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .project-meta span { display: flex; flex-direction: column; gap: calc(9 * var(--s)); }
+  .project-meta strong { color: var(--lime); font-weight: 600; }
+
   /* ===== The olli mark ===== */
   .mark { display: block; }
   .mark .body { fill: var(--mk, #9eb22b); }
@@ -266,7 +282,14 @@
     .nav-logo { display: none; }
     .canvas { width: 100%; }
 
-    .logo-row { padding-top: 7rem; }
+    .project-meta {
+      position: static; margin: 6rem 1.2rem 0;
+      gap: 1.4rem 2rem; flex-wrap: wrap;
+      font-size: 0.58rem; letter-spacing: 0.14em;
+    }
+    .project-meta span { gap: 0.3rem; }
+
+    .logo-row { padding-top: 3rem; }
     .logo-row .mark { width: 130px; height: 78px; }
 
     .hero { margin-top: 4rem; }
@@ -322,6 +345,13 @@
 </nav>
 
 <div class="canvas">
+
+  <div class="project-meta">
+    <span><span data-i18n="m-project">Project</span><strong>02</strong></span>
+    <span><span data-i18n="m-category">Category</span><strong data-i18n="m-cat">App Design</strong></span>
+    <span><span data-i18n="m-deliverable">Deliverable</span><strong data-i18n="m-del">UX / UI / Branding</strong></span>
+    <span><span data-i18n="m-industry">Industry</span><strong data-i18n="m-ind">Food Delivery</strong></span>
+  </div>
 
   <!-- 1 — logo (vectors traced from the Figma file) -->
   <div class="logo-row">
@@ -463,6 +493,9 @@
   const LANG_OLLI = {
     en: {
       'nav-back': '← Portfolio',
+      'm-project': 'Project', 'm-category': 'Category', 'm-cat': 'App Design',
+      'm-deliverable': 'Deliverable', 'm-del': 'UX / UI / Branding',
+      'm-industry': 'Industry', 'm-ind': 'Food Delivery',
       'hero-1': 'Bringing your cooking', 'hero-2': 'skills to the', 'hero-3': 'maximum',
       'c-1': 'Cooking', 'c-made': 'made', 'c-2': 'simple.',
       'c-3': 'Ingredients', 'c-made2': 'made', 'c-4': 'personal.',
@@ -481,6 +514,9 @@
     },
     bg: {
       'nav-back': '← Портфолио',
+      'm-project': 'Проект', 'm-category': 'Категория', 'm-cat': 'App Дизайн',
+      'm-deliverable': 'Резултат', 'm-del': 'UX / UI / Брандинг',
+      'm-industry': 'Индустрия', 'm-ind': 'Доставка на Храна',
       'hero-1': 'Издигаме готвенето', 'hero-2': 'ти до', 'hero-3': 'максимум',
       'c-1': 'Готвене', 'c-made': 'на', 'c-2': 'ясно.',
       'c-3': 'Продукти', 'c-made2': 'точно', 'c-4': 'за теб.',

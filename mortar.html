@@ -112,6 +112,18 @@
     max-width: 900px;
   }
 
+  /* project meta strip — same treatment as the other project pages,
+     centred here to sit with this page's centred hero */
+  .project-meta {
+    display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .project-meta span { display: flex; flex-direction: column; gap: 0.35rem; }
+  .project-meta strong { color: var(--ember); font-weight: 600; }
+
   /* WIP badge */
   .wip-badge {
     display: inline-flex; align-items: center; gap: 0.6rem;
@@ -340,13 +352,20 @@
   <span class="nav-logo">Alexander Blagoev</span>
   <div class="nav-right">
     <button class="lang-toggle" id="langToggle">BG</button>
-    <span class="nav-index">05 / 06</span>
+    <span class="nav-index">05 / 05</span>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
+
+    <div class="project-meta">
+      <span><span data-i18n="m-project">Project</span><strong>05</strong></span>
+      <span><span data-i18n="m-category">Category</span><strong data-i18n="m-cat">Product Design</strong></span>
+      <span><span data-i18n="m-deliverable">Deliverable</span><strong data-i18n="m-del">Software / UI</strong></span>
+      <span><span data-i18n="m-industry">Industry</span><strong data-i18n="m-ind">Construction</strong></span>
+    </div>
 
     <div class="wip-badge">
       <span class="wip-dot"></span>
@@ -362,14 +381,6 @@
     </p>
 
     <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="stat-label" data-i18n="stat-1-label">Category</span>
-        <span class="stat-value" data-i18n="stat-1-value">Software</span>
-      </div>
-      <div class="hero-stat">
-        <span class="stat-label" data-i18n="stat-2-label">Industry</span>
-        <span class="stat-value" data-i18n="stat-2-value">Construction</span>
-      </div>
       <div class="hero-stat">
         <span class="stat-label" data-i18n="stat-3-label">Status</span>
         <span class="stat-value" data-i18n="stat-3-value">Building</span>
@@ -469,10 +480,11 @@
   const LANG_MORTAR = {
     en: {
       'nav-back': 'Portfolio',
+      'm-project': 'Project', 'm-category': 'Category', 'm-cat': 'Product Design',
+      'm-deliverable': 'Deliverable', 'm-del': 'Software / UI',
+      'm-industry': 'Industry', 'm-ind': 'Construction',
       'wip-badge': 'In Development',
       'hero-desc': 'A software solution for construction management — built to bring structure to the chaos of building sites, teams, and timelines.',
-      'stat-1-label': 'Category', 'stat-1-value': 'Software',
-      'stat-2-label': 'Industry', 'stat-2-value': 'Construction',
       'stat-3-label': 'Status',   'stat-3-value': 'Building',
       'stat-4-label': 'Launch',
       'about-eyebrow': 'The Product',
@@ -494,10 +506,11 @@
     },
     bg: {
       'nav-back': 'Портфолио',
+      'm-project': 'Проект', 'm-category': 'Категория', 'm-cat': 'Продуктов Дизайн',
+      'm-deliverable': 'Резултат', 'm-del': 'Софтуер / UI',
+      'm-industry': 'Индустрия', 'm-ind': 'Строителство',
       'wip-badge': 'В Разработка',
       'hero-desc': 'Софтуерно решение за управление на строителството — създадено да внесе ред в хаоса на строителни обекти, екипи и срокове.',
-      'stat-1-label': 'Категория', 'stat-1-value': 'Софтуер',
-      'stat-2-label': 'Индустрия', 'stat-2-value': 'Строителство',
       'stat-3-label': 'Статус',    'stat-3-value': 'В Изграждане',
       'stat-4-label': 'Пускане',
       'about-eyebrow': 'Продуктът',
