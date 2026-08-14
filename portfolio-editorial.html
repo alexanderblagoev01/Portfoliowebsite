@@ -124,6 +124,73 @@
   }
   .theme-toggle:hover { color: var(--terracotta); border-color: var(--terracotta); }
 
+  /* ── macOS-style floating dock ───────────────────────────────────
+     Hidden by default; it replaces the sticky nav only on pointer
+     devices wide enough for it. Below that the text nav stays, which
+     also keeps it clear of the fixed mobile notice at the bottom. */
+  .dock-wrap {
+    display: none;
+    position: fixed; left: 50%; bottom: 22px; z-index: 60;
+    transform: translateX(-50%);
+  }
+  .dock {
+    display: flex; align-items: flex-end; gap: 12px;
+    padding: 10px 14px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+  }
+  body.light .dock { box-shadow: 0 18px 50px rgba(42,34,28,.16), 0 2px 8px rgba(42,34,28,.08); }
+
+  .dock-item {
+    /* width tracks the scale so neighbours are pushed apart rather than
+       overlapped — that displacement is most of the macOS feel */
+    width: calc(48px * var(--s, 1));
+    height: calc(48px * var(--s, 1));
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: calc(12px * var(--s, 1));
+    color: var(--ink-soft);
+    background: transparent;
+    border: 0; padding: 0; cursor: pointer;
+    position: relative;
+    transform-origin: bottom center;   /* grows upward, out of the dock */
+    transition: color .2s ease, background-color .2s ease;
+  }
+  .dock-item:hover { color: var(--terracotta); }
+  .dock-item svg { width: 46%; height: 46%; display: block; }
+
+  .dock-sep {
+    width: 1px; align-self: stretch; margin: 6px 2px;
+    background: var(--hairline); flex: 0 0 auto;
+  }
+
+  .dock-label {
+    position: absolute; bottom: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: .3rem .55rem;
+    background: var(--nav-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink); white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dock-item:hover .dock-label { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    .dock-wrap { display: block; }
+    nav.main   { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dock-item { width: 48px; height: 48px; border-radius: 12px; }
+  }
+
   /* ── Animated theme swap (View Transitions API) ──────────────────
      The incoming theme is revealed by a circle growing out of the
      toggle button. Both snapshots have their default cross-fade
@@ -599,6 +666,64 @@
 </div>
 
 
+<!-- DOCK (desktop only — replaces nav.main above 1000px) -->
+<div class="dock-wrap">
+  <nav class="dock" id="dock" aria-label="Primary">
+    <a class="dock-item" href="#about" data-label-key="nav-index">
+      <span class="dock-label">Index</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
+      </svg>
+    </a>
+    <a class="dock-item" href="#portfolio" data-label-key="nav-work">
+      <span class="dock-label">Work</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/>
+        <rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/>
+      </svg>
+    </a>
+    <a class="dock-item" href="#credentials" data-label-key="nav-credentials">
+      <span class="dock-label">Credentials</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.6 7 21l5-2.4L17 21l-1.5-7.4"/>
+      </svg>
+    </a>
+    <a class="dock-item" href="#testimonials" data-label-key="nav-words">
+      <span class="dock-label">Words</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9.5 6.5C6.6 7.7 5 10 5 12.8c0 2 1.3 3.4 3.1 3.4 1.6 0 2.8-1.1 2.8-2.7 0-1.5-1-2.6-2.5-2.6-.3 0-.6 0-.8.1.3-1.3 1.3-2.4 2.9-3.1z"/>
+        <path d="M18.5 6.5C15.6 7.7 14 10 14 12.8c0 2 1.3 3.4 3.1 3.4 1.6 0 2.8-1.1 2.8-2.7 0-1.5-1-2.6-2.5-2.6-.3 0-.6 0-.8.1.3-1.3 1.3-2.4 2.9-3.1z"/>
+      </svg>
+    </a>
+    <a class="dock-item" href="#contact" data-label-key="nav-contact">
+      <span class="dock-label">Contact</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.8 7 8.2 6 8.2-6"/>
+      </svg>
+    </a>
+
+    <span class="dock-sep" aria-hidden="true"></span>
+
+    <button class="dock-item" type="button" id="dockLang" aria-label="Switch language">
+      <span class="dock-label" id="dockLangLabel">Български</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/>
+        <path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5Z"/>
+      </svg>
+    </button>
+    <button class="dock-item" type="button" id="dockTheme" aria-label="Switch theme">
+      <span class="dock-label" id="dockThemeLabel">Light</span>
+      <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/>
+      </svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+        <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z"/>
+      </svg>
+    </button>
+  </nav>
+</div>
+
 <!-- TOP BAR -->
 <div class="topbar"></div>
 
@@ -1045,6 +1170,8 @@
     document.getElementById('ticker1').innerHTML = t['ticker'];
     document.getElementById('ticker2').innerHTML = t['ticker'];
     document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
+    const dockLangLabel = document.getElementById('dockLangLabel');
+    if (dockLangLabel) dockLangLabel.textContent = lang === 'en' ? 'Български' : 'English';
     document.documentElement.lang = lang;
     document.body.classList.toggle('lang-bg', lang === 'bg');
     store.set('lang', lang);
@@ -1052,22 +1179,32 @@
 
   setLang(currentLang);
 
-  document.getElementById('langToggle').addEventListener('click', () => {
-    setLang(currentLang === 'en' ? 'bg' : 'en');
-  });
+  const flipLang = () => setLang(currentLang === 'en' ? 'bg' : 'en');
+  document.getElementById('langToggle').addEventListener('click', flipLang);
+  document.getElementById('dockLang')?.addEventListener('click', flipLang);
 
   // ── Theme ─────────────────────────────────────────────────────
   const themeToggle = document.getElementById('themeToggle');
 
+  const dockTheme = document.getElementById('dockTheme');
+
   function paintTheme(isLight) {
     document.body.classList.toggle('light', isLight);
     themeToggle.textContent = isLight ? '☾ Dark' : '☀ Light';
+    if (dockTheme) {
+      /* show the theme you'd switch TO, same as the text button */
+      dockTheme.querySelector('.ico-sun').style.display  = isLight ? 'none' : '';
+      dockTheme.querySelector('.ico-moon').style.display = isLight ? '' : 'none';
+      document.getElementById('dockThemeLabel').textContent = isLight ? 'Dark' : 'Light';
+    }
     store.set('theme', isLight ? 'light' : 'dark');
   }
 
   if (store.get('theme') === 'light') paintTheme(true);
 
-  themeToggle.addEventListener('click', async () => {
+  /* origin is passed in: the nav button is display:none on desktop, so
+     reading its rect there would start the circle at 0,0 */
+  async function switchTheme(originEl) {
     const toLight = !document.body.classList.contains('light');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1076,7 +1213,7 @@
 
     /* Circle grows from the button out to the furthest viewport corner,
        so it always finishes covering the screen wherever the button sits. */
-    const r = themeToggle.getBoundingClientRect();
+    const r = originEl.getBoundingClientRect();
     const x = r.left + r.width / 2;
     const y = r.top + r.height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
@@ -1090,7 +1227,58 @@
       { duration: 620, easing: 'cubic-bezier(.4,0,.2,1)',
         pseudoElement: '::view-transition-new(root)' }
     );
-  });
+  }
+  themeToggle.addEventListener('click', () => switchTheme(themeToggle));
+  dockTheme?.addEventListener('click', () => switchTheme(dockTheme));
+
+  // ── Dock magnification ────────────────────────────────────────
+  /* Gaussian falloff from the source: scale = (mag-1)·e^(-d²/2·dist²)+1.
+     Scale chases the cursor continuously, so this is a spring being
+     integrated per frame rather than a CSS transition with a fixed
+     duration. Spring is the source's {stiffness 300, damping 22,
+     mass 0.5} — zeta 0.898, so it slightly overshoots and settles. */
+  (function () {
+    const dock = document.getElementById('dock');
+    if (!dock) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const items = [...dock.querySelectorAll('.dock-item')];
+    const MAG = 2.2, DIST = 100;
+    const K = 300, C = 22, M = 0.5;
+
+    const st = items.map(() => ({ s: 1, v: 0 }));
+    let pointerX = null, raf = null, last = 0;
+
+    const targetFor = (el) => {
+      if (pointerX === null) return 1;
+      const r = el.getBoundingClientRect();
+      const d = pointerX - (r.left + r.width / 2);
+      return (MAG - 1) * Math.exp(-(d * d) / (2 * DIST * DIST)) + 1;
+    };
+
+    function frame(now) {
+      const dt = Math.min((now - last) / 1000, 1 / 30);   // clamp after tab switches
+      last = now;
+      let alive = false;
+
+      items.forEach((el, i) => {
+        const t = targetFor(el), p = st[i];
+        const a = (-K * (p.s - t) - C * p.v) / M;
+        p.v += a * dt;
+        p.s += p.v * dt;
+        if (Math.abs(p.s - t) > 0.0015 || Math.abs(p.v) > 0.0015) alive = true;
+        else { p.s = t; p.v = 0; }
+        el.style.setProperty('--s', p.s.toFixed(4));
+      });
+
+      raf = (alive || pointerX !== null) ? requestAnimationFrame(frame) : null;
+    }
+
+    const start = () => { if (raf === null) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+
+    dock.addEventListener('pointermove', e => { pointerX = e.clientX; start(); });
+    dock.addEventListener('pointerleave', () => { pointerX = null; start(); });
+  })();
 
   // ── Scroll reveal ─────────────────────────────────────────────
   const io = new IntersectionObserver((entries) => {
