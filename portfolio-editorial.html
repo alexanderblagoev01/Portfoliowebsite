@@ -278,26 +278,6 @@
   .info-value { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); line-height: 1.4; }
   .info-value .accent { color: var(--terracotta); font-style: italic; }
 
-  /* TICKER */
-  .ticker {
-    overflow: hidden;
-    padding: 1.4rem 0;
-    border-bottom: 1px solid var(--hairline);
-    background: var(--paper);
-    position: relative; z-index: 2;
-  }
-  .ticker-track { display: flex; gap: 3rem; animation: scroll 38s linear infinite; white-space: nowrap; }
-  .ticker-item {
-    font-family: 'Fraunces', serif;
-    font-size: 1.1rem;
-    color: var(--ink);
-    flex-shrink: 0;
-    display: flex; align-items: center; gap: 3rem;
-  }
-  .ticker-item em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30; }
-  .ticker-star { color: var(--ochre); font-size: 0.8rem; }
-  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
   /* SECTION GENERAL */
   section {
     padding: 7rem 0;
@@ -613,7 +593,7 @@
   }
 
   /* SMOOTH THEME TRANSITION */
-  body, nav.main, .topbar, .ticker, footer,
+  body, nav.main, .topbar, footer,
   section, .about-figure, .edu-card, .contact-form,
   .skill-tag, .cert-row, .info-block, .work-item {
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
@@ -789,12 +769,6 @@
 </section>
 
 <!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-track">
-    <div class="ticker-item" id="ticker1">Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span></div>
-    <div class="ticker-item" id="ticker2">Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span></div>
-  </div>
-</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -1099,7 +1073,6 @@
       'footer-big': 'Until <em>soon</em>.',
       'footer-copy': '© 2026 — Alexander Blagoev. All rights reserved.',
       'footer-font': 'Set in Fraunces & JetBrains Mono',
-      'ticker': 'Graphic Design <span class="ticker-star">✦</span> <em>Web Design</em> <span class="ticker-star">✦</span> Brand Identity <span class="ticker-star">✦</span> <em>Product Design</em> <span class="ticker-star">✦</span> Packaging <span class="ticker-star">✦</span> <em>App Design</em> <span class="ticker-star">✦</span> Fashion <span class="ticker-star">✦</span> <em>Visual Identity</em> <span class="ticker-star">✦</span> Print <span class="ticker-star">✦</span> <em>Editorial</em> <span class="ticker-star">✦</span>',
       'cycling': ['Identity', 'Experience', 'Purpose', 'Culture', 'Print', 'the Web', 'Brands', 'Tomorrow']
     },
     bg: {
@@ -1150,7 +1123,6 @@
       'footer-big': 'До <em>скоро</em>.',
       'footer-copy': '© 2026 — Александър Благоев. Всички права запазени.',
       'footer-font': 'Шрифтове: Fraunces & JetBrains Mono',
-      'ticker': 'Графичен Дизайн <span class="ticker-star">✦</span> <em>Уеб Дизайн</em> <span class="ticker-star">✦</span> Брандова Идентичност <span class="ticker-star">✦</span> <em>Продуктов Дизайн</em> <span class="ticker-star">✦</span> Опаковки <span class="ticker-star">✦</span> <em>Дизайн на Приложения</em> <span class="ticker-star">✦</span> Мода <span class="ticker-star">✦</span> <em>Визуална Идентичност</em> <span class="ticker-star">✦</span> Печат <span class="ticker-star">✦</span> <em>Редакционен</em> <span class="ticker-star">✦</span>',
       'cycling': ['Хартия', 'Менюто', 'Опаковката', 'Всеки']
     }
   };
@@ -1178,8 +1150,6 @@
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       if (t[el.dataset.i18nPlaceholder] !== undefined) el.placeholder = t[el.dataset.i18nPlaceholder];
     });
-    document.getElementById('ticker1').innerHTML = t['ticker'];
-    document.getElementById('ticker2').innerHTML = t['ticker'];
     document.getElementById('langToggle').textContent = lang === 'en' ? 'BG' : 'EN';
     const dockLangLabel = document.getElementById('dockLangLabel');
     if (dockLangLabel) dockLangLabel.textContent = lang === 'en' ? 'Български' : 'English';
