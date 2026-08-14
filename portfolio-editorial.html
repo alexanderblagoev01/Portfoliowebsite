@@ -345,6 +345,64 @@
   .work-cat { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
   .work-client { font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); }
   .work-year-arrow { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink); }
+
+  /* ── Hover-expand rows ───────────────────────────────────────────
+     A hovered row grows and reveals its cover image; the rest dim back.
+     Gated behind a real pointer: touch devices have no hover, so there
+     the rows keep their normal auto height and nothing gets clipped. */
+  .work-media { display: none; }
+
+  /* min-width matches the 1000px breakpoint where the row restacks into
+     three stacked areas — a fixed height there would clip the client line. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    .work-item {
+      height: 104px;
+      padding: 0 0 1.5rem;
+      align-items: end;
+      overflow: hidden;
+      transition:
+        height   .55s cubic-bezier(.16,1,.3,1),
+        padding  .3s  ease,
+        opacity  .22s ease-out;
+    }
+    .work-item:hover { height: 300px; }
+    /* dim the siblings, not the one under the cursor */
+    .work-list:hover .work-item:not(:hover) { opacity: .38; }
+
+    .work-media {
+      display: block;
+      position: absolute; inset: 0; z-index: 0;
+      opacity: 0; transform: scale(1.06);
+      transition: opacity   .45s cubic-bezier(.23,1,.32,1),
+                  transform .55s cubic-bezier(.23,1,.32,1);
+      pointer-events: none;
+    }
+    .work-item:hover .work-media { opacity: 1; transform: none; }
+    .work-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .work-media::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.22) 55%, rgba(0,0,0,.1));
+    }
+
+    /* keep row content and the accent bar above the image */
+    .work-item > *:not(.work-media) { position: relative; z-index: 1; }
+    .work-item::before { z-index: 1; }
+
+    /* over the image the palette no longer reads — go white */
+    .work-item:hover .work-title { color: #fff; }
+    .work-item:hover .work-num,
+    .work-item:hover .work-cat,
+    .work-item:hover .work-client,
+    .work-item:hover .work-year-arrow,
+    .work-item:hover .work-arrow { color: rgba(255,255,255,.74); }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px)
+     and (prefers-reduced-motion: reduce) {
+    .work-item, .work-media { transition: none !important; }
+    .work-item:hover { height: 104px; }
+    .work-item:hover .work-media { opacity: 0; }
+  }
   .work-arrow { display: inline-block; transition: transform 0.3s ease, color 0.3s ease; font-size: 1.1rem; }
 
   /* CREDENTIALS */
@@ -643,6 +701,7 @@
 
     <div class="work-list">
       <a href="bogota.html" class="work-item reveal" style="display:grid;">
+        <div class="work-media"><img src="work-covers/bogota.jpg" alt="Restaurant Bogota cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 01</div>
         <div class="work-title">Restaurant Bogota</div>
         <div class="work-cat" data-i18n="work-cat-1">Visual Identity / Web / Print</div>
@@ -650,6 +709,7 @@
         <div class="work-year-arrow"><span>2025</span><span class="work-arrow">→</span></div>
       </a>
       <a href="olli.html" class="work-item reveal" style="display:grid;">
+        <div class="work-media"><img src="work-covers/olli.jpg" alt="Olli cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 02</div>
         <div class="work-title">Olli</div>
         <div class="work-cat" data-i18n="work-cat-2">App Design / UX / Branding</div>
@@ -657,6 +717,7 @@
         <div class="work-year-arrow"><span>2023</span><span class="work-arrow">→</span></div>
       </a>
       <a href="muave.html" class="work-item reveal" style="display:grid;">
+        <div class="work-media"><img src="work-covers/muave.jpg" alt="Muave cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 03</div>
         <div class="work-title">Muave</div>
         <div class="work-cat" data-i18n="work-cat-3">Fashion / Brand Identity</div>
@@ -664,6 +725,7 @@
         <div class="work-year-arrow"><span>2023</span><span class="work-arrow">→</span></div>
       </a>
       <a href="ecc.html" class="work-item reveal">
+        <div class="work-media"><img src="work-covers/ecc.jpg" alt="Easy Car Cleaner cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 04</div>
         <div class="work-title">Easy Car Cleaner</div>
         <div class="work-cat">Print / Label Design</div>
@@ -671,6 +733,7 @@
         <div class="work-year-arrow"><span>2024</span><span class="work-arrow">→</span></div>
       </a>
       <a href="mortar.html" class="work-item reveal" style="display:grid; opacity: 0.65;">
+        <div class="work-media"><img src="work-covers/mortar.jpg" alt="Mortar cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 05</div>
         <div class="work-title">Mortar <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-style:normal;vertical-align:middle;letter-spacing:0.12em;padding:0.2em 0.55em;border:1px solid currentColor;opacity:0.7;margin-left:0.6rem;">WIP</span></div>
         <div class="work-cat">Software / Product Design</div>
