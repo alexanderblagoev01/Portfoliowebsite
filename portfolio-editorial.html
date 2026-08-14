@@ -599,6 +599,27 @@
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
   }
 
+  /* ── Full-screen hero (desktop, where the dock is the header) ────
+     The section fills the viewport and the statement + info grid is
+     pinned to its bottom, so everything lands above the fold instead of
+     the grid being cut off by it. The name is sized off whichever is
+     tighter, width or height, so short laptop screens still fit. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    .topbar { display: none; }        /* empty strip; the dock is the header now */
+
+    #hero {
+      min-height: 100vh;
+      padding: 7.5rem 0 3rem;
+      display: flex; flex-direction: column;
+    }
+    #hero > .container { flex: 1; display: flex; flex-direction: column; }
+
+    .hero-name          { font-size: clamp(3rem, min(12vw, 15.5vh), 11rem); }
+    body.lang-bg .hero-name { font-size: clamp(3rem, min(12vw, 15.5vh), 11.5rem); }
+
+    .hero-grid { margin-top: auto; padding-top: 3rem; }
+  }
+
   /* RESPONSIVE */
   @media(max-width: 1000px) {
     .topbar { display: none; }
