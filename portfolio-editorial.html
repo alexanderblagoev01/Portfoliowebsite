@@ -225,6 +225,9 @@
     border-bottom: 1px solid var(--hairline);
     position: relative; z-index: 2;
   }
+  .hero-line { display: block; white-space: nowrap; }
+  .hero-line-type { margin-top: .04em; }
+
   .hero-name {
     font-family: 'Fraunces', serif;
     font-weight: 300;
@@ -245,39 +248,6 @@
     display: inline-block;
     transform: translateY(-0.05em);
   }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    margin-top: 3rem;
-    align-items: end;
-  }
-  .hero-statement {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.4rem, 2vw, 1.8rem);
-    line-height: 1.4;
-    font-weight: 300;
-    color: var(--ink);
-    max-width: 480px;
-  }
-  .hero-statement em {
-    font-style: italic;
-    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
-    color: var(--terracotta);
-  }
-  .hero-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-  .info-block { border-top: 1px solid var(--ink); padding-top: 1rem; }
-  .info-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.6rem;
-  }
-  .info-value { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); line-height: 1.4; }
-  .info-value .accent { color: var(--terracotta); font-style: italic; }
-
   /* SECTION GENERAL */
   section {
     padding: 7rem 0;
@@ -574,7 +544,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .hero-name { opacity: 0; animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; }
-  .hero-grid { opacity: 0; animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; }
 
   /* TYPING CARET */
   .caret { display: inline-block; color: var(--terracotta); font-style: normal; font-weight: 300; animation: blink 0.9s step-end infinite; margin-left: 3px; }
@@ -595,7 +564,7 @@
   /* SMOOTH THEME TRANSITION */
   body, nav.main, .topbar, footer,
   section, .about-figure, .edu-card, .contact-form,
-  .skill-tag, .cert-row, .info-block, .work-item {
+  .skill-tag, .cert-row, .work-item {
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
   }
 
@@ -609,24 +578,32 @@
 
     #hero {
       min-height: 100vh;
-      padding: 7.5rem 0 3rem;
-      display: flex; flex-direction: column;
+      padding: 7.5rem 0 4rem;
+      display: flex; flex-direction: column; justify-content: center;
     }
-    #hero > .container { flex: 1; display: flex; flex-direction: column; }
+    /* line one is sized by JS to span the container exactly; the typed line
+       inherits that size and simply runs shorter */
+    .hero-name { font-size: var(--hero-size, clamp(3rem, 12vw, 11rem)); }
 
-    .hero-name          { font-size: clamp(3rem, min(12vw, 15.5vh), 11rem); }
-    body.lang-bg .hero-name { font-size: clamp(3rem, min(12vw, 15.5vh), 11.5rem); }
-
-    .hero-grid { margin-top: auto; padding-top: 3rem; }
   }
+
+  /* ── Pixel scroll transition ─────────────────────────────────────
+     Sticky canvas that wipes between two colours on a pixel grid as you
+     scroll past it. Cells reveal bottom-to-top, blended with a random
+     pattern, and a moving band of accent pixels marks the reveal edge. */
+  .pixel-transition { position: relative; height: 200vh; }
+  .pixel-transition canvas {
+    position: sticky; top: 0;
+    display: block; width: 100%; height: 100vh;
+  }
+  @media (prefers-reduced-motion: reduce) { .pixel-transition { display: none; } }
 
   /* RESPONSIVE */
   @media(max-width: 1000px) {
     .topbar { display: none; }
     nav.main, footer, .container { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .hero-grid, .about-grid, .creds-grid, .contact-grid, .testi-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about-grid, .creds-grid, .contact-grid, .testi-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     section { padding: 4.5rem 0; }
-    .hero-info { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .work-item {
       grid-template-columns: 40px 1fr 100px;
       grid-template-areas: "num title arrow" ". cat year" ". client client";
@@ -641,7 +618,6 @@
     .nav-links li:not(:last-child):not(:nth-last-child(2)) { display: none; }
   }
   @media(max-width: 600px) {
-    .hero-info { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; align-items: flex-start; }
   }
 
@@ -759,37 +735,21 @@
 <section id="hero">
   <div class="container">
     <h1 class="hero-name">
-      <span data-i18n="hero-line1">Design for</span><br>
-      <span class="italic" data-i18n="hero-line2">Screen</span><br>
-      <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
+      <span class="hero-line">
+        <span data-i18n="hero-line1">Design for</span>
+        <span class="italic" data-i18n="hero-line2">Screen</span>
+      </span>
+      <span class="hero-line hero-line-type">
+        <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
+      </span>
     </h1>
-    <div class="hero-grid">
-      <p class="hero-statement" data-i18n-html="hero-statement">
-        A graphic and web designer crafting <em>brands</em>, <em>interfaces</em>, and <em>physical matter</em> for clients who care about the details — working remotely, everywhere.
-      </p>
-      <div class="hero-info">
-        <div class="info-block">
-          <div class="info-label" data-i18n="hero-label-1">Practising Since</div>
-          <div class="info-value" data-i18n-html="hero-val-1">Since <span class="accent">2017</span></div>
-        </div>
-        <div class="info-block">
-          <div class="info-label" data-i18n="hero-label-2">Discipline</div>
-          <div class="info-value" data-i18n-html="hero-val-2">Graphic <span class="accent">&</span> Web Design</div>
-        </div>
-        <div class="info-block">
-          <div class="info-label" data-i18n="hero-label-3">Currently</div>
-          <div class="info-value" data-i18n-html="hero-val-3">Open to <span class="accent">commissions</span></div>
-        </div>
-        <div class="info-block">
-          <div class="info-label" data-i18n="hero-label-4">Based</div>
-          <div class="info-value" data-i18n-html="hero-val-4">Bulgaria, <span class="accent">remote</span></div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- TICKER -->
+<!-- PIXEL SCROLL TRANSITION -->
+<div class="pixel-transition" id="pixelTransition" aria-hidden="true">
+  <canvas id="pixelCanvas"></canvas>
+</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -1050,11 +1010,6 @@
       'm-notice': 'Designed for desktop — best viewed on a larger screen.',
       'nav-index': 'Index', 'nav-work': 'Work', 'nav-credentials': 'Credentials', 'nav-words': 'Words', 'nav-contact': 'Contact',
       'hero-line1': 'Design for', 'hero-line2': 'Screen',
-      'hero-label-1': 'Practising Since', 'hero-val-1': 'Since <span class="accent">2017</span>',
-      'hero-label-2': 'Discipline', 'hero-val-2': 'Graphic <span class="accent">&</span> Web Design',
-      'hero-label-3': 'Currently', 'hero-val-3': 'Open to <span class="accent">commissions</span>',
-      'hero-label-4': 'Based', 'hero-val-4': 'Bulgaria, <span class="accent">remote</span>',
-      'hero-statement': 'A graphic and web designer crafting <em>brands</em>, <em>interfaces</em>, and <em>physical matter</em> for clients who care about the details — working remotely, everywhere.',
       'about-meta-left': '&nbsp;— Index', 'about-meta-right': 'About the Designer',
       'about-heading': 'Hands at <em>work</em>, eyes on the <em>detail</em>.', 'about-note': '— A note —',
       'about-p1': '<em>I am a graphic and web designer</em> working remotely since 2017 across brand identity, digital interfaces, product design, packaging, and fashion. The range is wide by design; I follow the work wherever it leads.',
@@ -1100,11 +1055,6 @@
       'm-notice': 'Създаден за десктоп — най-добре на по-голям екран.',
       'nav-index': 'Индекс', 'nav-work': 'Творби', 'nav-credentials': 'Квалификации', 'nav-words': 'Отзиви', 'nav-contact': 'Контакт',
       'hero-line1': 'Дизайн за', 'hero-line2': 'Екрана',
-      'hero-label-1': 'Практикува от', 'hero-val-1': 'От <span class="accent">2017</span>',
-      'hero-label-2': 'Дисциплина', 'hero-val-2': 'Графичен <span class="accent">&</span> Уеб Дизайн',
-      'hero-label-3': 'Момент', 'hero-val-3': 'Отворен за <span class="accent">поръчки</span>',
-      'hero-label-4': 'Базиран', 'hero-val-4': 'България, <span class="accent">дистанционно</span>',
-      'hero-statement': 'Графичен и уеб дизайнер, създаващ <em>брандове</em>, <em>интерфейси</em> и <em>печатни материали</em> за клиенти, на които детайлите имат значение — работещ дистанционно, навсякъде.',
       'about-meta-left': '&nbsp;— Индекс', 'about-meta-right': 'За дизайнера',
       'about-heading': 'Ръце в <em>работата</em>, очи в <em>детайла</em>.', 'about-note': '— Бележка —',
       'about-p1': '<em>Аз съм графичен и уеб дизайнер</em>, работещ дистанционно от 2017 г. в областта на брандовата идентичност, дигиталните интерфейси, продуктовия дизайн, опаковките и модата. Обхватът е широк по замисъл; следвам работата, накъдето води.',
@@ -1232,6 +1182,122 @@
   }
   themeToggle.addEventListener('click', () => switchTheme(themeToggle));
   dockTheme?.addEventListener('click', () => switchTheme(dockTheme));
+
+  // ── Fit the hero's first line to the container ────────────────
+  /* Sized by measurement, not a vw guess: the line has to span exactly,
+     and "Design for Screen" and "Дизайн за Екрана" are different widths. */
+  (function () {
+    const name = document.querySelector('.hero-name');
+    const line = document.querySelector('.hero-line');
+    const box  = document.querySelector('#hero > .container');
+    if (!name || !line || !box) return;
+
+    function fit() {
+      const avail = box.clientWidth
+        - parseFloat(getComputedStyle(box).paddingLeft)
+        - parseFloat(getComputedStyle(box).paddingRight);
+      if (avail <= 0) return;
+
+      const REF = 200;                       // measure once at a known size
+      name.style.setProperty('--hero-size', REF + 'px');
+      const w = line.getBoundingClientRect().width;
+      if (!w) return;
+
+      /* letter-spacing is in em, so width scales linearly with size */
+      let size = REF * (avail / w);
+
+      /* two lines must still clear the dock and the bottom padding */
+      const maxByHeight = (innerHeight - 200) / 2 / 0.92;
+      size = Math.min(size, maxByHeight);
+
+      name.style.setProperty('--hero-size', size.toFixed(2) + 'px');
+    }
+
+    fit();
+    addEventListener('resize', fit);
+    document.fonts?.ready.then(fit);        // refit once Fraunces lands
+    document.getElementById('langToggle')?.addEventListener('click', () => setTimeout(fit, 30));
+    document.getElementById('dockLang')?.addEventListener('click', () => setTimeout(fit, 30));
+  })();
+
+  // ── Pixel scroll transition ───────────────────────────────────
+  /* Canvas wipe on a pixel grid. Each cell gets a threshold blending a
+     directional ramp (bottom-to-top) with a random pattern; a cell flips
+     to colour B once scroll progress passes its threshold, and cells just
+     inside the leading edge flash an accent. */
+  (function () {
+    const wrap = document.getElementById('pixelTransition');
+    const cv   = document.getElementById('pixelCanvas');
+    if (!wrap || !cv || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = cv.getContext('2d', { alpha: false });
+    const PIXEL = 24, INTENSITY = 0.4, END_AT = 0.85;
+    const ACCENT_SHARE = 0.18, BAND = 0.09;
+
+    let cols = 0, rows = 0, thresh = [], isAccent = [], accentOf = [], dpr = 1;
+
+    const themed = () => {
+      const cs = getComputedStyle(document.body);
+      return {
+        a: cs.getPropertyValue('--paper').trim(),
+        b: cs.getPropertyValue('--paper-warm').trim(),
+        accents: ['--terracotta', '--ochre', '--rust', '--sage']
+          .map(v => cs.getPropertyValue(v).trim()),
+      };
+    };
+
+    function build() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = wrap.clientWidth, h = innerHeight;
+      cv.width = w * dpr; cv.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      cols = Math.ceil(w / PIXEL); rows = Math.ceil(h / PIXEL);
+      thresh = new Float32Array(cols * rows);
+      isAccent = new Uint8Array(cols * rows);
+      accentOf = new Uint8Array(cols * rows);
+
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = y * cols + x;
+          const dir = rows > 1 ? 1 - y / (rows - 1) : 0;      // bottom reveals first
+          thresh[i]   = (1 - INTENSITY) * dir + INTENSITY * Math.random();
+          isAccent[i] = Math.random() < ACCENT_SHARE ? 1 : 0;
+          accentOf[i] = (Math.random() * 4) | 0;
+        }
+      }
+    }
+
+    function draw() {
+      const r = wrap.getBoundingClientRect();
+      const span = r.height - innerHeight;
+      let p = span > 0 ? (-r.top) / span : 0;
+      p = Math.min(1, Math.max(0, p));
+      p = Math.min(1, p / END_AT);
+      p = 1 - Math.pow(1 - p, 3);                              // ease-out
+
+      const { a, b, accents } = themed();
+      ctx.fillStyle = a;
+      ctx.fillRect(0, 0, cv.width / dpr, cv.height / dpr);
+
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = y * cols + x, t = thresh[i];
+          if (t >= p) continue;
+          ctx.fillStyle = (isAccent[i] && p - t < BAND) ? accents[accentOf[i]] : b;
+          ctx.fillRect(x * PIXEL, y * PIXEL, PIXEL, PIXEL);
+        }
+      }
+    }
+
+    let queued = false;
+    const tick = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } };
+
+    build(); draw();
+    addEventListener('scroll', tick, { passive: true });
+    addEventListener('resize', () => { build(); draw(); });
+    new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  })();
 
   // ── Dock magnification ────────────────────────────────────────
   /* Gaussian falloff from the source: scale = (mag-1)·e^(-d²/2·dist²)+1.
