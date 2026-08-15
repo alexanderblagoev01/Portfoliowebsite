@@ -1520,19 +1520,28 @@
     const intro = gsap.timeline({
       scrollTrigger: {
         trigger: sec, start: 'top top',
-        end: () => '+=' + Math.round(travel() / RATIO * 0.24),
+        end: () => '+=' + Math.round(travel() / RATIO * 0.30),
         scrub: 1, invalidateOnRefresh: true
       }
     });
-    intro.from('p.st-body',  { opacity: 0, y: rise, ease: 'power2.out' }, 0)
-         .from('.st-mono',   { opacity: 0, y: () => rise() * 0.7, ease: 'power2.out' }, 0.20)
-         /* the lead follows the note it belongs under, rather than being
-            the one fixed thing on screen */
-         .from('.st-lead',   { opacity: 0, y: () => rise() * 0.85, scale: 0.94,
-                               transformOrigin: 'left bottom', ease: 'power3.out' }, 0.44)
-         .from('.st-brands', { opacity: 0, y: rise, scale: 0.88,
-                               transformOrigin: 'left center', ease: 'power2.out' }, 0.70)
-         .from('.st-morph',  { opacity: 0, scale: 0, ease: 'back.out(2)' }, 0.88);
+    /* Strictly one after another, not overlapped: the note block finishes
+       completely before the lead starts moving, and the lead finishes
+       before BRANDS begins. Positions are explicit rather than relative so
+       the gaps stay put if any duration is retuned.
+         note   0.00 -> 0.50
+         mono   0.25 -> 0.70   (text block complete)
+         lead   0.75 -> 1.30
+         BRANDS 1.35 -> 1.85
+         star   1.80 -> 2.25                                            */
+    intro.from('p.st-body',  { opacity: 0, y: rise, duration: 0.5, ease: 'power2.out' }, 0)
+         .from('.st-mono',   { opacity: 0, y: () => rise() * 0.7, duration: 0.45,
+                               ease: 'power2.out' }, 0.25)
+         .from('.st-lead',   { opacity: 0, y: () => rise() * 0.85, scale: 0.94, duration: 0.55,
+                               transformOrigin: 'left bottom', ease: 'power3.out' }, 0.75)
+         .from('.st-brands', { opacity: 0, y: rise, scale: 0.88, duration: 0.5,
+                               transformOrigin: 'left center', ease: 'power2.out' }, 1.35)
+         .from('.st-morph',  { opacity: 0, scale: 0, duration: 0.45,
+                               ease: 'back.out(2)' }, 1.80);
 
     /* ── Matter types itself in ───────────────────────────────────────
        Split to one span per letter, revealed with a near-zero duration so
