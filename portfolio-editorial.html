@@ -636,6 +636,11 @@
     font-size: calc(217 * var(--k)); line-height: 1;
   }
   .st-matter { font-size: calc(258 * var(--k)); line-height: 1; }
+  .st-caret { display: inline-block; margin: 0 .04em 0 .06em; font-weight: 400; }
+  /* blink lives on the inner element so GSAP can own the outer's opacity
+     without the two fighting over the same property */
+  .st-caret i { font-style: normal; animation: stBlink .9s steps(1) infinite; }
+  @keyframes stBlink { 50% { opacity: 0; } }
   .st-comma { font-family: 'Fraunces', serif; font-size: calc(325 * var(--k)); font-weight: 400; }
   .st-interfaces { font-size: calc(244 * var(--k)); line-height: 1; color: #09ba00; }
   .st-aim { font-size: calc(214 * var(--k)); line-height: 1.2; position: relative; display: inline-block; }
@@ -877,7 +882,7 @@
   <div class="statement-track">
 
     <div class="st-col">
-      <p class="st-note">My field of work consists of all-around creative
+      <p class="st-note st-body">My field of work consists of all-around creative
         decisions — ideas from scratch, up to a finished, polished,
         working product.</p>
       <p class="st-note st-mono">or in other words.</p>
@@ -893,7 +898,7 @@
 
     <span class="st-amp">&amp;</span>
 
-    <span class="st-matter">Matter<span class="st-comma">,</span></span>
+    <span class="st-matter">Matter<span class="st-caret"><i>|</i></span><span class="st-comma">,</span></span>
 
     <span class="st-aim">Aiming<br>to<br>Deliver
       <svg class="st-arrow" viewBox="7300 830 730 250" aria-hidden="true">
@@ -1449,20 +1454,73 @@
       }, vars || {}));
     };
 
-    enter('.st-col');
-    enter('.st-brands', { scale: 0.88, transformOrigin: 'left center' });
     enter('.st-interfaces');
     enter('.st-amp',    { rotate: -12 });
-    enter('.st-matter');
     enter('.st-aim');
 
-    /* the star spins up as the pill arrives */
-    const star = document.querySelector('.st-star');
-    if (star) gsap.from(star, {
-      scrollTrigger: { trigger: '.st-brands', containerAnimation: horiz,
-                       start: 'left 90%', end: 'left 50%', scrub: 1 },
-      scale: 0, rotate: -140, transformOrigin: '50% 50%', ease: 'back.out(2)'
+    /* ── opening state ───────────────────────────────────────────────
+       Only "I design :" is there before you scroll. The note and BRANDS
+       sit on screen at rest too, so containerAnimation cannot stage them
+       — their triggers have already fired by progress 0. They are driven
+       off the pin's own first stretch instead, which is what "start
+       scrolling and it assembles" actually needs. .st-lead is left out of
+       every entrance, so it is simply always there. */
+    const rise = () => 240 * (innerHeight / 1600);
+    const intro = gsap.timeline({
+      scrollTrigger: {
+        trigger: sec, start: 'top top',
+        end: () => '+=' + Math.round(travel() / RATIO * 0.16),
+        scrub: 1, invalidateOnRefresh: true
+      }
     });
+    intro.from('p.st-body', { opacity: 0, y: rise, ease: 'power2.out' }, 0)
+         .from('.st-mono',  { opacity: 0, y: () => rise() * 0.7, ease: 'power2.out' }, 0.22)
+         .from('.st-brands', { opacity: 0, y: rise, scale: 0.88,
+                               transformOrigin: 'left center', ease: 'power2.out' }, 0.12)
+         .from('.st-star',  { opacity: 0, scale: 0, transformOrigin: '50% 50%',
+                               ease: 'back.out(2)' }, 0.3);
+
+    /* the star keeps turning the whole way through. Separate tween from the
+       scale above on purpose: GSAP tracks transform components individually,
+       so rotation and scale on one element do not overwrite each other. */
+    const star = document.querySelector('.st-star');
+    if (star) gsap.to(star, {
+      rotation: 1080, ease: 'none',
+      scrollTrigger: { trigger: sec, start: 'top top',
+                       end: () => '+=' + Math.round(travel() / RATIO), scrub: 1,
+                       invalidateOnRefresh: true }
+    });
+
+    /* ── Matter types itself in ───────────────────────────────────────
+       Split to one span per letter, revealed with a near-zero duration so
+       each character snaps on rather than fading — a fade across the whole
+       word reads as a dissolve, not typing. The caret trails the last
+       letter and is dropped once the comma lands. */
+    const matter = document.querySelector('.st-matter');
+    if (matter) {
+      const caret = matter.querySelector('.st-caret');
+      const comma = matter.querySelector('.st-comma');
+      const node  = [...matter.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+      if (node) {
+        const frag = document.createDocumentFragment();
+        node.textContent.trim().split('').forEach(ch => {
+          const sp = document.createElement('span');
+          sp.className = 'st-ch'; sp.textContent = ch;
+          frag.appendChild(sp);
+        });
+        matter.replaceChild(frag, node);
+      }
+      const chars = matter.querySelectorAll('.st-ch');
+      const track2 = (start, end) => ({ trigger: matter, containerAnimation: horiz,
+                                        start: start, end: end, scrub: true });
+      if (chars.length) gsap.from(chars,
+        { opacity: 0, duration: 0.001, stagger: 1, ease: 'none',
+          scrollTrigger: track2('left 88%', 'left 46%') });
+      if (comma) gsap.from(comma,
+        { opacity: 0, duration: 0.001, scrollTrigger: track2('left 47%', 'left 44%') });
+      if (caret) gsap.to(caret,
+        { opacity: 0, duration: 0.001, scrollTrigger: track2('left 45%', 'left 42%') });
+    }
 
     /* the dashed arrow draws itself toward the pills */
     const arrow = document.querySelectorAll('.st-arrow path, .st-arrow polygon');
