@@ -618,9 +618,12 @@
     font-family: 'JetBrains Mono', monospace; font-weight: 700;
     color: #b86947; margin-top: calc(120 * var(--k));
   }
+  /* fixed so the lead's top lands at 804 units regardless of how the
+     paragraph above it wraps */
+  .st-intro-block { height: calc(649 * var(--k)); }
   .st-lead {
     font-family: 'Fraunces', serif; font-weight: 400;
-    font-size: calc(282 * var(--k)); line-height: 1; margin: calc(206 * var(--k)) 0 0;
+    font-size: calc(282 * var(--k)); line-height: 1; margin: 0;
     color: #c29c5c; white-space: nowrap;
   }
   .st-lead em { font-style: italic; font-variation-settings: "opsz" 9, "WONK" 1; }
@@ -693,10 +696,10 @@
     /* vertical offsets are the artboard's own y values */
     .st-col        { margin-top: calc(155 * var(--k)); }
     .st-brands     { margin: calc(776 * var(--k)) 0 0 calc(300 * var(--k)); }
-    .st-interfaces { margin: calc(740 * var(--k)) 0 0 calc(402 * var(--k)); }
-    .st-amp        { margin: calc(838 * var(--k)) 0 0 calc(332 * var(--k)); }
-    .st-matter     { margin: calc(791 * var(--k)) 0 0 calc(339 * var(--k)); }
-    .st-aim        { margin: calc(565 * var(--k)) 0 0 calc(291 * var(--k)); }
+    .st-interfaces { margin: calc(845 * var(--k)) 0 0 calc(402 * var(--k)); }
+    .st-amp        { margin: calc(846 * var(--k)) 0 0 calc(332 * var(--k)); }
+    .st-matter     { margin: calc(774 * var(--k)) 0 0 calc(339 * var(--k)); }
+    .st-aim        { margin: calc(579 * var(--k)) 0 0 calc(291 * var(--k)); }
     .st-cluster    { margin: calc(609 * var(--k)) 0 0 calc(374 * var(--k)); position: relative; }
     .st-row        { display: flex; align-items: flex-start; }
     .st-row-b      { margin-top: calc(-23 * var(--k)); }
@@ -882,10 +885,12 @@
   <div class="statement-track">
 
     <div class="st-col">
-      <p class="st-note st-body">My field of work consists of all-around creative
-        decisions — ideas from scratch, up to a finished, polished,
-        working product.</p>
-      <p class="st-note st-mono">or in other words.</p>
+      <div class="st-intro-block">
+        <p class="st-note st-body">My field of work consists of all-around creative
+          decisions — ideas from scratch, up to a finished, polished,
+          working product.</p>
+        <p class="st-note st-mono">or in other words.</p>
+      </div>
       <p class="st-lead">I <em>design</em> :</p>
     </div>
 
