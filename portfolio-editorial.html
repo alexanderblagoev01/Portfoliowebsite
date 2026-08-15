@@ -609,13 +609,18 @@
   }
   .statement-track { position: relative; }
   #statement { position: relative; }
-  .st-morph {
+  /* Two elements on purpose. The ticker owns the wrapper's transform and
+     writes it every frame; the svg inside keeps its own opacity and scale
+     for the entrance. On one element the ticker's per-frame write stomped
+     the entrance tween and the shape was visible from the first frame. */
+  .st-morph-wrap {
     position: absolute; left: 0; top: 0;
     width: calc(165 * var(--k)); height: calc(165 * var(--k));
     transform-origin: 50% 50%;
     z-index: 4; pointer-events: none; opacity: 0;
     will-change: transform; display: none;
   }
+  .st-morph { display: block; width: 100%; height: 100%; transform-origin: 50% 50%; }
 
   .st-note {
     font-family: 'Fraunces', serif; font-weight: 400;
@@ -698,7 +703,7 @@
     /* never shrink: the track is wider than the viewport by design, and
        shrinking squeezed the note down to a third of its drawn width */
     .statement-track > * { flex: 0 0 auto; }
-    .st-morph { display: block; }
+    .st-morph-wrap { display: block; }
     /* vertical offsets are the artboard's own y values */
     .st-col        { margin-top: calc(155 * var(--k)); }
     .st-brands     { margin: calc(776 * var(--k)) 0 0 calc(300 * var(--k)); }
@@ -726,7 +731,7 @@
     .st-brands, .st-interfaces, .st-matter, .st-aim, .st-amp { font-size: clamp(1.8rem, 7vw, 3rem); }
     .st-ease, .st-intention, .st-personality, .st-vision { font-size: clamp(1.2rem, 5vw, 2rem); }
     .st-pill { width: auto !important; height: auto !important; padding: .35em 1em; }
-    .st-morph, .st-arrow { display: none; }
+    .st-morph-wrap, .st-arrow { display: none; }
     .st-wink { position: static; font-size: 1.4rem; }
     .st-brands, .st-interfaces, .st-amp, .st-matter, .st-aim {
       display: inline-block; margin: .35rem .5rem .35rem 0;
@@ -938,9 +943,11 @@
        the green shape as INTERFACES arrives, then rolls along it and drops
        off the end. The star is redrawn in the green shape's own viewBox so
        both paths share a coordinate space, which morphing requires. -->
-  <svg class="st-morph" viewBox="0 0 110.973 109.683" aria-hidden="true">
+  <div class="st-morph-wrap" aria-hidden="true">
+  <svg class="st-morph" viewBox="0 0 110.973 109.683">
     <path fill="#eee" d="M55.49,109.68L48.47,61.77L0,54.84L48.47,47.9L55.49,0L62.5,47.9L110.97,54.84L70.26,60.66Z"/>
   </svg>
+  </div>
 </section>
 
 <!-- ABOUT -->
@@ -1502,26 +1509,30 @@
     enter('.st-amp',    { rotate: -12 });
     enter('.st-aim');
 
-    /* ── opening state ───────────────────────────────────────────────
-       Only "I design :" is there before you scroll. The note and BRANDS
-       sit on screen at rest too, so containerAnimation cannot stage them
-       — their triggers have already fired by progress 0. They are driven
-       off the pin's own first stretch instead, which is what "start
-       scrolling and it assembles" actually needs. .st-lead is left out of
-       every entrance, so it is simply always there. */
+    /* ── opening sequence ────────────────────────────────────────────
+       The section builds itself in reading order as you scroll: the note
+       first, then "or in other words.", then "I design :", then BRANDS and
+       the star. Everything here sits on screen at rest, so none of it can
+       be staged through containerAnimation — those triggers have already
+       fired by progress 0. The pin's own first stretch drives the sequence
+       instead, which is what "start scrolling and it assembles" needs. */
     const rise = () => 240 * (innerHeight / 1600);
     const intro = gsap.timeline({
       scrollTrigger: {
         trigger: sec, start: 'top top',
-        end: () => '+=' + Math.round(travel() / RATIO * 0.16),
+        end: () => '+=' + Math.round(travel() / RATIO * 0.24),
         scrub: 1, invalidateOnRefresh: true
       }
     });
-    intro.from('p.st-body', { opacity: 0, y: rise, ease: 'power2.out' }, 0)
-         .from('.st-mono',  { opacity: 0, y: () => rise() * 0.7, ease: 'power2.out' }, 0.22)
+    intro.from('p.st-body',  { opacity: 0, y: rise, ease: 'power2.out' }, 0)
+         .from('.st-mono',   { opacity: 0, y: () => rise() * 0.7, ease: 'power2.out' }, 0.20)
+         /* the lead follows the note it belongs under, rather than being
+            the one fixed thing on screen */
+         .from('.st-lead',   { opacity: 0, y: () => rise() * 0.85, scale: 0.94,
+                               transformOrigin: 'left bottom', ease: 'power3.out' }, 0.44)
          .from('.st-brands', { opacity: 0, y: rise, scale: 0.88,
-                               transformOrigin: 'left center', ease: 'power2.out' }, 0.12)
-         .from('.st-morph', { opacity: 0, scale: 0, ease: 'back.out(2)' }, 0.3);
+                               transformOrigin: 'left center', ease: 'power2.out' }, 0.70)
+         .from('.st-morph',  { opacity: 0, scale: 0, ease: 'back.out(2)' }, 0.88);
 
     /* ── Matter types itself in ───────────────────────────────────────
        Split to one span per letter, revealed with a near-zero duration so
@@ -1585,9 +1596,10 @@
        roll, and because it is the same rate before and after, the spin
        carries through the morph with no jump to paper over. */
     const morph = document.querySelector('.st-morph');
+    const wrap  = document.querySelector('.st-morph-wrap');
     const inter = document.querySelector('.st-interfaces');
     const pill  = document.querySelector('.st-brands');
-    if (morph && inter && pill) {
+    if (morph && wrap && inter && pill) {
       const ROLLER = 'M98.385,54.842l10.704,24.45c7.857,17.948-10.271,36.267-28.3,28.598l-25.302-10.763-25.302,10.763c-18.029,7.669-36.157-10.651-28.3-28.598l10.704-24.45L1.884,30.391C-5.973,12.444,12.156-5.876,30.184,1.793l25.302,10.763L80.789,1.793c18.029-7.669,36.157,10.651,28.3,28.598l-10.704,24.45Z';
       const path = morph.querySelector('path');
 
@@ -1599,7 +1611,7 @@
       });
 
       let size = 0;
-      const measure = () => { size = parseFloat(getComputedStyle(morph).width) || 1; };
+      const measure = () => { size = parseFloat(getComputedStyle(wrap).width) || 1; };
       measure();
       addEventListener('resize', measure);
 
@@ -1607,7 +1619,7 @@
 
       gsap.ticker.add(() => {
         const trig = horiz.scrollTrigger;
-        if (!trig || !trig.isActive) { morph.style.opacity = '0'; return; }
+        if (!trig || !trig.isActive) { wrap.style.opacity = '0'; return; }
 
         const k = innerHeight / 1600;
         const b = sec.getBoundingClientRect();
@@ -1646,8 +1658,9 @@
           rot += past * 0.16;
         }
 
-        morph.style.opacity = '1';
-        morph.style.transform =
+        /* the svg's own opacity still governs the entrance; these multiply */
+        wrap.style.opacity = '1';
+        wrap.style.transform =
           'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' +
           rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
       });
