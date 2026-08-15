@@ -601,6 +601,13 @@
     padding: 7rem 0;
   }
   .statement-track { position: relative; }
+  #statement { position: relative; }
+  .st-roller {
+    position: absolute; left: 0; top: 0;
+    width: calc(165 * var(--k)); height: calc(165 * var(--k));
+    z-index: 4; pointer-events: none; opacity: 0;
+    will-change: transform; display: none;
+  }
 
   .st-note {
     font-family: 'Fraunces', serif; font-weight: 400;
@@ -677,6 +684,7 @@
     /* never shrink: the track is wider than the viewport by design, and
        shrinking squeezed the note down to a third of its drawn width */
     .statement-track > * { flex: 0 0 auto; }
+    .st-roller { display: block; }
     /* vertical offsets are the artboard's own y values */
     .st-col        { margin-top: calc(155 * var(--k)); }
     .st-brands     { margin: calc(776 * var(--k)) 0 0 calc(300 * var(--k)); }
@@ -909,6 +917,11 @@
     </div>
 
   </div>
+
+  <!-- rides on top of INTERFACES; the word is its surface -->
+  <svg class="st-roller" viewBox="0 0 110.973 109.683" aria-hidden="true">
+    <path fill="#09ba00" d="M98.385,54.842l10.704,24.45c7.857,17.948-10.271,36.267-28.3,28.598l-25.302-10.763-25.302,10.763c-18.029,7.669-36.157-10.651-28.3-28.598l10.704-24.45L1.884,30.391C-5.973,12.444,12.156-5.876,30.184,1.793l25.302,10.763L80.789,1.793c18.029-7.669,36.157,10.651,28.3,28.598l-10.704,24.45Z"/>
+  </svg>
 </section>
 
 <!-- ABOUT -->
@@ -1470,6 +1483,56 @@
 
     /* the wink pops last */
     enter('.st-wink', { scale: 0, rotate: 20, ease: 'back.out(3)' });
+
+    /* ── roller ────────────────────────────────────────────────────
+       A ball on a conveyor: INTERFACES is the surface. It rides in on the
+       word's first letter, parks at a fixed point on screen, and from then
+       on the word slides underneath it — so it spins. Rolling without
+       slipping means the rotation is the relative slide over the radius,
+       not an arbitrary spin rate, which is why it never looks like it is
+       skidding. When the last letter passes the park point the surface is
+       gone, so it drops away under gravity, still turning.
+       Driven from the ticker rather than onUpdate because scrub: 1 keeps
+       the word moving for a second after the scrolling itself has stopped. */
+    const roller = document.querySelector('.st-roller');
+    const word   = document.querySelector('.st-interfaces');
+    if (roller && word) {
+      /* layout width, not the bounding rect: the rect grows as the shape
+         spins (a rotated square measures up to root-2 wider), which would
+         make the radius, the seat and the resting height wobble each frame */
+      let size = 0;
+      const measure = () => { size = parseFloat(getComputedStyle(roller).width) || 1; };
+      measure();
+      addEventListener('resize', () => { measure(); });
+
+      gsap.ticker.add(() => {
+        const trig = horiz.scrollTrigger;
+        if (!trig || !trig.isActive) { roller.style.opacity = '0'; return; }
+
+        const w = word.getBoundingClientRect();
+        const b = sec.getBoundingClientRect();
+        const park = innerWidth * 0.42;
+        const seat = size * 0.14;              // where it sits on the first letter
+        const ride = w.left + seat;
+        const x    = Math.max(park, ride);     // travels in, then holds
+
+        const slide = Math.max(0, park - ride);          // surface travelled beneath it
+        let rot = (slide / (size / 2)) * (180 / Math.PI);  // roll without slipping
+
+        let y = (w.top - b.top) - size + size * 0.1;     // resting on the cap line
+
+        const past = park - w.right;           // last letter has gone by
+        if (past > 0) {
+          const t = past / (innerWidth * 0.5); // fall spans half a screen of travel
+          y  += innerHeight * 1.6 * t * t;     // quadratic, so it accelerates
+          rot += past * 0.45;                  // keeps turning on the way down
+        }
+
+        roller.style.opacity = '1';
+        roller.style.transform =
+          'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + rot.toFixed(2) + 'deg)';
+      });
+    }
 
     /* Fraunces changes the track's width once it lands */
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
