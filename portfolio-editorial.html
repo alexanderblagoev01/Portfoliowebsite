@@ -588,46 +588,127 @@
   }
 
   /* ── Statement strip ─────────────────────────────────
-     One sentence that travels sideways while the section is pinned.
-     Base case is an ordinary wrapped statement block; the horizontal
-     treatment is added only on desktop, so narrow screens and reduced
-     motion get something readable rather than a 6000px line. */
-  #statement { padding: 7rem 0; }
-  .statement-line {
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-    font-size: clamp(2rem, 6vw, 3.4rem);
-    line-height: 1.12;
-    margin: 0;
-    padding: 0 1.5rem;
+     Rebuilt from the Illustrator artboard (11305 x 1600). Every size and
+     offset below is in that file's own units, scaled by --k, so the
+     drawing's proportions survive at any viewport height.
+     Always dark, in both themes, by request: it reads as a full-bleed
+     band rather than inverting with the rest of the page. */
+  #statement {
+    --k: calc(100vh / 1600);      /* artboard unit -> screen px */
+    --st-ink: #eee;
+    background: #1e1e1c;
+    color: var(--st-ink);
+    padding: 7rem 0;
   }
-  .statement-line em {
-    font-style: italic;
-    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
-  }
-  .statement-line em.a1 { color: var(--terracotta); }
-  .statement-line em.a2 { color: var(--ochre); }
-  .statement-line em.a3 { color: var(--sage); }
-  .statement-line em.a4 { color: var(--rust); }
+  .statement-track { position: relative; }
 
+  .st-note {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: calc(60 * var(--k)); line-height: 1.28;
+    margin: 0; max-width: calc(960 * var(--k)); color: var(--st-ink);
+  }
+  .st-mono {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    color: #b86947; margin-top: calc(120 * var(--k));
+  }
+  .st-lead {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: calc(282 * var(--k)); line-height: 1; margin: calc(206 * var(--k)) 0 0;
+    color: #c29c5c; white-space: nowrap;
+  }
+  .st-lead em { font-style: italic; font-variation-settings: "opsz" 9, "WONK" 1; }
+
+  /* display words */
+  .st-brands, .st-interfaces, .st-matter, .st-aim, .st-wink,
+  .st-ease, .st-intention, .st-personality, .st-vision {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    font-variation-settings: 'wght' 700; white-space: nowrap;
+  }
+  .st-amp {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: calc(217 * var(--k)); line-height: 1;
+  }
+  .st-matter { font-size: calc(258 * var(--k)); line-height: 1; }
+  .st-comma { font-family: 'Fraunces', serif; font-size: calc(325 * var(--k)); font-weight: 400; }
+  .st-interfaces { font-size: calc(244 * var(--k)); line-height: 1; color: #09ba00; }
+  .st-aim { font-size: calc(214 * var(--k)); line-height: 1.2; position: relative; display: inline-block; }
+  .st-wink { font-size: calc(112 * var(--k)); font-style: italic; }
+
+  /* pills — width is fixed to the drawing so the deliberate overflows,
+     VISION's N and Personality's l, land where they were drawn */
+  .st-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px; overflow: visible; color: var(--st-ink);
+    background-size: cover; background-position: center;
+  }
+  .st-brands {
+    background: #512424; font-size: calc(258 * var(--k));
+    width: calc(1251 * var(--k)); height: calc(369 * var(--k)); position: relative;
+  }
+  .st-star { position: absolute; left: calc(1040 * var(--k)); top: calc(-101 * var(--k));
+             width: calc(238 * var(--k)); height: calc(238 * var(--k)); overflow: visible; }
+  .st-arrow { position: absolute; left: calc(293 * var(--k)); top: calc(265 * var(--k));
+              width: calc(730 * var(--k)); height: calc(250 * var(--k)); overflow: visible; }
+
+  .st-ease, .st-intention, .st-personality, .st-vision { font-size: calc(205 * var(--k)); }
+  .st-ease        { width: calc(837 * var(--k));  height: calc(371 * var(--k));
+                    background-image: url(side/tex1.png); box-shadow: inset 0 0 0 calc(6 * var(--k)) #d8d8d0; }
+  .st-intention   { width: calc(1594 * var(--k)); height: calc(375 * var(--k));
+                    background-image: url(side/tex0.png); }
+  .st-personality { width: calc(1693 * var(--k)); height: calc(289 * var(--k));
+                    background: #ccb12b; font-style: italic; }
+  .st-vision      { width: calc(757 * var(--k));  height: calc(291 * var(--k)); font-style: italic;
+                    background: linear-gradient(90deg, #2b56cc, #3d5ca0); }
+  .st-l { display: inline-block; transform: translateY(calc(70 * var(--k))); }
+
+  /* ── horizontal treatment (desktop only) ───────────────────────── */
   @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
     #statement {
       height: 100vh; padding: 0;
-      display: flex; align-items: center;
-      overflow: hidden;                 /* clip the line as it leaves */
+      display: flex; align-items: center; overflow: hidden;
     }
-    /* max-content so the track measures its real width, not the column */
-    .statement-track { width: max-content; will-change: transform; }
-    .statement-line {
-      white-space: nowrap;
-      font-size: clamp(4.5rem, 8vw, 8rem);
-      padding: 0 8vw;
+    /* max-content so the track measures its true width, not the column */
+    .statement-track {
+      width: max-content; height: calc(1600 * var(--k));
+      display: flex; align-items: flex-start;
+      padding: 0 calc(304 * var(--k));
+      will-change: transform;
     }
+    /* never shrink: the track is wider than the viewport by design, and
+       shrinking squeezed the note down to a third of its drawn width */
+    .statement-track > * { flex: 0 0 auto; }
+    /* vertical offsets are the artboard's own y values */
+    .st-col        { margin-top: calc(155 * var(--k)); }
+    .st-brands     { margin: calc(776 * var(--k)) 0 0 calc(300 * var(--k)); }
+    .st-interfaces { margin: calc(740 * var(--k)) 0 0 calc(402 * var(--k)); }
+    .st-amp        { margin: calc(838 * var(--k)) 0 0 calc(332 * var(--k)); }
+    .st-matter     { margin: calc(791 * var(--k)) 0 0 calc(339 * var(--k)); }
+    .st-aim        { margin: calc(565 * var(--k)) 0 0 calc(291 * var(--k)); }
+    .st-cluster    { margin: calc(609 * var(--k)) 0 0 calc(374 * var(--k)); position: relative; }
+    .st-row        { display: flex; align-items: flex-start; }
+    .st-row-b      { margin-top: calc(-23 * var(--k)); }
+    .st-ease       { margin-left: calc(320 * var(--k)); }
+    .st-intention  { margin-left: calc(-73 * var(--k)); }   /* they overlap in the drawing */
+    .st-vision     { margin-left: calc(43 * var(--k)); }
+    .st-wink       { position: absolute; left: calc(4 * var(--k)); top: calc(276 * var(--k)); z-index: 2; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    #statement { height: auto; padding: 7rem 0; display: block; overflow: visible; }
-    .statement-track { width: auto; }
-    .statement-line { white-space: normal; font-size: clamp(2rem, 6vw, 3.4rem); padding: 0 1.5rem; }
+
+  /* ── stacked fallback ──────────────────────────────────────────── */
+  @media (max-width: 1000px), (prefers-reduced-motion: reduce) {
+    #statement { height: auto; display: block; overflow: visible; --k: calc(100vw / 1600); }
+    .statement-track { width: auto; height: auto; display: block; padding: 0 1.5rem; }
+    .st-note { font-size: clamp(1rem, 3.4vw, 1.35rem); max-width: 44ch; }
+    .st-lead { font-size: clamp(2.6rem, 11vw, 5rem); margin-top: 2rem; }
+    .st-cluster { margin-top: 2rem; }
+    .st-row { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: .6rem; }
+    .st-brands, .st-interfaces, .st-matter, .st-aim, .st-amp { font-size: clamp(1.8rem, 7vw, 3rem); }
+    .st-ease, .st-intention, .st-personality, .st-vision { font-size: clamp(1.2rem, 5vw, 2rem); }
+    .st-pill { width: auto !important; height: auto !important; padding: .35em 1em; }
+    .st-star, .st-arrow { display: none; }
+    .st-wink { position: static; font-size: 1.4rem; }
+    .st-brands, .st-interfaces, .st-amp, .st-matter, .st-aim {
+      display: inline-block; margin: .35rem .5rem .35rem 0;
+    }
   }
 
   /* RESPONSIVE */
@@ -778,10 +859,55 @@
   </div>
 </section>
 
-<!-- STATEMENT — scrolls sideways while pinned -->
-<section id="statement" aria-label="What I do">
+<!-- STATEMENT — scrolls sideways while pinned.
+     Rebuilt from sidescroll.svg as live text: the Illustrator file had the
+     display words outlined to 48 paths plus 470KB of embedded PNG, none of
+     which can be selected, restyled or animated per-word. Geometry is kept
+     in the artboard's own units and scaled by --k, so the proportions are
+     the drawing's. English only, by request. -->
+<section id="statement" aria-label="What I design">
   <div class="statement-track">
-    <p class="statement-line" data-i18n-html="statement">I design <em class="a1">brands</em>, <em class="a2">interfaces</em> and <em class="a3">objects</em> — and treat every one as if it will be <em class="a4">printed</em>, <em class="a1">worn</em>, or <em class="a2">lived with</em> for years.</p>
+
+    <div class="st-col">
+      <p class="st-note">My field of work consists of all-around creative
+        decisions — ideas from scratch, up to a finished, polished,
+        working product.</p>
+      <p class="st-note st-mono">or in other words.</p>
+      <p class="st-lead">I <em>design</em> :</p>
+    </div>
+
+    <span class="st-pill st-brands">BRANDS
+      <svg class="st-star" viewBox="0 0 238 238" aria-hidden="true"><polygon fill="#eee"
+        points="119 238 104 134 0 119 104 104 119 0 134 104 238 119 150.7 131.7"/></svg>
+    </span>
+
+    <span class="st-interfaces">INTERFACES;</span>
+
+    <span class="st-amp">&amp;</span>
+
+    <span class="st-matter">Matter<span class="st-comma">,</span></span>
+
+    <span class="st-aim">Aiming<br>to<br>Deliver
+      <svg class="st-arrow" viewBox="7300 830 730 250" aria-hidden="true">
+        <path fill="none" stroke="#eee" stroke-width="7" stroke-dasharray="12 5"
+          d="M7335.815,985.945c51.042-16.674,124.805-29.578,207.522,0,61.489,21.987,84.723,52.002,126.235,68.148,62.097,24.153,156.848,14.067,298.373-141.88"/>
+        <polygon fill="none" stroke="#eee" stroke-width="7" stroke-dasharray="12 5"
+          points="8022.853 849.603 7950.029 873.175 8006.855 924.457 8022.853 849.603"/>
+      </svg>
+    </span>
+
+    <div class="st-cluster">
+      <span class="st-wink">;)</span>
+      <div class="st-row">
+        <span class="st-pill st-ease">Ease</span>
+        <span class="st-pill st-intention">Intention</span>
+      </div>
+      <div class="st-row st-row-b">
+        <span class="st-pill st-personality">Persona<span class="st-l">l</span>ity</span>
+        <span class="st-pill st-vision">VISION</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1035,6 +1161,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
 
 <script>
   // Always start at top
@@ -1261,14 +1388,16 @@
 
 
   /* ── Statement strip ──────────────────────────────────────────────
-     ScrollTrigger pins the section and scrubs the line sideways. Two
-     numbers carry the feel, both taken from gsap.com's own strip:
-     RATIO, how many px of sideways travel each px of scroll buys — well
-     above 1, so it moves faster than you scroll and never drags; and
-     scrub: 1, a one-second catch-up that makes it glide instead of
-     sitting rigidly on the scrollbar. That lag is the whole effect.
-     Unlike gsap.com the line starts already in view rather than off the
-     right edge, so there is no empty screen to scroll past first. */
+     ScrollTrigger pins the section and scrubs the track sideways. Two
+     numbers carry the feel, both measured off gsap.com's own strip:
+     RATIO, how much sideways travel each pixel of scroll buys — well above
+     1, so it moves faster than you scroll and never drags; and scrub: 1, a
+     one-second catch-up that makes it glide rather than sit rigidly on the
+     scrollbar. That lag is the whole effect.
+     Per-item animations hang off containerAnimation, which is how GSAP
+     triggers on elements whose movement comes from a horizontal tween
+     rather than from the page scroll — their start/end are read along the
+     track, so each piece fires as it actually crosses the viewport. */
   (function () {
     const sec   = document.getElementById('statement');
     const track = document.querySelector('.statement-track');
@@ -1277,11 +1406,13 @@
     if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
 
     gsap.registerPlugin(ScrollTrigger);
+    if (window.DrawSVGPlugin) gsap.registerPlugin(DrawSVGPlugin);
 
     const RATIO  = 2.6;
     const travel = () => Math.max(0, track.getBoundingClientRect().width - innerWidth);
 
-    gsap.to(track, {
+    /* the horizontal run — kept as a reference so items can trigger off it */
+    const horiz = gsap.to(track, {
       x: () => -travel(),
       ease: 'none',
       scrollTrigger: {
@@ -1290,14 +1421,58 @@
         end: () => '+=' + Math.round(travel() / RATIO),
         pin: true,
         scrub: 1,
-        invalidateOnRefresh: true    // remeasure on resize and language swap
+        invalidateOnRefresh: true
       }
     });
 
-    /* Fraunces changes the line's width, and so does switching language */
+    /* each piece lifts in as it crosses the right edge */
+    const enter = (sel, vars) => {
+      const el = document.querySelector(sel);
+      if (!el) return;
+      gsap.from(el, Object.assign({
+        scrollTrigger: { trigger: el, containerAnimation: horiz,
+                         start: 'left 92%', end: 'left 55%', scrub: 1 },
+        y: () => 60 * (innerHeight / 1600) * 4, opacity: 0, ease: 'power2.out'
+      }, vars || {}));
+    };
+
+    enter('.st-col');
+    enter('.st-brands', { scale: 0.88, transformOrigin: 'left center' });
+    enter('.st-interfaces');
+    enter('.st-amp',    { rotate: -12 });
+    enter('.st-matter');
+    enter('.st-aim');
+
+    /* the star spins up as the pill arrives */
+    const star = document.querySelector('.st-star');
+    if (star) gsap.from(star, {
+      scrollTrigger: { trigger: '.st-brands', containerAnimation: horiz,
+                       start: 'left 90%', end: 'left 50%', scrub: 1 },
+      scale: 0, rotate: -140, transformOrigin: '50% 50%', ease: 'back.out(2)'
+    });
+
+    /* the dashed arrow draws itself toward the pills */
+    const arrow = document.querySelectorAll('.st-arrow path, .st-arrow polygon');
+    if (arrow.length && window.DrawSVGPlugin) gsap.fromTo(arrow,
+      { drawSVG: '0%' },
+      { drawSVG: '100%', stagger: 0.25, ease: 'none',
+        scrollTrigger: { trigger: '.st-aim', containerAnimation: horiz,
+                         start: 'left 80%', end: 'right 40%', scrub: 1 } });
+
+    /* pills land one after another */
+    const pills = document.querySelectorAll('.st-cluster .st-pill');
+    if (pills.length) gsap.from(pills, {
+      scrollTrigger: { trigger: '.st-cluster', containerAnimation: horiz,
+                       start: 'left 95%', end: 'left 40%', scrub: 1 },
+      y: () => 90 * (innerHeight / 1600) * 4, opacity: 0, scale: 0.9,
+      stagger: 0.18, ease: 'power3.out'
+    });
+
+    /* the wink pops last */
+    enter('.st-wink', { scale: 0, rotate: 20, ease: 'back.out(3)' });
+
+    /* Fraunces changes the track's width once it lands */
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
-    ['langToggle', 'dockLang'].forEach(id =>
-      document.getElementById(id)?.addEventListener('click', () => setTimeout(() => ScrollTrigger.refresh(), 60)));
   })();
 
   // ── Dock magnification ────────────────────────────────────────
