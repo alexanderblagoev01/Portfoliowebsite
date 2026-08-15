@@ -587,6 +587,13 @@
 
   }
 
+  /* ScrollSmoother's frame, gated behind a class the script only adds once
+     the smoother is actually running. Applying it unconditionally makes the
+     page unscrollable if the plugin does not load — the wrapper becomes a
+     fixed, clipped box with nothing driving it. */
+  html.smoothing #smooth-wrapper { position: fixed; inset: 0; overflow: hidden; }
+  html.smoothing #smooth-content { will-change: transform; }
+
   /* ── Statement strip ─────────────────────────────────
      Rebuilt from the Illustrator artboard (11305 x 1600). Every size and
      offset below is in that file's own units, scaled by --k, so the
@@ -841,6 +848,9 @@
 </div>
 
 <!-- TOP BAR -->
+<div id="smooth-wrapper">
+<div id="smooth-content">
+
 <div class="topbar"></div>
 
 <!-- NAV -->
@@ -1181,15 +1191,44 @@
   </div>
 </footer>
 
+</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollSmoother.min.js"></script>
 
 <script>
   // Always start at top
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+
+  /* ── Smooth scrolling ───────────────────────────────────────────────
+     Desktop only, and off under reduced motion — it takes over the scroll,
+     which is the thing that setting asks you not to do. ScrollTrigger is
+     integrated with it, so the pinned strip and every containerAnimation
+     keep working without being re-pointed. The html class is added only on
+     success, and the frame CSS hangs off it, so a failed load degrades to
+     an ordinary scrolling page instead of a stuck one. */
+  if (window.ScrollSmoother && window.ScrollTrigger && window.gsap &&
+      matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    try {
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+      document.documentElement.classList.add('smoothing');
+      ScrollSmoother.create({
+        wrapper: '#smooth-wrapper',
+        content: '#smooth-content',
+        smooth: 1.1,
+        effects: true,
+        smoothTouch: 0
+      });
+    } catch (e) {
+      document.documentElement.classList.remove('smoothing');
+    }
+  }
 
   // ── Translations ──────────────────────────────────────────────
   const translations = {
@@ -1591,15 +1630,20 @@
         let   y  = starY + (seatY - starY) * m;
         const sc = STAR_SCALE + (1 - STAR_SCALE) * m;
 
-        /* one rate throughout: travel / radius */
+        /* One rate throughout: travel / radius, geared down. True rolling
+           without slipping spins a shape this small 16 times across the
+           strip, which just reads as a blur — GEAR 0.35 puts it at one
+           full turn as it crosses INTERFACES, which still reads as rolling.
+           Trading exactness for legibility, deliberately. */
+        const GEAR = 0.35;
         const travelled = -(gsap.getProperty(track, 'x') || 0);
-        let rot = (travelled / R) * (180 / Math.PI);
+        let rot = (travelled / R) * (180 / Math.PI) * GEAR;
 
         const past = park - ir.right;                /* last letter gone by */
         if (past > 0) {
           const t = past / (innerWidth * 0.5);
           y  += innerHeight * 1.6 * t * t;
-          rot += past * 0.45;
+          rot += past * 0.16;
         }
 
         morph.style.opacity = '1';
@@ -1663,10 +1707,24 @@
   })();
 
   // ── Scroll reveal ─────────────────────────────────────────────
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  /* Reveals. IntersectionObserver does not survive ScrollSmoother — the
+     content is moved by transform inside a fixed, clipped wrapper, and the
+     observer stops reporting entries, which left every section below the
+     fold permanently hidden. Where the smoother is running, ScrollTrigger
+     does the same job against the same scroll it drives. Everywhere else
+     the observer is kept: it is cheaper and needs no library. */
+  if (document.documentElement.classList.contains('smoothing') && window.ScrollTrigger) {
+    ScrollTrigger.batch('.reveal', {
+      start: 'top 92%',
+      once: true,
+      onEnter: els => els.forEach(el => el.classList.add('in'))
+    });
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }
 
   // ── Typing / cycling hero word ────────────────────────────────
   let wordIndex = 0, charIndex = 0, isDeleting = false;
