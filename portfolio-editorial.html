@@ -587,6 +587,49 @@
 
   }
 
+  /* ── Statement strip ─────────────────────────────────
+     One sentence that travels sideways while the section is pinned.
+     Base case is an ordinary wrapped statement block; the horizontal
+     treatment is added only on desktop, so narrow screens and reduced
+     motion get something readable rather than a 6000px line. */
+  #statement { padding: 7rem 0; }
+  .statement-line {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: 1.12;
+    margin: 0;
+    padding: 0 1.5rem;
+  }
+  .statement-line em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+  }
+  .statement-line em.a1 { color: var(--terracotta); }
+  .statement-line em.a2 { color: var(--ochre); }
+  .statement-line em.a3 { color: var(--sage); }
+  .statement-line em.a4 { color: var(--rust); }
+
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    #statement {
+      height: 100vh; padding: 0;
+      display: flex; align-items: center;
+      overflow: hidden;                 /* clip the line as it leaves */
+    }
+    /* max-content so the track measures its real width, not the column */
+    .statement-track { width: max-content; will-change: transform; }
+    .statement-line {
+      white-space: nowrap;
+      font-size: clamp(4.5rem, 8vw, 8rem);
+      padding: 0 8vw;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #statement { height: auto; padding: 7rem 0; display: block; overflow: visible; }
+    .statement-track { width: auto; }
+    .statement-line { white-space: normal; font-size: clamp(2rem, 6vw, 3.4rem); padding: 0 1.5rem; }
+  }
+
   /* RESPONSIVE */
   @media(max-width: 1000px) {
     .topbar { display: none; }
@@ -732,6 +775,13 @@
         <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
       </span>
     </h1>
+  </div>
+</section>
+
+<!-- STATEMENT — scrolls sideways while pinned -->
+<section id="statement" aria-label="What I do">
+  <div class="statement-track">
+    <p class="statement-line" data-i18n-html="statement">I design <em class="a1">brands</em>, <em class="a2">interfaces</em> and <em class="a3">objects</em> — and treat every one as if it will be <em class="a4">printed</em>, <em class="a1">worn</em>, or <em class="a2">lived with</em> for years.</p>
   </div>
 </section>
 
@@ -983,6 +1033,9 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+
 <script>
   // Always start at top
   history.scrollRestoration = 'manual';
@@ -995,6 +1048,7 @@
       'nav-index': 'Index', 'nav-work': 'Work', 'nav-credentials': 'Credentials', 'nav-words': 'Words', 'nav-contact': 'Contact',
       'hero-line1': 'Design for', 'hero-line2': 'Screen',
       'about-meta-left': '&nbsp;— Index', 'about-meta-right': 'About the Designer',
+      'statement': 'I design <em class="a1">brands</em>, <em class="a2">interfaces</em> and <em class="a3">objects</em> — and treat every one as if it will be <em class="a4">printed</em>, <em class="a1">worn</em>, or <em class="a2">lived with</em> for years.',
       'about-heading': 'Hands at <em>work</em>, eyes on the <em>detail</em>.', 'about-note': '— A note —',
       'about-p1': '<em>I am a graphic and web designer</em> working remotely since 2017 across brand identity, digital interfaces, product design, packaging, and fashion. The range is wide by design; I follow the work wherever it leads.',
       'about-p2': 'I studied Graphic Design at university and left when it became clear I had <strong>outpaced the curriculum</strong>. The real education happened in the work itself — in real briefs, real clients, and the kind of pressure that sharpens you faster than any classroom. I later formalised parts of that knowledge through <em>SoftUni Creative</em>, one of Bulgaria\'s most recognised creative programmes.',
@@ -1040,6 +1094,7 @@
       'nav-index': 'Индекс', 'nav-work': 'Творби', 'nav-credentials': 'Квалификации', 'nav-words': 'Отзиви', 'nav-contact': 'Контакт',
       'hero-line1': 'Дизайн за', 'hero-line2': 'Екрана',
       'about-meta-left': '&nbsp;— Индекс', 'about-meta-right': 'За дизайнера',
+      'statement': 'Проектирам <em class="a1">брандове</em>, <em class="a2">интерфейси</em> и <em class="a3">обекти</em> — и всеки проект третирам като нещо, което ще бъде <em class="a4">отпечатано</em>, <em class="a1">носено</em> или <em class="a2">живяно</em> с години.',
       'about-heading': 'Ръце в <em>работата</em>, очи в <em>детайла</em>.', 'about-note': '— Бележка —',
       'about-p1': '<em>Аз съм графичен и уеб дизайнер</em>, работещ дистанционно от 2017 г. в областта на брандовата идентичност, дигиталните интерфейси, продуктовия дизайн, опаковките и модата. Обхватът е широк по замисъл; следвам работата, накъдето води.',
       'about-p2': 'Следвах Графичен Дизайн в университет и напуснах, когато стана ясно, че <strong>надраснах учебната програма</strong>. Истинското образование се случи в самата работа — в реални проекти, реални клиенти и натиск, който те оформя по-бързо от всяка класна стая. По-късно формализирах части от тези знания чрез <em>SoftUni Creative</em>, една от най-признатите творчески програми в България.',
@@ -1202,6 +1257,47 @@
     document.fonts?.ready.then(fit);        // refit once Fraunces lands
     document.getElementById('langToggle')?.addEventListener('click', () => setTimeout(fit, 30));
     document.getElementById('dockLang')?.addEventListener('click', () => setTimeout(fit, 30));
+  })();
+
+
+  /* ── Statement strip ──────────────────────────────────────────────
+     ScrollTrigger pins the section and scrubs the line sideways. Two
+     numbers carry the feel, both taken from gsap.com's own strip:
+     RATIO, how many px of sideways travel each px of scroll buys — well
+     above 1, so it moves faster than you scroll and never drags; and
+     scrub: 1, a one-second catch-up that makes it glide instead of
+     sitting rigidly on the scrollbar. That lag is the whole effect.
+     Unlike gsap.com the line starts already in view rather than off the
+     right edge, so there is no empty screen to scroll past first. */
+  (function () {
+    const sec   = document.getElementById('statement');
+    const track = document.querySelector('.statement-track');
+    if (!sec || !track || !window.gsap || !window.ScrollTrigger) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const RATIO  = 2.6;
+    const travel = () => Math.max(0, track.getBoundingClientRect().width - innerWidth);
+
+    gsap.to(track, {
+      x: () => -travel(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sec,
+        start: 'top top',
+        end: () => '+=' + Math.round(travel() / RATIO),
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true    // remeasure on resize and language swap
+      }
+    });
+
+    /* Fraunces changes the line's width, and so does switching language */
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+    ['langToggle', 'dockLang'].forEach(id =>
+      document.getElementById(id)?.addEventListener('click', () => setTimeout(() => ScrollTrigger.refresh(), 60)));
   })();
 
   // ── Dock magnification ────────────────────────────────────────
