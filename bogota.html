@@ -286,6 +286,31 @@
       cursor: pointer;
     }
   }
+
+  /* ── Scroll-scrubbed 3D menu ──────────────────────────────────────
+     A frame sequence on a canvas, not a video. Seeking a video's
+     currentTime lands on sparse keyframes, so it stutters and lags the
+     scroll; an image sequence is exact, never stalls, and reverses for
+     free when you scroll back up. */
+  .menu3d { position: relative; height: 260vh; background: var(--paper); }
+  .menu3d-pin {
+    position: sticky; top: 0; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .menu3d-pin canvas { display: block; width: 100%; height: 100%; }
+  .menu3d-caption {
+    position: absolute; left: 0; right: 0; bottom: 8vh;
+    text-align: center; pointer-events: none;
+    font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-soft); opacity: .85;
+  }
+  .menu3d-caption em { color: var(--script-orange); font-style: normal; }
+  @media (max-width: 820px) { .menu3d { height: 170vh; } }
+  @media (prefers-reduced-motion: reduce) { .menu3d { height: auto; }
+    .menu3d-pin { position: static; height: auto; } }
+
 </style>
 </head>
 <body>
@@ -454,6 +479,14 @@
         <span class="type-sample-body">Зала за Вашите специални моменти — ресторант с характер.</span>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 3D MENU — opens as you scroll -->
+<section class="menu3d" id="menu3d" aria-label="The printed menu, opening">
+  <div class="menu3d-pin">
+    <canvas id="menu3dCanvas" aria-hidden="true"></canvas>
+    <p class="menu3d-caption">Scroll to open &nbsp;·&nbsp; <em>14 pages, hardbound</em></p>
   </div>
 </section>
 
@@ -672,6 +705,87 @@
       localStorage.setItem('deskNoticeDismissed', '1');
     });
   })();
+</script>
+
+<script>
+/* ── Scroll-scrubbed 3D menu ───────────────────────────────────────────
+   70 WebP frames drawn to a canvas, the index driven by how far through
+   the section you have scrolled. Deliberately not a <video>: scrubbing
+   currentTime seeks to the nearest keyframe, which on normal H.264 is
+   every few dozen frames, so it judders and trails the scroll.
+   Dependency-free - this page has no GSAP and one canvas does not justify
+   loading it. */
+(function () {
+  var sec = document.getElementById('menu3d');
+  var cv  = document.getElementById('menu3dCanvas');
+  if (!sec || !cv) return;
+
+  var N = 70, PAD = 4, DIR = 'menu-seq/f_';
+  var ctx = cv.getContext('2d', { alpha: false });
+  var frames = new Array(N), loaded = 0, current = -1, dpr = 1;
+
+  function pad(n) { n = String(n); while (n.length < PAD) n = '0' + n; return n; }
+
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = cv.getBoundingClientRect();
+    cv.width  = Math.max(1, Math.round(r.width  * dpr));
+    cv.height = Math.max(1, Math.round(r.height * dpr));
+    current = -1;                     // force a repaint at the new size
+  }
+
+  /* cover-fit, so the sequence fills the band at any viewport shape */
+  function paint(img) {
+    if (!img || !img.naturalWidth) return;
+    var cw = cv.width, ch = cv.height;
+    var s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    var w = img.naturalWidth * s, h = img.naturalHeight * s;
+    ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+  }
+
+  /* nearest already-decoded frame, so early scrolling never blanks */
+  function nearest(i) {
+    if (frames[i] && frames[i].complete) return frames[i];
+    for (var d = 1; d < N; d++) {
+      if (frames[i - d] && frames[i - d].complete) return frames[i - d];
+      if (frames[i + d] && frames[i + d].complete) return frames[i + d];
+    }
+    return null;
+  }
+
+  function draw() {
+    var r = sec.getBoundingClientRect();
+    var span = sec.offsetHeight - window.innerHeight;
+    var p = span > 0 ? (-r.top) / span : 0;
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+    var i = Math.round(p * (N - 1));
+    if (i === current) return;
+    current = i;
+    paint(nearest(i));
+  }
+
+  var queued = false;
+  function tick() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; draw(); });
+  }
+
+  for (var k = 0; k < N; k++) {
+    (function (k) {
+      var img = new Image();
+      img.decoding = 'async';
+      img.src = DIR + pad(k + 1) + '.webp';
+      img.onload = function () { loaded++; if (loaded < 6 || k === current) tick(); };
+      frames[k] = img;
+    })(k);
+  }
+
+  size();
+  addEventListener('resize', function () { size(); tick(); });
+  addEventListener('scroll', tick, { passive: true });
+  tick();
+})();
 </script>
 </body>
 </html>
