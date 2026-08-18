@@ -1469,6 +1469,15 @@
     if (!vid || !line || !word) return;
     if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
 
+    /* Safari decodes VP9 but throws the alpha away, so a transparent WebM
+       renders on solid black. There is no feature test for that - canPlayType
+       reports the codec as playable either way, and Chrome on macOS also
+       claims HEVC - so this is a UA check, which is what it takes here.
+       Hidden rather than shown as a black slab until an HEVC-with-alpha
+       source is in place for Safari. */
+    var isSafari = /^((?!chrome|chromium|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+    if (isSafari) { vid.remove(); return; }
+
     /* SEAT, not the feet: measured by walking up the source alpha from the
        feet to where the two legs merge into one silhouette - his crotch, at
        39.17% of the frame height, which is the line he actually sits on.
