@@ -1469,7 +1469,11 @@
     if (!vid || !line || !word) return;
     if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
 
-    var FIG_H = 1392 / 1440, FIG_CX = 0.5047, FEET = 31 / 1440;
+    /* SEAT, not the feet: measured by walking up the source alpha from the
+       feet to where the two legs merge into one silhouette - his crotch, at
+       39.17% of the frame height, which is the line he actually sits on.
+       Anchoring his feet there left him standing on the letter instead. */
+    var FIG_H = 1392 / 1440, FIG_CX = 0.5047, SEAT = 0.3800;
     var ASPECT = 2560 / 1440;
     var measure = document.createElement('canvas').getContext('2d');
 
@@ -1499,7 +1503,7 @@
       var vidH  = figH / FIG_H;
       var vidW  = vidH * ASPECT;
       var left  = (g.left + g.width / 2) - FIG_CX * vidW;
-      var top   = capTop + FEET * vidH - vidH;
+      var top   = capTop + SEAT * vidH - vidH;
 
       var host = line.getBoundingClientRect();
       vid.style.height = vidH.toFixed(1) + 'px';
