@@ -1475,8 +1475,19 @@
        claims HEVC - so this is a UA check, which is what it takes here.
        Hidden rather than shown as a black slab until an HEVC-with-alpha
        source is in place for Safari. */
+    /* Safari gets HEVC-with-alpha, its own transparent-video format. Everyone
+       else keeps the WebM - Firefox handles VP9 alpha correctly, and Chrome
+       decodes HEVC but not its alpha, so this cannot be left to source-order
+       negotiation. If the HEVC file is not there yet, he is dropped rather
+       than shown as a black slab. */
     var isSafari = /^((?!chrome|chromium|android|crios|fxios).)*safari/i.test(navigator.userAgent);
-    if (isSafari) { vid.remove(); return; }
+    if (isSafari) {
+      vid.addEventListener('error', function () { vid.remove(); }, { once: true });
+      vid.src = 'hero-sit-hevc.mp4';
+      vid.load();
+      var tryPlay = vid.play();
+      if (tryPlay && tryPlay.catch) tryPlay.catch(function () {});
+    }
 
     /* SEAT, not the feet: measured by walking up the source alpha from the
        feet to where the two legs merge into one silhouette - his crotch, at
