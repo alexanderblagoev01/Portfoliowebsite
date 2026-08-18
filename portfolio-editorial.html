@@ -882,10 +882,12 @@
       <span class="hero-line">
         <span data-i18n="hero-line1">Design for</span>
         <span class="italic" data-i18n="hero-line2">Screen</span>
-        <!-- perched on the first line; VP9 with a real alpha channel, so the
-             headline shows through around him rather than sitting behind a box -->
-        <video class="hero-sit" src="hero-sit.webm" autoplay muted loop playsinline
-               disablepictureinpicture aria-hidden="true"></video>
+        <!-- Animated WebP, not a video: full 8-bit alpha and it plays in Safari,
+             Chrome and Firefox alike, so no codec negotiation and no UA check.
+             VP9-with-alpha rendered on black in Safari; HEVC-with-alpha would
+             have fixed Safari but broken Chrome, which decodes HEVC without
+             its alpha. -->
+        <img class="hero-sit" src="hero-sit.webp" alt="" aria-hidden="true">
       </span>
       <span class="hero-line hero-line-type">
         <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
@@ -1463,7 +1465,7 @@
      Re-run on resize and on both language toggles, because the headline is
      refitted to the viewport width and the first glyph moves. */
   (function () {
-    var vid  = document.querySelector('.hero-sit');
+    var vid  = document.querySelector('.hero-sit');   /* the animated webp */
     var line = document.querySelector('.hero-line');
     var word = document.querySelector('[data-i18n="hero-line1"]');
     if (!vid || !line || !word) return;
@@ -1475,26 +1477,12 @@
        claims HEVC - so this is a UA check, which is what it takes here.
        Hidden rather than shown as a black slab until an HEVC-with-alpha
        source is in place for Safari. */
-    /* Safari gets HEVC-with-alpha, its own transparent-video format. Everyone
-       else keeps the WebM - Firefox handles VP9 alpha correctly, and Chrome
-       decodes HEVC but not its alpha, so this cannot be left to source-order
-       negotiation. If the HEVC file is not there yet, he is dropped rather
-       than shown as a black slab. */
-    var isSafari = /^((?!chrome|chromium|android|crios|fxios).)*safari/i.test(navigator.userAgent);
-    if (isSafari) {
-      vid.addEventListener('error', function () { vid.remove(); }, { once: true });
-      vid.src = 'hero-sit-hevc.mp4';
-      vid.load();
-      var tryPlay = vid.play();
-      if (tryPlay && tryPlay.catch) tryPlay.catch(function () {});
-    }
-
-    /* SEAT, not the feet: measured by walking up the source alpha from the
-       feet to where the two legs merge into one silhouette - his crotch, at
-       39.17% of the frame height, which is the line he actually sits on.
-       Anchoring his feet there left him standing on the letter instead. */
-    var FIG_H = 1392 / 1440, FIG_CX = 0.5047, SEAT = 0.3800;
-    var ASPECT = 2560 / 1440;
+    /* Fractions of the SHIPPED frame, which is cropped tight to him with a
+       12px pad - not the original 2560x1440 render. SEAT is his crotch, found
+       by walking up the source alpha from his feet to the row where the two
+       leg silhouettes merge; anchoring his feet instead left him standing on
+       the letter rather than sitting on it. */
+    var FIG_H = 0.9831, FIG_CX = 0.4992, SEAT = 0.3849;
     var measure = document.createElement('canvas').getContext('2d');
 
     function place() {
@@ -1521,7 +1509,11 @@
 
       var figH  = capH * 2.0;                 /* seated figure vs the cap height */
       var vidH  = figH / FIG_H;
-      var vidW  = vidH * ASPECT;
+      /* aspect from the file, not a constant: the leftover full-frame 1.778
+         shifted him 165px sideways once the art was cropped */
+      var nat   = (vid.naturalWidth && vid.naturalHeight)
+                    ? vid.naturalWidth / vid.naturalHeight : 420 / 894;
+      var vidW  = vidH * nat;
       var left  = (g.left + g.width / 2) - FIG_CX * vidW;
       var top   = capTop + SEAT * vidH - vidH;
 
@@ -1540,7 +1532,7 @@
       var b = document.getElementById(id);
       if (b) b.addEventListener('click', relayout);
     });
-    vid.addEventListener('loadedmetadata', relayout);
+    vid.addEventListener('load', relayout);          /* img, not video */
   })();
 
   /* ── Statement strip ──────────────────────────────────────────────
