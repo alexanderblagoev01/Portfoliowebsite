@@ -594,6 +594,25 @@
   html.smoothing #smooth-wrapper { position: fixed; inset: 0; overflow: hidden; }
   html.smoothing #smooth-content { will-change: transform; }
 
+
+  /* ── Sitting figure on the headline ──────────────────────────────
+     Anchored to the first hero line rather than the section, so he stays
+     put when the JS refits the headline to the viewport width. Bottom
+     sits slightly into the cap height so he reads as resting ON the
+     letters, not floating above them. */
+  .hero-sit { display: none; }
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    .hero-line { position: relative; }
+    .hero-sit {
+      display: block; position: absolute;
+      left: 0; top: 0;            /* both set by JS, measured off the glyph */
+      width: auto;
+      pointer-events: none;
+      z-index: 2;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-sit { display: none; } }
+
   /* ── Statement strip ─────────────────────────────────
      Rebuilt from the Illustrator artboard (11305 x 1600). Every size and
      offset below is in that file's own units, scaled by --k, so the
@@ -863,6 +882,10 @@
       <span class="hero-line">
         <span data-i18n="hero-line1">Design for</span>
         <span class="italic" data-i18n="hero-line2">Screen</span>
+        <!-- perched on the first line; VP9 with a real alpha channel, so the
+             headline shows through around him rather than sitting behind a box -->
+        <video class="hero-sit" src="hero-sit.webm" autoplay muted loop playsinline
+               disablepictureinpicture aria-hidden="true"></video>
       </span>
       <span class="hero-line hero-line-type">
         <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
@@ -1429,6 +1452,72 @@
     document.getElementById('dockLang')?.addEventListener('click', () => setTimeout(fit, 30));
   })();
 
+
+
+  /* ── Seat the figure on the first letter ──────────────────────────
+     The video frame is 2560x1440 but he only occupies 641x1392 of it, so
+     the box cannot be positioned directly - his own bounds inside the
+     frame have to be backed out first. Measured from the source alpha:
+     he is 96.67% of the frame's height, centred at 50.47% across, and his
+     feet sit 2.15% of the frame height above its bottom edge.
+     Re-run on resize and on both language toggles, because the headline is
+     refitted to the viewport width and the first glyph moves. */
+  (function () {
+    var vid  = document.querySelector('.hero-sit');
+    var line = document.querySelector('.hero-line');
+    var word = document.querySelector('[data-i18n="hero-line1"]');
+    if (!vid || !line || !word) return;
+    if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
+
+    var FIG_H = 1392 / 1440, FIG_CX = 0.5047, FEET = 31 / 1440;
+    var ASPECT = 2560 / 1440;
+    var measure = document.createElement('canvas').getContext('2d');
+
+    function place() {
+      var tn = null, i;
+      for (i = 0; i < word.childNodes.length; i++)
+        if (word.childNodes[i].nodeType === 3 && word.childNodes[i].textContent.trim()) {
+          tn = word.childNodes[i]; break;
+        }
+      if (!tn) return;
+
+      /* box of the first glyph alone */
+      var rg = document.createRange();
+      rg.setStart(tn, 0); rg.setEnd(tn, 1);
+      var g = rg.getBoundingClientRect();
+      if (!g.width) return;
+
+      /* its ink top, not the line box top - the line box sits well above the cap */
+      var cs = getComputedStyle(word);
+      measure.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      var m = measure.measureText(tn.textContent[0]);
+      var baseline = g.top + (m.fontBoundingBoxAscent || parseFloat(cs.fontSize) * 0.8);
+      var capH = m.actualBoundingBoxAscent || parseFloat(cs.fontSize) * 0.7;
+      var capTop = baseline - capH;
+
+      var figH  = capH * 2.0;                 /* seated figure vs the cap height */
+      var vidH  = figH / FIG_H;
+      var vidW  = vidH * ASPECT;
+      var left  = (g.left + g.width / 2) - FIG_CX * vidW;
+      var top   = capTop + FEET * vidH - vidH;
+
+      var host = line.getBoundingClientRect();
+      vid.style.height = vidH.toFixed(1) + 'px';
+      vid.style.left   = (left - host.left).toFixed(1) + 'px';
+      vid.style.top    = (top  - host.top ).toFixed(1) + 'px';
+    }
+
+    var t;
+    function relayout() { clearTimeout(t); t = setTimeout(place, 60); }
+    place();
+    addEventListener('resize', relayout);
+    document.fonts && document.fonts.ready.then(relayout);
+    ['langToggle', 'dockLang'].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener('click', relayout);
+    });
+    vid.addEventListener('loadedmetadata', relayout);
+  })();
 
   /* ── Statement strip ──────────────────────────────────────────────
      ScrollTrigger pins the section and scrubs the track sideways. Two
