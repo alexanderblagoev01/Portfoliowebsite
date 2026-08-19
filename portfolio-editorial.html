@@ -595,6 +595,24 @@
   html.smoothing #smooth-content { will-change: transform; }
 
 
+
+  /* ── Figure leaning on the portrait ──────────────────────────────
+     Straddles the photo's right edge: his left third overlaps the image,
+     the rest stands clear of it, and his feet land on the photo's own
+     baseline so he reads as standing beside it rather than floating. */
+  .about-figure-wrap { position: relative; }
+  .about-lean { display: none; }
+  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    .about-lean {
+      display: block; position: absolute;
+      left: 100%; bottom: 0;
+      height: 74%;
+      transform: translateX(-40%);
+      pointer-events: none;
+      z-index: 3;
+    }
+  }
+
   /* ── Sitting figure on the headline ──────────────────────────────
      Anchored to the first hero line rather than the section, so he stays
      put when the JS refits the headline to the viewport width. Bottom
@@ -957,8 +975,13 @@
       <span data-i18n="about-meta-right">About the Designer</span>
     </div>
     <div class="about-grid">
-      <div class="about-figure reveal">
-        <img src="portrait.jpeg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
+      <div class="about-figure-wrap">
+        <div class="about-figure reveal">
+          <img src="portrait.jpeg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
+        </div>
+        <!-- animated WebP, transparent; sits outside .about-figure because that
+             clips its overflow, and he has to cross the edge to lean on it -->
+        <img class="about-lean" src="hero-stand.webp" alt="" aria-hidden="true">
       </div>
       <div class="about-body">
         <h2 class="section-heading reveal" data-i18n-html="about-heading">Hands at <em>work</em>, eyes on the <em>detail</em>.</h2>
@@ -1242,7 +1265,7 @@
       'm-notice': 'Designed for desktop — best viewed on a larger screen.',
       'nav-index': 'Index', 'nav-work': 'Work', 'nav-credentials': 'Credentials', 'nav-words': 'Words', 'nav-contact': 'Contact',
       'hero-line1': 'Design for', 'hero-line2': 'Screen',
-      'about-meta-left': '&nbsp;— Index', 'about-meta-right': 'About the Designer',
+      'about-meta-left': ' — Index', 'about-meta-right': 'About the Designer',
       'statement': 'I design <em class="a1">brands</em>, <em class="a2">interfaces</em> and <em class="a3">objects</em> — and treat every one as if it will be <em class="a4">printed</em>, <em class="a1">worn</em>, or <em class="a2">lived with</em> for years.',
       'about-heading': 'Hands at <em>work</em>, eyes on the <em>detail</em>.', 'about-note': '— A note —',
       'about-p1': '<em>I am a graphic and web designer</em> working remotely since 2017 across brand identity, digital interfaces, product design, packaging, and fashion. The range is wide by design; I follow the work wherever it leads.',
@@ -1288,7 +1311,7 @@
       'm-notice': 'Създаден за десктоп — най-добре на по-голям екран.',
       'nav-index': 'Индекс', 'nav-work': 'Творби', 'nav-credentials': 'Квалификации', 'nav-words': 'Отзиви', 'nav-contact': 'Контакт',
       'hero-line1': 'Дизайн за', 'hero-line2': 'Екрана',
-      'about-meta-left': '&nbsp;— Индекс', 'about-meta-right': 'За дизайнера',
+      'about-meta-left': ' — Индекс', 'about-meta-right': 'За дизайнера',
       'statement': 'Проектирам <em class="a1">брандове</em>, <em class="a2">интерфейси</em> и <em class="a3">обекти</em> — и всеки проект третирам като нещо, което ще бъде <em class="a4">отпечатано</em>, <em class="a1">носено</em> или <em class="a2">живяно</em> с години.',
       'about-heading': 'Ръце в <em>работата</em>, очи в <em>детайла</em>.', 'about-note': '— Бележка —',
       'about-p1': '<em>Аз съм графичен и уеб дизайнер</em>, работещ дистанционно от 2017 г. в областта на брандовата идентичност, дигиталните интерфейси, продуктовия дизайн, опаковките и модата. Обхватът е широк по замисъл; следвам работата, накъдето води.',
