@@ -604,10 +604,17 @@
   .about-lean { display: none; }
   @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
     .about-lean {
+      /* His silhouette does not reach the edges of the frame - there is a 12px
+         transparent pad on every side. Nudging by exactly that puts his arm on
+         the photo's edge and his shoes on its base, rather than the image box,
+         which is what left him overlapping and floating a couple of px high. */
+      --lean-h: 56%;
+      --pad-left: 1.392%;      /* clear space left of his arm  */
+      --pad-bottom: 0.510%;    /* clear space below his shoes  */
       display: block; position: absolute;
       left: 100%; bottom: 0;
-      height: 74%;
-      transform: translateX(-40%);
+      height: var(--lean-h);
+      transform: translate(calc(-1 * var(--pad-left)), var(--pad-bottom));
       pointer-events: none;
       z-index: 3;
     }
