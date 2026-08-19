@@ -603,6 +603,13 @@
   .about-figure-wrap { position: relative; }
   .about-lean { display: none; }
   @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    /* Widen the gutter so he stands IN it rather than over the copy. His
+       silhouette runs about 0.21x the photo column's width, which overran a
+       5rem gap by ~20px; 9rem clears him with room to breathe. Scoped to the
+       same breakpoint that shows him, so the layout returns to 5rem wherever
+       he is hidden. */
+    .about-grid { gap: 9rem; }
+
     .about-lean {
       /* His silhouette does not reach the edges of the frame - there is a 12px
          transparent pad on every side. Nudging by exactly that puts his arm on
