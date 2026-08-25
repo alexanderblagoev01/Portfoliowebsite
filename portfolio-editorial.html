@@ -596,55 +596,6 @@
 
 
 
-  /* ── Figure leaning on the portrait ──────────────────────────────
-     Straddles the photo's right edge: his left third overlaps the image,
-     the rest stands clear of it, and his feet land on the photo's own
-     baseline so he reads as standing beside it rather than floating. */
-  .about-figure-wrap { position: relative; }
-  .about-lean { display: none; }
-  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
-    /* Widen the gutter so he stands IN it rather than over the copy. His
-       silhouette runs about 0.21x the photo column's width, which overran a
-       5rem gap by ~20px; 9rem clears him with room to breathe. Scoped to the
-       same breakpoint that shows him, so the layout returns to 5rem wherever
-       he is hidden. */
-    .about-grid { gap: 9rem; }
-
-    .about-lean {
-      /* His silhouette does not reach the edges of the frame - there is a 12px
-         transparent pad on every side. Nudging by exactly that puts his arm on
-         the photo's edge and his shoes on its base, rather than the image box,
-         which is what left him overlapping and floating a couple of px high. */
-      --lean-h: 48%;
-      --pad-left: 1.392%;      /* clear space left of his arm  */
-      --pad-bottom: 0.510%;    /* clear space below his shoes  */
-      display: block; position: absolute;
-      left: 100%; bottom: 0;
-      height: var(--lean-h);
-      transform: translate(calc(-1 * var(--pad-left)), var(--pad-bottom));
-      pointer-events: none;
-      z-index: 3;
-    }
-  }
-
-  /* ── Sitting figure on the headline ──────────────────────────────
-     Anchored to the first hero line rather than the section, so he stays
-     put when the JS refits the headline to the viewport width. Bottom
-     sits slightly into the cap height so he reads as resting ON the
-     letters, not floating above them. */
-  .hero-sit { display: none; }
-  @media (hover: hover) and (pointer: fine) and (min-width: 1001px) {
-    .hero-line { position: relative; }
-    .hero-sit {
-      display: block; position: absolute;
-      left: 0; top: 0;            /* both set by JS, measured off the glyph */
-      width: auto;
-      pointer-events: none;
-      z-index: 2;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) { .hero-sit { display: none; } }
-
   /* ── Statement strip ─────────────────────────────────
      Rebuilt from the Illustrator artboard (11305 x 1600). Every size and
      offset below is in that file's own units, scaled by --k, so the
@@ -914,12 +865,6 @@
       <span class="hero-line">
         <span data-i18n="hero-line1">Design for</span>
         <span class="italic" data-i18n="hero-line2">Screen</span>
-        <!-- Animated WebP, not a video: full 8-bit alpha and it plays in Safari,
-             Chrome and Firefox alike, so no codec negotiation and no UA check.
-             VP9-with-alpha rendered on black in Safari; HEVC-with-alpha would
-             have fixed Safari but broken Chrome, which decodes HEVC without
-             its alpha. -->
-        <img class="hero-sit" src="hero-sit.webp" alt="" aria-hidden="true">
       </span>
       <span class="hero-line hero-line-type">
         <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
@@ -989,13 +934,8 @@
       <span data-i18n="about-meta-right">About the Designer</span>
     </div>
     <div class="about-grid">
-      <div class="about-figure-wrap">
-        <div class="about-figure reveal">
-          <img src="portrait.jpeg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
-        </div>
-        <!-- animated WebP, transparent; sits outside .about-figure because that
-             clips its overflow, and he has to cross the edge to lean on it -->
-        <img class="about-lean" src="hero-stand.webp" alt="" aria-hidden="true">
+      <div class="about-figure reveal">
+        <img src="portrait.jpeg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
       </div>
       <div class="about-body">
         <h2 class="section-heading reveal" data-i18n-html="about-heading">Hands at <em>work</em>, eyes on the <em>detail</em>.</h2>
@@ -1492,85 +1432,6 @@
   })();
 
 
-
-  /* ── Seat the figure on the first letter ──────────────────────────
-     The video frame is 2560x1440 but he only occupies 641x1392 of it, so
-     the box cannot be positioned directly - his own bounds inside the
-     frame have to be backed out first. Measured from the source alpha:
-     he is 96.67% of the frame's height, centred at 50.47% across, and his
-     feet sit 2.15% of the frame height above its bottom edge.
-     Re-run on resize and on both language toggles, because the headline is
-     refitted to the viewport width and the first glyph moves. */
-  (function () {
-    var vid  = document.querySelector('.hero-sit');   /* the animated webp */
-    var line = document.querySelector('.hero-line');
-    var word = document.querySelector('[data-i18n="hero-line1"]');
-    if (!vid || !line || !word) return;
-    if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1001px)').matches) return;
-
-    /* Safari decodes VP9 but throws the alpha away, so a transparent WebM
-       renders on solid black. There is no feature test for that - canPlayType
-       reports the codec as playable either way, and Chrome on macOS also
-       claims HEVC - so this is a UA check, which is what it takes here.
-       Hidden rather than shown as a black slab until an HEVC-with-alpha
-       source is in place for Safari. */
-    /* Fractions of the SHIPPED frame, which is cropped tight to him with a
-       12px pad - not the original 2560x1440 render. SEAT is his crotch, found
-       by walking up the source alpha from his feet to the row where the two
-       leg silhouettes merge; anchoring his feet instead left him standing on
-       the letter rather than sitting on it. */
-    var FIG_H = 0.9831, FIG_CX = 0.4992, SEAT = 0.3849;
-    var measure = document.createElement('canvas').getContext('2d');
-
-    function place() {
-      var tn = null, i;
-      for (i = 0; i < word.childNodes.length; i++)
-        if (word.childNodes[i].nodeType === 3 && word.childNodes[i].textContent.trim()) {
-          tn = word.childNodes[i]; break;
-        }
-      if (!tn) return;
-
-      /* box of the first glyph alone */
-      var rg = document.createRange();
-      rg.setStart(tn, 0); rg.setEnd(tn, 1);
-      var g = rg.getBoundingClientRect();
-      if (!g.width) return;
-
-      /* its ink top, not the line box top - the line box sits well above the cap */
-      var cs = getComputedStyle(word);
-      measure.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
-      var m = measure.measureText(tn.textContent[0]);
-      var baseline = g.top + (m.fontBoundingBoxAscent || parseFloat(cs.fontSize) * 0.8);
-      var capH = m.actualBoundingBoxAscent || parseFloat(cs.fontSize) * 0.7;
-      var capTop = baseline - capH;
-
-      var figH  = capH * 2.0;                 /* seated figure vs the cap height */
-      var vidH  = figH / FIG_H;
-      /* aspect from the file, not a constant: the leftover full-frame 1.778
-         shifted him 165px sideways once the art was cropped */
-      var nat   = (vid.naturalWidth && vid.naturalHeight)
-                    ? vid.naturalWidth / vid.naturalHeight : 420 / 894;
-      var vidW  = vidH * nat;
-      var left  = (g.left + g.width / 2) - FIG_CX * vidW;
-      var top   = capTop + SEAT * vidH - vidH;
-
-      var host = line.getBoundingClientRect();
-      vid.style.height = vidH.toFixed(1) + 'px';
-      vid.style.left   = (left - host.left).toFixed(1) + 'px';
-      vid.style.top    = (top  - host.top ).toFixed(1) + 'px';
-    }
-
-    var t;
-    function relayout() { clearTimeout(t); t = setTimeout(place, 60); }
-    place();
-    addEventListener('resize', relayout);
-    document.fonts && document.fonts.ready.then(relayout);
-    ['langToggle', 'dockLang'].forEach(function (id) {
-      var b = document.getElementById(id);
-      if (b) b.addEventListener('click', relayout);
-    });
-    vid.addEventListener('load', relayout);          /* img, not video */
-  })();
 
   /* ── Statement strip ──────────────────────────────────────────────
      ScrollTrigger pins the section and scrubs the track sideways. Two
