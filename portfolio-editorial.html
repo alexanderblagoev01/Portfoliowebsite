@@ -806,6 +806,18 @@
        the gap Ease leaves for it, rather than overlapping Personality */
     .st-wink { position: absolute; left: calc(58 * var(--k)); top: calc(83 * var(--k)); z-index: 2;
                font-size: calc(170 * var(--k)); margin: 0; }
+
+    /* The stage the scroll animation plays on — .st-live is added by the
+       script, so without it this stays the static stack above. Full height
+       while pinned, content centred in the part the dock doesn't cover.
+       100vh is the large viewport on iOS: with svh, the strip the toolbar
+       frees up while pinned showed the page behind. */
+    #statement.st-live {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 1.25rem 0 calc(1.25rem + 78px + env(safe-area-inset-bottom, 0px));
+    }
+    #statement.st-live .st-morph { display: block; }
   }
 
 
@@ -1552,6 +1564,10 @@
 
 
 
+  /* the green shape from the artboard — the star becomes this on both the
+     desktop strip and the phone stage */
+  const ST_ROLLER = 'M98.385,54.842l10.704,24.45c7.857,17.948-10.271,36.267-28.3,28.598l-25.302-10.763-25.302,10.763c-18.029,7.669-36.157-10.651-28.3-28.598l10.704-24.45L1.884,30.391C-5.973,12.444,12.156-5.876,30.184,1.793l25.302,10.763L80.789,1.793c18.029-7.669,36.157,10.651,28.3,28.598l-10.704,24.45Z';
+
   /* ── Statement strip ──────────────────────────────────────────────
      ScrollTrigger pins the section and scrubs the track sideways. Two
      numbers carry the feel, both measured off gsap.com's own strip:
@@ -1689,7 +1705,7 @@
     const inter = document.querySelector('.st-interfaces');
     const pill  = document.querySelector('.st-brands');
     if (morph && inter && pill) {
-      const ROLLER = 'M98.385,54.842l10.704,24.45c7.857,17.948-10.271,36.267-28.3,28.598l-25.302-10.763-25.302,10.763c-18.029,7.669-36.157-10.651-28.3-28.598l10.704-24.45L1.884,30.391C-5.973,12.444,12.156-5.876,30.184,1.793l25.302,10.763L80.789,1.793c18.029-7.669,36.157,10.651,28.3,28.598l-10.704,24.45Z';
+      const ROLLER = ST_ROLLER;
       const path = morph.querySelector('path');
 
       /* held paused and scrubbed by hand, so the shape change is tied to
@@ -1756,6 +1772,154 @@
 
     /* Fraunces changes the track's width once it lands */
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  })();
+
+  /* ── Statement, phones and tablets ────────────────────────────────
+     The desktop story told downward. The section pins as a full-screen
+     stage and one scrubbed timeline assembles it: BRANDS and its star,
+     INTERFACES, the star turning into the roller, the roll along the word
+     and the fall off its last letter, then & Matter typing itself, Aiming
+     to Deliver, the arrow, the pills, the wink. Timeline time runs 0-10,
+     so every cue below reads as tenths of the run. gsap.matchMedia undoes
+     all of it if the window grows past the breakpoint. */
+  (function () {
+    const sec = document.getElementById('statement');
+    if (!sec || !window.gsap || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.matchMedia().add('(max-width: 1000px) and (prefers-reduced-motion: no-preference)', () => {
+      const q = s => sec.querySelector(s);
+      const brands = q('.st-brands'), inter = q('.st-interfaces'), amp = q('.st-amp'),
+            matter = q('.st-matter'), aim = q('.st-aim'), arrow = q('.st-arrow'),
+            wink = q('.st-wink'), morph = q('.st-morph');
+      const pills = sec.querySelectorAll('.st-cluster .st-pill');
+      if (!brands || !inter || !matter || !aim) return;
+
+      sec.classList.add('st-live');
+
+      /* Matter, one span per letter — the desktop script splits it too, so
+         only if that hasn't happened */
+      if (!matter.querySelector('.st-ch')) {
+        const node = [...matter.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+        if (node) {
+          const frag = document.createDocumentFragment();
+          node.textContent.trim().split('').forEach(ch => {
+            const sp = document.createElement('span');
+            sp.className = 'st-ch'; sp.textContent = ch;
+            frag.appendChild(sp);
+          });
+          matter.replaceChild(frag, node);
+        }
+      }
+      const chars = matter.querySelectorAll('.st-ch');
+      const caret = matter.querySelector('.st-caret');
+      const comma = matter.querySelector('.st-comma');
+
+      const rise = () => innerHeight * 0.06;
+      const tl = gsap.timeline({
+        defaults: { ease: 'power2.out', duration: 1 },
+        scrollTrigger: {
+          trigger: sec, start: 'top top',
+          end: () => '+=' + Math.round(innerHeight * 1.7),
+          pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+        }
+      });
+
+      tl.from(brands, { opacity: 0, y: rise, scale: 0.88, transformOrigin: 'left center', duration: 1.2 }, 0)
+        .from(inter,  { opacity: 0, y: rise, duration: 1.2 }, 1.6)
+        .from(amp,    { opacity: 0, y: rise, rotate: -12, duration: 0.8 }, 4.2);
+
+      /* Typing. Letters are switched on with display rather than opacity:
+         invisible letters still take their width, which left the caret
+         parked where the word would end instead of after the last letter
+         typed. The caret goes the same way, so no gap is left before the
+         comma. Zero-length sets in a scrubbed timeline undo themselves
+         when the playhead moves back past them. */
+      gsap.set([...chars, comma].filter(Boolean), { display: 'none' });
+      if (caret) tl.set(caret, { display: 'inline-block' }, 4.6);
+      chars.forEach((ch, i) => tl.set(ch, { display: 'inline' }, 4.8 + i * 0.22));
+      if (comma) tl.set(comma, { display: 'inline' }, 6.2);
+      if (caret) tl.set(caret, { display: 'none' }, 6.4);
+
+      tl.from(aim, { opacity: 0, y: rise, duration: 0.9 }, 6.0);
+
+      /* The arrow wipes on left to right instead of DrawSVG: drawing works
+         by rewriting stroke-dasharray, which would erase the dashes. The
+         stroke runs strictly rightward, so a wipe draws it tail to head. */
+      if (arrow) tl.fromTo(arrow, { clipPath: 'inset(0% 100% 0% 0%)' },
+                                  { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'none' }, 6.8);
+
+      if (pills.length) tl.from(pills, { opacity: 0, y: rise, scale: 0.9, duration: 0.8,
+                                         stagger: 0.35, ease: 'power3.out' }, 7.8);
+      if (wink) tl.from(wink, { opacity: 0, scale: 0, rotate: 20, duration: 0.5, ease: 'back.out(3)' }, 9.5);
+      tl.to({}, { duration: 0.8 }, 10);        /* a beat on the finished line before the pin lets go */
+
+      /* ── the travelling object ─────────────────────────────────────
+         Placed from the timeline's own time on every render, so it follows
+         the scrub, backwards included. It pops onto BRANDS where the
+         artboard puts the star, spins with the scroll, drops onto the cap
+         line of INTERFACES while it morphs, rolls to the last letter —
+         rotation is distance over radius, so it rolls rather than slides —
+         and falls off the end. */
+      let change = null, size = 0;
+      const path = morph && morph.querySelector('path');
+      if (path && window.MorphSVGPlugin) {
+        change = gsap.to(path, { morphSVG: { shape: ST_ROLLER }, fill: '#09ba00',
+                                 duration: 1, paused: true, ease: 'none' });
+      }
+      const STAR = 238 / 165;                  /* the star is drawn larger than the roller */
+      const seg = (t, a, z) => Math.min(1, Math.max(0, (t - a) / (z - a)));
+      const backOut = gsap.parseEase('back.out(2)');
+
+      const place = () => {
+        if (!morph) return;
+        const t = tl.time();
+        if (!size) {
+          size = parseFloat(getComputedStyle(inter).fontSize) * 165 / 244;   /* the drawing's roller:type ratio */
+          morph.style.width = morph.style.height = size + 'px';
+        }
+        const R = size / 2;
+        const b  = sec.getBoundingClientRect();
+        const pr = brands.getBoundingClientRect();
+        const ir = inter.getBoundingClientRect();
+
+        const pop  = seg(t, 0.6, 1.4);
+        const m    = seg(t, 2.6, 3.6);
+        const roll = seg(t, 3.6, 5.2);
+        const fall = seg(t, 5.2, 6.4);
+        if (change) change.progress(m);
+
+        const starX = pr.left - b.left + pr.width * 1040 / 1251;
+        const starY = pr.top - b.top - pr.height * 101 / 369;
+        const seatY = ir.top - b.top - size * 0.9;
+        const endX  = ir.right - b.left - R;           /* centre over the last letter's edge */
+
+        let x = starX + (endX - starX) * roll;
+        let y = starY + (seatY - starY) * m * m;       /* accelerates as it drops */
+        let rot = t * 36 + (x - starX) / R * (180 / Math.PI);
+        if (fall > 0) {
+          x += size * 1.6 * fall;
+          y += (b.height - seatY) * fall * fall;
+          rot += 140 * fall;
+        }
+        const sc = (STAR + (1 - STAR) * m) * backOut(pop);
+        morph.style.opacity = pop > 0 && fall < 1 ? String(1 - Math.max(0, fall - 0.6) / 0.4) : '0';
+        morph.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' +
+                                rot.toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
+      };
+      tl.eventCallback('onUpdate', place);
+      const remeasure = () => { size = 0; place(); };
+      ScrollTrigger.addEventListener('refresh', remeasure);
+      place();
+
+      document.fonts?.ready.then(() => ScrollTrigger.refresh());
+
+      return () => {
+        ScrollTrigger.removeEventListener('refresh', remeasure);
+        sec.classList.remove('st-live');
+        if (morph) morph.removeAttribute('style');
+      };
+    });
   })();
 
   // ── Dock magnification ────────────────────────────────────────
