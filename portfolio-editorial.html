@@ -771,6 +771,30 @@
     }
   }
 
+
+  /* Statement strip, stacked. The old fallback let inline blocks wrap
+     wherever they landed, which split "Aiming to Deliver" across the Matter
+     line. Block flow instead: every phrase on its own line at its own width,
+     except "&" and "Matter," which read as one phrase and share a line. */
+  @media (max-width: 1000px), (prefers-reduced-motion: reduce) {
+    #statement { padding: 3.25rem 0 4rem; }
+    .statement-track { display: block; }
+    .statement-track > * { display: block; width: fit-content; margin: 0 0 .55rem; }
+    .st-amp, .st-matter { display: inline-block; width: auto; margin-right: .3em; }
+    /* the older fallback forces pills to width:auto with !important, and auto
+       on a block is full-width - so BRANDS stretched edge to edge */
+    .statement-track .st-pill { width: fit-content !important; }
+    .st-lead { margin: 0 0 .9rem; }
+    .st-brands, .st-interfaces, .st-matter, .st-aim, .st-amp { font-size: clamp(1.9rem, 9vw, 3rem); }
+    .st-aim { margin-top: .35rem; line-height: 1.05; }
+    .st-cluster { margin-top: 1.4rem; }
+    /* the typing script is desktop-only, so the caret would sit there forever */
+    .st-caret { display: none; }
+    /* the dropped l is a detail at desktop scale; at phone scale it reads as
+       a broken word */
+    .st-l { transform: none; }
+  }
+
   /* ══ Phones ═══════════════════════════════════════════════════════
      Last in the sheet on purpose: several earlier fixes in this file were
      silently overridden by an equal-specificity rule declared further down. */
