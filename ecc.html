@@ -525,37 +525,38 @@
   }
 
   /* ===== Desktop-first notice — only shown on small screens ===== */
-  .mobile-notice { display: none; }
-  @media (max-width: 900px) {
-    .mobile-notice {
-      position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.85rem 1rem;
-      padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
-      background: rgba(18,18,18,0.94);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255,255,255,0.14);
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 0.72rem; line-height: 1.45; letter-spacing: 0.02em;
-      color: rgba(255,255,255,0.74);
+
+  /* ══ Phones ═══════════════════════════════════════════════════════
+     Last in the sheet so no later rule can override it. */
+  @media (max-width: 600px) {
+    /* Header: back link and language only. The name and the counter needed
+       ~378px beside "Back to Portfolio" on a 327px row, so all of it wrapped. */
+    .nav-logo, .nav-index { display: none; }
+    .nav-back { white-space: nowrap; }
+
+    /* mono labels had drifted as low as 9.3px; 12px is the legible floor */
+    .project-meta, .project-meta span, .project-meta strong,
+    .nav-back, .nav-back span, .lang-toggle,
+    .section-label, .section-label span, .section-label .num,
+    .sec-label span, .sec-label .n, .section-eyebrow, .f-eyebrow,
+    .deliverable-title, .browser-url, .visit-btn,
+    .swatch-name, .swatch-hex, .type-label, .stat-label, .next-label,
+    .brief-role-label, .insta-tag, .kit-label, .kit-product, .kit-product strong,
+    .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
+    /* footer row was no-wrap; with 44px links it ran 3px past the screen */
+    .project-footer { flex-wrap: wrap; row-gap: .75rem; }
+
+  }
+  /* 44px is the minimum a thumb hits reliably */
+  @media (pointer: coarse) {
+    .nav-back, .lang-toggle, .footer-nav a, .insta-tag, .visit-btn {
+      min-height: 44px; display: inline-flex; align-items: center;
     }
-    .mobile-notice[hidden] { display: none; }
-    .mobile-notice button {
-      margin-left: auto; flex: 0 0 auto;
-      width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(255,255,255,0.12); border: 0;
-      color: rgba(255,255,255,0.85);
-      font: inherit; font-size: 0.95rem; line-height: 1;
-      cursor: pointer;
-    }
+    .lang-toggle { min-width: 44px; justify-content: center; }
   }
 </style>
 </head>
 <body>
-<div class="mobile-notice" id="mobileNotice" role="note">
-  <span data-i18n="m-notice">Designed for desktop — best viewed on a larger screen.</span>
-  <button type="button" id="mobileNoticeClose" aria-label="Dismiss">×</button>
-</div>
 
 
 <!-- NAV -->
@@ -834,7 +835,6 @@
 
   const LANG_ECC = {
     en: {
-      'm-notice': 'Designed for desktop — best viewed on a larger screen.',
       'nav-back': 'Portfolio',
       'm-project': 'Project', 'm-category': 'Category', 'm-cat': 'Print Design',
       'm-deliverable': 'Deliverable', 'm-del': 'Label System',
@@ -863,7 +863,6 @@
       'footer-next': 'Muave →',
     },
     bg: {
-      'm-notice': 'Създаден за десктоп — най-добре на по-голям екран.',
       'nav-back': 'Портфолио',
       'm-project': 'Проект', 'm-category': 'Категория', 'm-cat': 'Печатен Дизайн',
       'm-deliverable': 'Резултат', 'm-del': 'Система Етикети',
@@ -913,16 +912,5 @@
   });
 </script>
 
-<script>
-  (function () {
-    var n = document.getElementById('mobileNotice');
-    if (!n) return;
-    if (localStorage.getItem('deskNoticeDismissed') === '1') { n.hidden = true; return; }
-    document.getElementById('mobileNoticeClose').addEventListener('click', function () {
-      n.hidden = true;
-      localStorage.setItem('deskNoticeDismissed', '1');
-    });
-  })();
-</script>
 </body>
 </html>
