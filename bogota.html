@@ -281,10 +281,19 @@
     .brief-role-label, .insta-tag, .kit-label, .kit-product, .kit-product strong,
     .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
 
+    /* Section headers: each half stays whole; if they don't fit side by
+       side the right half drops below, instead of both breaking mid-phrase */
+    .section-label { flex-wrap: wrap; gap: .35rem 1.5rem; }
+    .section-label > span { white-space: nowrap; }
+
     /* Type specimen: a 140px label beside a 3rem script sample ran 26px
        past the screen. Stacked, the sample has the whole row. */
     .type-row { flex-direction: column; align-items: flex-start; gap: .5rem; }
     .type-label { min-width: 0; }
+
+    /* 40px side padding left the address 9px short, so the ↗ dropped
+       to a line of its own */
+    .live-link { padding: 1rem 1.25rem; justify-content: center; }
   }
   /* 44px is the minimum a thumb hits reliably */
   @media (pointer: coarse) {
@@ -360,7 +369,7 @@
         </div>
         <div class="browser-url">restorantbogota.com</div>
       </div>
-      <img src="bogota-web.png" alt="Restaurant Bogota website" style="width:100%;display:block;">
+      <img loading="lazy" src="web/bogota-web-1200.jpg" srcset="web/bogota-web-1200.jpg 1200w, web/bogota-web.jpg 2400w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Restaurant Bogota website" style="width:100%;display:block;">
     </div>
     <div style="text-align:center; margin-top: 2rem;">
       <a href="https://restorantbogota.com" target="_blank" class="visit-btn" data-i18n="visit-btn">Visit Live Site ↗</a>
@@ -480,37 +489,37 @@
       <!-- Cover — full width -->
       <div class="menu-row full">
         <div class="menu-spread">
-          <img src="bogota-menu/menu_01.png" alt="Restaurant Bogota menu cover">
+          <img loading="lazy" src="web/bogota-menu/menu_01-1200.jpg" srcset="web/bogota-menu/menu_01-1200.jpg 1200w, web/bogota-menu/menu_01.jpg 2397w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Restaurant Bogota menu cover">
         </div>
       </div>
       <!-- Salads spread -->
       <div class="menu-row half">
         <div class="menu-spread">
-          <img src="bogota-menu/menu_03.png" alt="Салати — Шопска, Овчарска">
+          <img loading="lazy" src="web/bogota-menu/menu_03.jpg" alt="Салати — Шопска, Овчарска">
         </div>
         <div class="menu-spread">
-          <img src="bogota-menu/menu_04.png" alt="Салати — Гръцка, Капрезе, Комбинирана">
+          <img loading="lazy" src="web/bogota-menu/menu_04.jpg" alt="Салати — Гръцка, Капрезе, Комбинирана">
         </div>
       </div>
       <!-- Grill — full width hero spread -->
       <div class="menu-row full">
         <div class="menu-spread">
-          <img src="bogota-menu/menu_08.png" alt="Скара — Grill">
+          <img loading="lazy" src="web/bogota-menu/menu_08-1200.jpg" srcset="web/bogota-menu/menu_08-1200.jpg 1200w, web/bogota-menu/menu_08.jpg 2397w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Скара — Grill">
         </div>
       </div>
       <!-- Starters + Chicken -->
       <div class="menu-row half">
         <div class="menu-spread">
-          <img src="bogota-menu/menu_05.png" alt="Предястия — Starters">
+          <img loading="lazy" src="web/bogota-menu/menu_05.jpg" alt="Предястия — Starters">
         </div>
         <div class="menu-spread">
-          <img src="bogota-menu/menu_10.png" alt="Специалитети с пиле — Chicken">
+          <img loading="lazy" src="web/bogota-menu/menu_10.jpg" alt="Специалитети с пиле — Chicken">
         </div>
       </div>
       <!-- Back cover — full width -->
       <div class="menu-row full">
         <div class="menu-spread">
-          <img src="bogota-menu/menu_14.png" alt="Заповядайте отново — back cover">
+          <img loading="lazy" src="web/bogota-menu/menu_14-1200.jpg" srcset="web/bogota-menu/menu_14-1200.jpg 1200w, web/bogota-menu/menu_14.jpg 2397w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Заповядайте отново — back cover">
         </div>
       </div>
     </div>

@@ -445,6 +445,11 @@
   }
   .footer-nav a { transition: color 0.2s; }
   .footer-nav a:hover { color: var(--chrome); }
+  /* it's a <nav>, so the header's `nav` rule reached it too: its padding,
+     border and blur, and its position (on Mortar that pinned the footer
+     link to the top of the screen, right over the header's own link) */
+  .footer-nav { position: static; padding: 0; border-bottom: 0; background: none;
+                -webkit-backdrop-filter: none; backdrop-filter: none; }
 
   /* SCROLL REVEAL */
   .reveal {
@@ -545,7 +550,15 @@
     .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
     /* footer row was no-wrap; with 44px links it ran 3px past the screen */
     .project-footer { flex-wrap: wrap; row-gap: .75rem; }
+    /* 2.5rem gaps broke every link onto two lines; spread them instead */
+    .footer-nav { width: 100%; justify-content: space-between; gap: 1rem; }
+    .footer-nav a { white-space: nowrap; }
 
+    /* Kit list: name above description. Side by side, the long Bulgarian
+       names wrapped and left the descriptions floating mid-row. */
+    .kit-product { display: block; position: relative; padding-left: calc(6px + 1rem); line-height: 1.6; }
+    .kit-product::before { position: absolute; left: 0; top: calc(.5rem + .8em - 3px); }
+    .kit-product strong { display: block; }
   }
   /* 44px is the minimum a thumb hits reliably */
   @media (pointer: coarse) {
@@ -596,15 +609,15 @@
 
     <!-- FLOATING BOTTLES -->
     <div class="bottles-field">
-      <div class="bottle b1"><img src="easycarcleaner_productphotos/no%20bg/1.png" alt="Sweet Aura"></div>
-      <div class="bottle b2"><img src="easycarcleaner_productphotos/no%20bg/2.png" alt="Размразител за стъкла"></div>
-      <div class="bottle b3"><img src="easycarcleaner_productphotos/no%20bg/9.png" alt="Black Code"></div>
-      <div class="bottle b4"><img src="easycarcleaner_productphotos/no%20bg/7.png" alt="Crush"></div>
-      <div class="bottle b5"><img src="easycarcleaner_productphotos/no%20bg/5.png" alt="Leagle"></div>
-      <div class="bottle b6"><img src="easycarcleaner_productphotos/no%20bg/6.png" alt="Exotic Mango"></div>
-      <div class="bottle b7"><img src="easycarcleaner_productphotos/no%20bg/3.png" alt="Polish"></div>
-      <div class="bottle b8"><img src="easycarcleaner_productphotos/no%20bg/4.png" alt="Мляко за табло"></div>
-      <div class="bottle b9"><img src="easycarcleaner_productphotos/no%20bg/8.png" alt="Bugz Off"></div>
+      <div class="bottle b1"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/1.png" alt="Sweet Aura"></div>
+      <div class="bottle b2"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/2.png" alt="Размразител за стъкла"></div>
+      <div class="bottle b3"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/9.png" alt="Black Code"></div>
+      <div class="bottle b4"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/7.png" alt="Crush"></div>
+      <div class="bottle b5"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/5.png" alt="Leagle"></div>
+      <div class="bottle b6"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/6.png" alt="Exotic Mango"></div>
+      <div class="bottle b7"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/3.png" alt="Polish"></div>
+      <div class="bottle b8"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/4.png" alt="Мляко за табло"></div>
+      <div class="bottle b9"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/8.png" alt="Bugz Off"></div>
     </div>
   </div>
 </section>
@@ -669,31 +682,31 @@
   <div class="container reveal reveal-delay-1">
     <div class="label-grid">
       <div class="label-grid-item">
-        <img src="ecc-brand/label-blackcode.png" alt="Black Code fragrance label" loading="lazy">
+        <img src="web/ecc-brand/label-blackcode.jpg" alt="Black Code fragrance label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-crush.png" alt="Crush fragrance label" loading="lazy">
+        <img src="web/ecc-brand/label-crush.jpg" alt="Crush fragrance label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-sweetaura.png" alt="Sweet Aura fragrance label" loading="lazy">
+        <img src="web/ecc-brand/label-sweetaura.jpg" alt="Sweet Aura fragrance label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-leagle.png" alt="Leagle fragrance label" loading="lazy">
+        <img src="web/ecc-brand/label-leagle.jpg" alt="Leagle fragrance label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-exoticmango.png" alt="Exotic Mango fragrance label" loading="lazy">
+        <img src="web/ecc-brand/label-exoticmango.jpg" alt="Exotic Mango fragrance label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-mlqko.png" alt="Мляко за табло label" loading="lazy">
+        <img src="web/ecc-brand/label-mlqko.jpg" alt="Мляко за табло label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-razm.png" alt="Размразител за стъкла label" loading="lazy">
+        <img src="web/ecc-brand/label-razm.jpg" alt="Размразител за стъкла label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-polish.png" alt="Полиращ препарат label" loading="lazy">
+        <img src="web/ecc-brand/label-polish.jpg" alt="Полиращ препарат label" loading="lazy">
       </div>
       <div class="label-grid-item">
-        <img src="ecc-brand/label-bugzoff.png" alt="Bugz Off insect repellent label" loading="lazy">
+        <img src="web/ecc-brand/label-bugzoff.jpg" alt="Bugz Off insect repellent label" loading="lazy">
       </div>
     </div>
   </div>
@@ -732,18 +745,18 @@
     <!-- Row 2: wide + two squares -->
     <div class="photo-grid-row">
       <div class="photo-tall" style="aspect-ratio: auto; min-height: 320px;">
-        <img src="easycarcleaner_productphotos/IMG_0831.png"
+        <img src="web/easycarcleaner_productphotos/IMG_0831.jpg"
              alt="Sweet Aura, Crush and Black Code fragrances on dark reflective surface"
              loading="lazy"
              style="object-position: center center;">
       </div>
       <div class="photo-square">
-        <img src="easycarcleaner_productphotos/IMG_0835.png"
+        <img src="web/easycarcleaner_productphotos/IMG_0835.jpg"
              alt="Spray bottle with ice and snow"
              loading="lazy">
       </div>
       <div class="photo-square">
-        <img src="easycarcleaner_productphotos/IMG_0848.png"
+        <img src="web/easycarcleaner_productphotos/IMG_0848.jpg"
              alt="Product range on car surface"
              loading="lazy">
       </div>
@@ -751,7 +764,7 @@
 
     <!-- Row 3: autumn lifestyle -->
     <div class="photo-wide" style="margin-top: 6px;">
-      <img src="easycarcleaner_productphotos/IMG_0833.png"
+      <img src="web/easycarcleaner_productphotos/IMG_0833-1200.jpg" srcset="web/easycarcleaner_productphotos/IMG_0833-1200.jpg 1200w, web/easycarcleaner_productphotos/IMG_0833.jpg 2440w" sizes="(max-width: 1260px) 100vw, 1220px"
            alt="Full fragrance lineup laid on autumn leaves"
            loading="lazy"
            style="object-position: center 40%;">

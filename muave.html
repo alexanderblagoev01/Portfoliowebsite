@@ -209,6 +209,11 @@
     .brief-role-label, .insta-tag, .kit-label, .kit-product, .kit-product strong,
     .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
 
+    /* Section headers: each half stays whole; if they don't fit side by
+       side the right half drops below, instead of both breaking mid-phrase */
+    .section-label { flex-wrap: wrap; gap: .35rem 1.5rem; }
+    .section-label > span { white-space: nowrap; }
+
   }
   /* 44px is the minimum a thumb hits reliably */
   @media (pointer: coarse) {
@@ -300,51 +305,51 @@
     <!-- Hero shot -->
     <div class="lb-row full reveal">
       <div class="lb-item" style="aspect-ratio:16/9;">
-        <img src="mueave archive/clothing photoshoots/IMG_0725.JPG" alt="Muave white set on sand dunes">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0725-1200.jpg" srcset="web/mueave-archive/clothing-photoshoots/IMG_0725-1200.jpg 1200w, web/mueave-archive/clothing-photoshoots/IMG_0725.jpg 2400w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Muave white set on sand dunes">
       </div>
     </div>
 
     <!-- Three portrait renders -->
     <div class="lb-row three reveal">
       <div class="lb-item portrait">
-        <img src="mueave archive/clothing photoshoots/IMG_0698.PNG" alt="Muave mauve set — purple bg">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0698.jpg" alt="Muave mauve set — purple bg">
       </div>
       <div class="lb-item portrait">
-        <img src="mueave archive/clothing photoshoots/IMG_0724.PNG" alt="Muave pink set on rooftop">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0724.jpg" alt="Muave pink set on rooftop">
       </div>
       <div class="lb-item portrait">
-        <img src="mueave archive/clothing photoshoots/IMG_0691.PNG" alt="Muave brown set jumping — desert">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0691.jpg" alt="Muave brown set jumping — desert">
       </div>
     </div>
 
     <!-- Full width — urban -->
     <div class="lb-row full reveal">
       <div class="lb-item" style="aspect-ratio:4/3;">
-        <img src="mueave archive/clothing photoshoots/IMG_0721.PNG" alt="Muave grey set against urban wall">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0721-1200.jpg" srcset="web/mueave-archive/clothing-photoshoots/IMG_0721-1200.jpg 1200w, web/mueave-archive/clothing-photoshoots/IMG_0721.jpg 2400w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Muave grey set against urban wall">
       </div>
     </div>
 
     <!-- Two column -->
     <div class="lb-row two reveal">
       <div class="lb-item portrait">
-        <img src="mueave archive/clothing photoshoots/IMG_0720.PNG" alt="Muave brown set floating — mountains">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0720.jpg" alt="Muave brown set floating — mountains">
       </div>
       <div class="lb-item portrait">
-        <img src="mueave archive/clothing photoshoots/IMG_0802.PNG" alt="Muave pink set jumping — pink bg">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0802.jpg" alt="Muave pink set jumping — pink bg">
       </div>
     </div>
 
     <!-- Close-up hoodie -->
     <div class="lb-row full reveal">
       <div class="lb-item" style="aspect-ratio:16/9;">
-        <img src="mueave archive/clothing photoshoots/IMG_0711.JPG" alt="Muave ball logo hoodie close-up">
+        <img loading="lazy" src="mueave archive/clothing photoshoots/IMG_0711.JPG" alt="Muave ball logo hoodie close-up">
       </div>
     </div>
 
     <!-- Dunes full width -->
     <div class="lb-row full reveal">
       <div class="lb-item" style="aspect-ratio:16/9;">
-        <img src="mueave archive/clothing photoshoots/IMG_0722.PNG" alt="Muave white set on dunes — cinematic">
+        <img loading="lazy" src="web/mueave-archive/clothing-photoshoots/IMG_0722-1200.jpg" srcset="web/mueave-archive/clothing-photoshoots/IMG_0722-1200.jpg 1200w, web/mueave-archive/clothing-photoshoots/IMG_0722.jpg 2400w" sizes="(max-width: 1260px) 100vw, 1220px" alt="Muave white set on dunes — cinematic">
       </div>
     </div>
   </div>
@@ -359,16 +364,16 @@
     </div>
     <div class="brand-docs reveal">
       <div class="brand-doc">
-        <img src="muave-brand/brand_02.png" alt="Muave — Act I Logo">
+        <img loading="lazy" src="web/muave-brand/brand_02.jpg" alt="Muave — Act I Logo">
       </div>
       <div class="brand-doc">
-        <img src="muave-brand/brand_04.png" alt="Muave — Logo Variations">
+        <img loading="lazy" src="web/muave-brand/brand_04.jpg" alt="Muave — Logo Variations">
       </div>
       <div class="brand-doc">
-        <img src="muave-brand/brand_05.png" alt="Muave — Typography">
+        <img loading="lazy" src="web/muave-brand/brand_05.jpg" alt="Muave — Typography">
       </div>
       <div class="brand-doc">
-        <img src="mueave archive/brand identitiy/Screenshot 2026-05-05 at 1.07.28.png" alt="Muave — Colour Palette">
+        <img loading="lazy" src="mueave archive/brand identitiy/Screenshot 2026-05-05 at 1.07.28.png" alt="Muave — Colour Palette">
       </div>
     </div>
 
@@ -417,16 +422,16 @@
     </div>
     <div class="sticker-spread reveal">
       <div class="sticker-circle sc1">
-        <img src="mueave archive/stickers/stickers1.png" alt="Muave sticker — brownish mauve">
+        <img loading="lazy" src="mueave archive/stickers/stickers1.png" alt="Muave sticker — brownish mauve">
       </div>
       <div class="sticker-circle sc2">
-        <img src="mueave archive/stickers/stickers2.png" alt="Muave sticker — QR dark">
+        <img loading="lazy" src="mueave archive/stickers/stickers2.png" alt="Muave sticker — QR dark">
       </div>
       <div class="sticker-circle sc3">
-        <img src="mueave archive/stickers/stickers3.png" alt="Muave sticker — white">
+        <img loading="lazy" src="mueave archive/stickers/stickers3.png" alt="Muave sticker — white">
       </div>
       <div class="sticker-circle sc4">
-        <img src="mueave archive/stickers/sticker4.png" alt="Muave sticker — pale mauve">
+        <img loading="lazy" src="mueave archive/stickers/sticker4.png" alt="Muave sticker — pale mauve">
       </div>
     </div>
   </div>

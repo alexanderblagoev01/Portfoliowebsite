@@ -424,7 +424,7 @@
     .f-head .script { font-size: 2.1rem; }
     .f-desc { font-size: 0.95rem; line-height: 1.65; }
     .phones { gap: 1rem; }
-    .feature .phones .ph { --pw: 40vw; }
+    .feature .phones .pw { width: 40vw; }
     .screens { padding: 3rem 1.2rem 4rem; }
     .screens-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
     .next { margin: 0 1.2rem; padding: 2.4rem 0 3rem; }
@@ -540,8 +540,8 @@
     <section class="feature">
       <div class="feature-grid">
         <div class="phones reveal">
-          <div class="pw"><img src="olli/allergens.png" alt="Allergen selection"></div>
-          <div class="pw"><img src="olli/prefer.png" alt="Taste preferences"></div>
+          <div class="pw"><img loading="lazy" src="olli/allergens.png" alt="Allergen selection"></div>
+          <div class="pw"><img loading="lazy" src="olli/prefer.png" alt="Taste preferences"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f1-eye">Feature 01</div>
@@ -555,8 +555,8 @@
     <section class="feature">
       <div class="feature-grid flip">
         <div class="phones reveal">
-          <div class="pw"><img src="olli/customize.png" alt="Plan size"></div>
-          <div class="pw"><img src="olli/purchase.png" alt="Order confirmation"></div>
+          <div class="pw"><img loading="lazy" src="olli/customize.png" alt="Plan size"></div>
+          <div class="pw"><img loading="lazy" src="olli/purchase.png" alt="Order confirmation"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f2-eye">Feature 02</div>
@@ -570,8 +570,8 @@
     <section class="feature">
       <div class="feature-grid">
         <div class="phones reveal">
-          <div class="pw"><img src="olli/home.png" alt="Home feed"></div>
-          <div class="pw"><img src="olli/profile.png" alt="Account"></div>
+          <div class="pw"><img loading="lazy" src="olli/home.png" alt="Home feed"></div>
+          <div class="pw"><img loading="lazy" src="olli/profile.png" alt="Account"></div>
         </div>
         <div class="reveal d1">
           <div class="f-eyebrow" data-i18n="f3-eye">Feature 03</div>
@@ -584,12 +584,12 @@
     <section class="screens">
       <div class="sec-label" style="padding-left:0;padding-right:0;"><span><span class="n">04</span> &nbsp;— <span data-i18n="s4">All Screens</span></span><span data-i18n="s4-c">6 screens</span></div>
       <div class="screens-grid">
-        <div class="pw reveal"><img src="olli/allergens.png" alt="Allergen selection"></div>
-        <div class="pw reveal d1"><img src="olli/prefer.png" alt="Taste preferences"></div>
-        <div class="pw reveal d2"><img src="olli/customize.png" alt="Plan size"></div>
-        <div class="pw reveal d3"><img src="olli/purchase.png" alt="Order confirmation"></div>
-        <div class="pw reveal"><img src="olli/home.png" alt="Home feed"></div>
-        <div class="pw reveal d1"><img src="olli/profile.png" alt="Account"></div>
+        <div class="pw reveal"><img loading="lazy" src="olli/allergens.png" alt="Allergen selection"></div>
+        <div class="pw reveal d1"><img loading="lazy" src="olli/prefer.png" alt="Taste preferences"></div>
+        <div class="pw reveal d2"><img loading="lazy" src="olli/customize.png" alt="Plan size"></div>
+        <div class="pw reveal d3"><img loading="lazy" src="olli/purchase.png" alt="Order confirmation"></div>
+        <div class="pw reveal"><img loading="lazy" src="olli/home.png" alt="Home feed"></div>
+        <div class="pw reveal d1"><img loading="lazy" src="olli/profile.png" alt="Account"></div>
       </div>
     </section>
 
@@ -944,6 +944,7 @@
     animate('.f-head', 'is-reveal', 0, 0.08);
     animate('.f-desc', 'is-reveal', 0, 0.16);
     animate('.next-label, .next-title', 'is-reveal', 0.08);
+    io.observe(document.querySelector('.next'));  // last on the page: on a phone the title can't scroll past the -8% margin itself
 
     /* phones — stagger within each group */
     document.querySelectorAll('.phones').forEach(group =>

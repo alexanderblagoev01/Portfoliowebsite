@@ -324,6 +324,11 @@
   }
   .footer-nav a { transition: color 0.2s; }
   .footer-nav a:hover { color: var(--ember); }
+  /* it's a <nav>, so the header's `nav` rule reached it too: its padding,
+     border and blur, and its position (on Mortar that pinned the footer
+     link to the top of the screen, right over the header's own link) */
+  .footer-nav { position: static; padding: 0; border-bottom: 0; background: none;
+                -webkit-backdrop-filter: none; backdrop-filter: none; }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
@@ -357,9 +362,6 @@
     .swatch-name, .swatch-hex, .type-label, .stat-label, .next-label,
     .brief-role-label, .insta-tag, .kit-label, .kit-product, .kit-product strong,
     .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
-    /* footer row was no-wrap; with 44px links it ran 3px past the screen */
-    .project-footer { flex-wrap: wrap; row-gap: .75rem; }
-
   }
   /* 44px is the minimum a thumb hits reliably */
   @media (pointer: coarse) {
