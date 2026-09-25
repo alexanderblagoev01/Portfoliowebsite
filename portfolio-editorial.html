@@ -773,6 +773,12 @@
   }
 
 
+  .work-wip {
+    font-family: 'JetBrains Mono', monospace; font-size: .6rem; font-style: normal;
+    vertical-align: middle; letter-spacing: .12em; padding: .2em .55em;
+    border: 1px solid currentColor; opacity: .7; margin-left: .6rem;
+  }
+
   /* ══ Bottom dock on phones and tablets ═══════════════════════════
      Everywhere the desktop dock does not apply, the same dock sits at the
      bottom where thumbs reach. The text nav collapses to just the name. */
@@ -832,7 +838,12 @@
     .contact-label, .form-label, .form-num, .work-cat, .edu-meta,
     .footer-bottom, .footer-bottom div, .footer-social a, .testi-author span,
     .creds-side h3, .name { font-size: .75rem; }
-    .edu-badge, .work-title span { font-size: .7rem; }
+    /* badges hold the same 12px floor as every other label */
+    .edu-card .edu-badge, .work-title .work-wip { font-size: .75rem; }
+    .form-title, .form-title span { font-size: .75rem; }
+    .edu-card .edu-meta { font-size: .75rem; }
+    /* the name is the header's only link on phones */
+    .logo { display: inline-flex; align-items: center; min-height: 44px; }
   }
 
   /* Touch targets: 44px is the minimum a thumb hits reliably. */
@@ -1084,7 +1095,7 @@
       <a href="mortar.html" class="work-item reveal" style="display:grid; opacity: 0.65;">
         <div class="work-media"><img src="work-covers/mortar.jpg" alt="Mortar cover" loading="lazy" decoding="async"></div>
         <div class="work-num">— 05</div>
-        <div class="work-title">Mortar <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-style:normal;vertical-align:middle;letter-spacing:0.12em;padding:0.2em 0.55em;border:1px solid currentColor;opacity:0.7;margin-left:0.6rem;">WIP</span></div>
+        <div class="work-title">Mortar <span class="work-wip">WIP</span></div>
         <div class="work-cat">Software / Product Design</div>
         <div class="work-client">Mortar</div>
         <div class="work-year-arrow"><span>2025</span><span class="work-arrow">→</span></div>
