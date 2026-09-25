@@ -231,7 +231,7 @@
   .hero-name {
     font-family: 'Fraunces', serif;
     font-weight: 300;
-    font-size: clamp(4rem, 13vw, 11.5rem);
+    font-size: var(--hero-size, clamp(2.4rem, 13vw, 11.5rem));
     line-height: 0.92;
     letter-spacing: -0.03em;
     font-variation-settings: "opsz" 144, "SOFT" 30;
@@ -770,6 +770,31 @@
       cursor: pointer;
     }
   }
+
+  /* ══ Phones ═══════════════════════════════════════════════════════
+     Last in the sheet on purpose: several earlier fixes in this file were
+     silently overridden by an equal-specificity rule declared further down. */
+  @media (max-width: 600px) {
+    /* The long email cannot wrap inside a 1fr track - 1fr's minimum is its
+       content - so it pushed the page 40px past the screen. Label moves above,
+       value takes the full row and may break. */
+    .contact-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: .35rem; }
+    .contact-label { grid-column: 1 / -1; }
+    .contact-value { overflow-wrap: anywhere; }
+
+    /* mono eyebrow labels sat at 9.6-11.5px; 12px is the legible floor */
+    .section-meta, .section-meta span, .section-num, .skills-label,
+    .contact-label, .form-label, .form-num, .work-cat, .edu-meta,
+    .footer-bottom, .footer-bottom div, .footer-social a, .testi-author span,
+    .creds-side h3, .name { font-size: .75rem; }
+    .edu-badge, .work-title span { font-size: .7rem; }
+  }
+
+  /* Touch targets: 44px is the minimum a thumb hits reliably. */
+  @media (pointer: coarse) {
+    .form-input { min-height: 44px; }
+    .footer-social a { display: inline-flex; align-items: center; min-height: 44px; }
+  }
 </style>
 </head>
 <body>
@@ -1226,28 +1251,28 @@
       'about-p2': 'I studied Graphic Design at university and left when it became clear I had <strong>outpaced the curriculum</strong>. The real education happened in the work itself — in real briefs, real clients, and the kind of pressure that sharpens you faster than any classroom. I later formalised parts of that knowledge through <em>SoftUni Creative</em>, one of Bulgaria\'s most recognised creative programmes.',
       'about-p3': 'From restaurant identities to meal-subscription apps, from packaging systems to my own clothing label — I work where <em>visual thinking meets real purpose</em>. Every project is treated as if it will be printed, worn, or lived with for years.',
       'skills-label': '— Practice / Tools —',
-      'portfolio-meta-left': '&nbsp;— Selected Works',
+      'portfolio-meta-left': ' — Selected Works',
       'portfolio-heading': 'A field of <em>finished</em> work.',
       'portfolio-sub': 'Four projects that show the range. The full archive is available on request — some of it lives in print and deserves to be seen as such.',
       'work-cat-1': 'Visual Identity / Web / Print', 'work-client-1': 'Restaurant Bogota',
       'work-cat-2': 'App Design / UX / Branding', 'work-client-2': 'Meal Subscription App',
       'work-cat-3': 'Fashion / Brand Identity', 'work-client-3': 'Personal Project',
       'work-cat-4': 'Experimental / Personal', 'work-client-4': 'Self-initiated',
-      'creds-meta-left': '&nbsp;— Credentials', 'creds-meta-right': 'Education & Continued Practice',
+      'creds-meta-left': ' — Credentials', 'creds-meta-right': 'Education & Continued Practice',
       'creds-heading': 'Studied. <em>Certified.</em> Self-taught.',
       'creds-sub': 'Formal study, recognised certifications, and the long apprenticeship of doing the work.',
       'edu-label': '— Education —', 'edu-badge': 'Departed Early · Self-Directed',
       'edu-meta': '2020 — 2023 · Departed in third year',
       'edu-desc': 'Built the foundation in design theory, typography, and visual communication. Left when the curriculum fell behind the work I was already producing independently — the studio became the school.',
       'cert-label': '— Certifications —',
-      'words-meta-left': '&nbsp;— Words', 'words-meta-right': 'From those I\'ve worked with',
+      'words-meta-left': ' — Words', 'words-meta-right': 'From those I\'ve worked with',
       'testi-quote': 'The kind of designer who listens before drawing — and then draws something you didn\'t know you wanted, but instantly recognise as <em>yours</em>.',
       'testi-attr-name': 'Client Name', 'testi-attr-role': '· Founder, Studio Name',
       'testi-1-text': 'We are extremely happy with the work on our restaurant\'s website and menu! Professional execution, modern design and attention to every detail. Communication was quick and easy, and the final result perfectly reflects our concept. Highly recommended!',
       'testi-1-name': '— Nina Angelova', 'testi-1-role': 'Restaurant Bogota',
       'testi-2-text': 'Thanks to the attention to detail and professionalism, I was able to develop my own brand.',
       'testi-2-name': '— Hristian Simeonov', 'testi-2-role': 'Owner · Easy Car Cleaner',
-      'contact-meta-left': '&nbsp;— Contact', 'contact-meta-right': 'Open for work',
+      'contact-meta-left': ' — Contact', 'contact-meta-right': 'Open for work',
       'contact-headline': 'Let\'s make<br>something<br><em>worth keeping.</em>',
       'contact-intro': 'If you\'ve a brand, a site, or a quiet idea that needs shape — write to me. I read every message myself.',
       'form-title-text': 'Send a note',
@@ -1272,28 +1297,28 @@
       'about-p2': 'Следвах Графичен Дизайн в университет и напуснах, когато стана ясно, че <strong>надраснах учебната програма</strong>. Истинското образование се случи в самата работа — в реални проекти, реални клиенти и натиск, който те оформя по-бързо от всяка класна стая. По-късно формализирах части от тези знания чрез <em>SoftUni Creative</em>, една от най-признатите творчески програми в България.',
       'about-p3': 'От ресторантски идентичности до приложения за доставка на ястия, от системи за опаковки до собствен моден бранд — работя там, където <em>визуалното мислене среща реалната цел</em>. Всеки проект се третира като нещо, което ще бъде отпечатано, носено или живяно с години.',
       'skills-label': '— Практика / Инструменти —',
-      'portfolio-meta-left': '&nbsp;— Избрани Творби',
+      'portfolio-meta-left': ' — Избрани Творби',
       'portfolio-heading': 'Поле от <em>завършена</em> работа.',
       'portfolio-sub': 'Четири проекта, показващи обхвата. Пълният архив е наличен при поискване — част от него живее в печат и заслужава да бъде видян като такъв.',
       'work-cat-1': 'Визуална Идентичност / Уеб / Печат', 'work-client-1': 'Ресторант Богота',
       'work-cat-2': 'Дизайн на Приложение / UX / Бранд', 'work-client-2': 'Абонаментно Приложение за Храна',
       'work-cat-3': 'Мода / Брандова Идентичност', 'work-client-3': 'Личен Проект',
       'work-cat-4': 'Експериментален / Личен', 'work-client-4': 'Самоинициирано',
-      'creds-meta-left': '&nbsp;— Квалификации', 'creds-meta-right': 'Образование & Продължаваща Практика',
+      'creds-meta-left': ' — Квалификации', 'creds-meta-right': 'Образование & Продължаваща Практика',
       'creds-heading': 'Учил. <em>Сертифициран.</em> Самоук.',
       'creds-sub': 'Формално образование, признати сертификати и дългото чиракуване на самата работа.',
       'edu-label': '— Образование —', 'edu-badge': 'Напуснал Рано · Самостоятелен',
       'edu-meta': '2020 — 2023 · Напуснал в трета година',
       'edu-desc': 'Изградих основите в теорията на дизайна, типографията и визуалната комуникация. Напуснах, когато учебната програма изостана от работата, която вече произвеждах самостоятелно — студиото стана училището.',
       'cert-label': '— Сертификати —',
-      'words-meta-left': '&nbsp;— Думи', 'words-meta-right': 'От тези, с които съм работил',
+      'words-meta-left': ' — Думи', 'words-meta-right': 'От тези, с които съм работил',
       'testi-quote': 'Типът дизайнер, който слуша преди да рисува — и след това рисува нещо, което не си знаел, че искаш, но веднага разпознаваш като <em>свое</em>.',
       'testi-attr-name': 'Клиент', 'testi-attr-role': '· Основател, Студио',
       'testi-1-text': 'Изключително доволни сме от работата по сайта и менюто на нашия ресторант! Професионално изпълнение, модерен дизайн и внимание към всеки детайл. Комуникацията беше бърза и лесна, а крайният резултат напълно отразява нашата концепция. Препоръчваме с две ръце!',
       'testi-1-name': '— Нина Ангелова', 'testi-1-role': 'Ресторант Богота',
       'testi-2-text': 'Заради вниманието към детайла и професионализма успях да развия собствения си бранд.',
       'testi-2-name': '— Христиан Симеонов', 'testi-2-role': 'Собственик · Easy Car Cleaner',
-      'contact-meta-left': '&nbsp;— Контакт', 'contact-meta-right': 'Отворен за работа',
+      'contact-meta-left': ' — Контакт', 'contact-meta-right': 'Отворен за работа',
       'contact-headline': 'Нека направим<br>нещо, което<br><em>си заслужава.</em>',
       'contact-intro': 'Ако имаш бранд, сайт или тиха идея, която трябва да придобие форма — пиши ми. Чета всяко съобщение лично.',
       'form-title-text': 'Изпрати съобщение',
@@ -1411,7 +1436,15 @@
 
       const REF = 200;                       // measure once at a known size
       name.style.setProperty('--hero-size', REF + 'px');
-      const w = line.getBoundingClientRect().width;
+      /* Measure the TEXT, not the element. On desktop the line happens to
+         shrink-wrap because of the flex hero around it; on phones it is a
+         full-width block, so its box reads as the column width, the ratio
+         collapses to 1, and the headline came out at the 200px reference -
+         three times wider than the screen. A range over its contents gives
+         the real text extent whatever the layout is doing. */
+      const rg = document.createRange();
+      rg.selectNodeContents(line);
+      const w = rg.getBoundingClientRect().width;
       if (!w) return;
 
       /* letter-spacing is in em, so width scales linearly with size */
