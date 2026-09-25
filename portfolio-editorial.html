@@ -767,9 +767,45 @@
     .st-cluster { margin-top: 1.4rem; }
     /* the typing script is desktop-only, so the caret would sit there forever */
     .st-caret { display: none; }
-    /* the dropped l is a detail at desktop scale; at phone scale it reads as
-       a broken word */
-    .st-l { transform: none; }
+
+    /* The comma kept its artboard size (325 units = 80px on a phone) and
+       stretched the whole Matter line. 1.26em is the drawing's comma:Matter
+       ratio; line-height 0 keeps its tail out of the line box. */
+    .st-comma { font-size: 1.26em; line-height: 0; }
+
+    /* BRANDS at the drawing's proportions (1251 x 369 on 258-unit type)
+       rather than padded to whatever the text made it */
+    #statement .st-brands { width: 4.85em !important; height: 1.43em !important; padding: 0;
+                            display: flex; justify-content: center; align-items: center; }
+
+    /* "Aiming / to / Deliver" is stacked because of the arrow: it leaves
+       from after "to". Without it the stack read as bad wrapping. Flipped
+       vertically, the same stroke heads down to the pills instead of up. */
+    .st-aim { margin-bottom: .4rem; }
+    .st-arrow {
+      display: block; left: 1.1em; top: .74em;
+      width: 6.5em; height: calc(6.5em * 250 / 730);
+      transform: scaleY(-1);
+    }
+    .st-arrow path, .st-arrow polygon { stroke-width: 12; stroke-dasharray: 22 9; }
+
+    /* The pill cluster is the drawing itself, scaled to the column: sizes,
+       overlaps, the wink tucked beside Ease, the dropped l. 2678 units is
+       the widest row (Ease's 320 inset + 837 - 73 + Intention's 1594). Free-
+       sized pills cropped Intention's texture, which is cut to 1594 x 375. */
+    .st-cluster { --k: calc(min(100vw - 3rem, 34rem) / 2678); position: relative; margin-top: 1.1rem; }
+    .st-row { display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 0; margin: 0; }
+    .st-row-b { margin-top: calc(-23 * var(--k)); }
+    #statement .st-cluster .st-pill { padding: 0; font-size: calc(205 * var(--k)); }
+    #statement .st-ease        { width: calc(837 * var(--k)) !important;  height: calc(371 * var(--k)) !important; margin-left: calc(320 * var(--k)); }
+    #statement .st-intention   { width: calc(1594 * var(--k)) !important; height: calc(375 * var(--k)) !important; margin-left: calc(-73 * var(--k)); }
+    #statement .st-personality { width: calc(1693 * var(--k)) !important; height: calc(289 * var(--k)) !important; }
+    #statement .st-vision      { width: calc(757 * var(--k)) !important;  height: calc(291 * var(--k)) !important; margin-left: calc(43 * var(--k)); }
+    /* the wink is the one departure: at its drawn 112 units it came out at
+       14px and read as a smudge, so it's half again as big and centred in
+       the gap Ease leaves for it, rather than overlapping Personality */
+    .st-wink { position: absolute; left: calc(58 * var(--k)); top: calc(83 * var(--k)); z-index: 2;
+               font-size: calc(170 * var(--k)); margin: 0; }
   }
 
 
