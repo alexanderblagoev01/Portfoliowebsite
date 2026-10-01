@@ -319,6 +319,114 @@
   .about-body p { font-size: 1.1rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 1.4rem; }
   .about-body em { font-style: italic; color: var(--ink); font-variation-settings: "opsz" 144, "SOFT" 30; }
   .about-body strong { font-weight: 500; color: var(--ink); font-style: italic; }
+
+  /* ── The portrait as a holographic playing card ────────────────────
+     5:7 like a real card, and capped by the viewport height so the whole
+     card fits on screen while the section is pinned. The two faces flip
+     as separate 2D turns (back 0 to 90deg, face -90 to 0) rather than one
+     preserve-3d box: Safari drops backface-visibility as soon as a blend
+     mode sits inside a 3D context, and the foil is all blend modes.
+     The card is an object, so its colours stay put in both themes.
+     Without the script it is simply the face, standing in the column. */
+  .pcard {
+    --hx: 50%; --hy: 50%; --mx: 30%; --my: 20%;
+    position: relative;
+    width: min(100%, 400px, calc((100vh - 220px) * 5 / 7));
+    aspect-ratio: 5 / 7;
+    container-type: inline-size;
+  }
+  .pcard-tilt { position: absolute; inset: 0; will-change: transform; }
+  .pcard-face {
+    position: absolute; inset: 0;
+    border-radius: 16px; border-radius: 4.5cqi;
+    overflow: hidden; isolation: isolate;
+    box-shadow: 0 2px 4px rgba(0,0,0,.18), 0 26px 50px -20px rgba(0,0,0,.6);
+    will-change: transform;
+  }
+  .pcard-back { visibility: hidden; }
+
+  .pcard-front { background: #2a221c; }
+  .pcard-front img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center top; display: block;
+  }
+  .pcard-front::after {           /* a little weight at the corners for the indices */
+    content: ''; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,.28), transparent 24%, transparent 72%, rgba(0,0,0,.38));
+  }
+  .pcard-frame {
+    position: absolute; inset: 4.5%; z-index: 2; pointer-events: none;
+    border: 1px solid rgba(237,232,223,.45);
+    border-radius: 10px; border-radius: 2.6cqi;
+  }
+  .pcard-index {
+    position: absolute; top: 6.5%; left: 7.5%; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: 34px; font-size: 9cqi; line-height: .9; color: #ede8df;
+    text-shadow: 0 1px 8px rgba(0,0,0,.45);
+  }
+  .pcard-index i { font-style: normal; font-size: .42em; margin-top: .3em; color: #c99a50; }
+  .pcard-index--flip { top: auto; left: auto; bottom: 6.5%; right: 7.5%; transform: rotate(180deg); }
+
+  /* back: rust, a fine diamond lattice, a double rule, the monogram */
+  .pcard-back {
+    background: radial-gradient(120% 90% at 50% 38%, #b2532f 0%, #8a3a1f 55%, #5a2412 100%);
+  }
+  .pcard-back::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg,  rgba(237,232,223,.11) 0 1px, transparent 1px 13px),
+      repeating-linear-gradient(-45deg, rgba(237,232,223,.11) 0 1px, transparent 1px 13px);
+  }
+  .pcard-back .pcard-frame {
+    border-color: rgba(237,232,223,.55);
+    box-shadow: inset 0 0 0 5px transparent, inset 0 0 0 6px rgba(237,232,223,.22);
+  }
+  .pcard-medal {
+    position: absolute; left: 50%; top: 50%; z-index: 2;
+    width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #a8502c, #6e2c16);
+    border: 1px solid rgba(237,232,223,.6);
+    box-shadow: inset 0 0 0 6px transparent, inset 0 0 0 7px rgba(237,232,223,.28), 0 10px 30px rgba(0,0,0,.35);
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: 56px; font-size: 15cqi; letter-spacing: -.04em; color: #ede8df;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
+  }
+  .pcard-medal i { color: #c99a50; margin-left: -.06em; }
+
+  /* the foil: a rainbow that slides as the card turns or tilts, burned in
+     with color-dodge, and a glare that follows the light */
+  .pcard-holo, .pcard-glare { position: absolute; inset: 0; pointer-events: none; }
+  /* bands, not a wash: black does nothing under color-dodge, so the gaps
+     let the card's own colour through and the rainbow reads as foil
+     catching the light as it slides */
+  .pcard-holo {
+    z-index: 3;
+    background-image: repeating-linear-gradient(110deg,
+      #000 0%, hsl(2,100%,62%) 4%, hsl(53,100%,60%) 7%, hsl(93,100%,58%) 10%,
+      hsl(176,100%,62%) 13%, hsl(228,100%,66%) 16%, hsl(283,100%,64%) 19%, #000 24%, #000 34%);
+    background-size: 300% 300%;
+    background-position: var(--hx) var(--hy);
+    mix-blend-mode: color-dodge;
+    opacity: .55;
+  }
+  .pcard-front .pcard-holo { opacity: .28; }
+  .pcard-glare {
+    z-index: 4;
+    background: radial-gradient(farthest-corner circle at var(--mx) var(--my),
+      rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 28%, rgba(0,0,0,.28) 92%);
+    mix-blend-mode: overlay; opacity: .75;
+  }
+
+  /* paragraphs write in under a feathered mask (the script sets --w and
+     adds the class, so without it nothing is masked) */
+  .about-body .wipe {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(var(--w, 125%) - 25%), transparent var(--w, 125%));
+            mask-image: linear-gradient(to bottom, #000 calc(var(--w, 125%) - 25%), transparent var(--w, 125%));
+  }
   .skills-block { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--hairline); }
   .skills-label {
     font-family: 'JetBrains Mono', monospace;
@@ -727,6 +835,7 @@
     .topbar { display: none; }
     nav.main, footer, .container { padding-left: 1.5rem; padding-right: 1.5rem; }
     .about-grid, .creds-grid, .contact-grid, .testi-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .pcard { width: min(100%, 340px); margin: 0 auto; }
     section { padding: 4.5rem 0; }
     .work-item {
       grid-template-columns: 40px 1fr 100px;
@@ -1059,8 +1168,23 @@
       <span data-i18n="about-meta-right">About the Designer</span>
     </div>
     <div class="about-grid">
-      <div class="about-figure reveal">
-        <img src="web/portrait.jpg" alt="Alexander Blagoev" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
+      <div class="pcard reveal">
+        <div class="pcard-tilt">
+          <div class="pcard-face pcard-back" aria-hidden="true">
+            <span class="pcard-frame"></span>
+            <span class="pcard-medal"><span>A<i>B</i></span></span>
+            <span class="pcard-holo"></span>
+            <span class="pcard-glare"></span>
+          </div>
+          <div class="pcard-face pcard-front">
+            <img src="web/portrait.jpg" alt="Alexander Blagoev">
+            <span class="pcard-frame" aria-hidden="true"></span>
+            <span class="pcard-index" aria-hidden="true">A<i>✦</i></span>
+            <span class="pcard-index pcard-index--flip" aria-hidden="true">A<i>✦</i></span>
+            <span class="pcard-holo" aria-hidden="true"></span>
+            <span class="pcard-glare" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
       <div class="about-body">
         <h2 class="section-heading reveal" data-i18n-html="about-heading">Hands at <em>work</em>, eyes on the <em>detail</em>.</h2>
@@ -1306,6 +1430,7 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollSmoother.min.js"></script>
 
 <script>
@@ -1972,6 +2097,154 @@
       pointerX = e.clientX; start();
     });
     dock.addEventListener('pointerleave', () => { pointerX = null; start(); });
+  })();
+
+  // ── About: the playing card ───────────────────────────────────
+  /* The portrait is a holographic playing card. It comes into view face
+     down in the middle of the section; scrolling turns it over and deals
+     it into the left column, then the text writes itself in beside it.
+     Desktop pins the section for that. Phones have one column and nowhere
+     to deal it to, so the card turns over as it comes up the screen and
+     each block of text writes in as it arrives.
+     This runs before the generic reveal below and takes these elements out
+     of it — two systems animating one element fight. */
+  (function () {
+    const card = document.querySelector('.pcard');
+    const grid = document.querySelector('.about-grid');
+    const body = document.querySelector('.about-body');
+    if (!card || !grid || !body || !window.gsap || !window.ScrollTrigger) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+    if (window.SplitText) gsap.registerPlugin(SplitText);
+
+    const tilt   = card.querySelector('.pcard-tilt');
+    const front  = card.querySelector('.pcard-front');
+    const back   = card.querySelector('.pcard-back');
+    const blocks = [...body.children];
+    [card, ...blocks].forEach(el => el.classList.remove('reveal', 'd1', 'd2', 'd3'));
+
+    /* the turn: back to edge-on, swap, face up from edge-on, lifting off
+       the table on the way over */
+    const flip = (tl, at) => {
+      gsap.set([front, back], { transformPerspective: 1100 });
+      gsap.set(back,  { autoAlpha: 1, rotationY: 0 });
+      gsap.set(front, { autoAlpha: 0, rotationY: -90 });
+      tl.to(back,  { rotationY: 90, duration: 0.5, ease: 'power2.in' }, at)
+        .set(back,  { autoAlpha: 0 }, at + 0.5)
+        .set(front, { autoAlpha: 1 }, at + 0.5)
+        .to(front, { rotationY: 0, duration: 0.5, ease: 'power2.out' }, at + 0.5)
+        .to(tilt,  { scale: 1.07, y: -14, duration: 0.5, ease: 'power2.out' }, at)
+        .to(tilt,  { scale: 1, y: 0, duration: 0.5, ease: 'power2.in' }, at + 0.5);
+    };
+
+    /* Writing in, one block at a time: the heading's words rise out of a
+       mask, paragraphs come down under the feathered mask (line splitting
+       would need the fonts loaded first, and would break the drop cap's
+       float), the tags drop in, anything else fades up. Returns how long
+       to wait before the next block starts. */
+    const splits = [];
+    const writeIn = (tl, el, at) => {
+      if (el.matches('.section-heading') && window.SplitText) {
+        const s = new SplitText(el, { type: 'words', mask: 'words' });
+        splits.push(s);
+        tl.from(s.words, { yPercent: 115, duration: 0.6, stagger: 0.06, ease: 'power3.out' }, at);
+        return 0.35 + s.words.length * 0.03;
+      }
+      if (el.matches('.skills-block')) {
+        const label = el.querySelector('.skills-label');
+        if (label) tl.from(label, { opacity: 0, y: 10, duration: 0.4 }, at);
+        tl.from(el.querySelectorAll('.skill-tag'),
+          { opacity: 0, y: 14, scale: 0.85, duration: 0.35, stagger: 0.04, ease: 'back.out(2)' }, at + 0.1);
+        return 0.4;
+      }
+      if (el.tagName === 'P' && !el.matches('.figure-caption')) {
+        el.classList.add('wipe');
+        tl.fromTo(el, { '--w': '0%' }, { '--w': '125%', duration: 0.8, ease: 'none' }, at)
+          .from(el, { y: 14, duration: 0.8 }, at);
+        return 0.3;
+      }
+      tl.from(el, { opacity: 0, y: 14, duration: 0.5 }, at);
+      return 0.2;
+    };
+    const cleanup = () => {
+      splits.splice(0).forEach(s => s.revert());
+      blocks.forEach(b => b.classList.remove('wipe'));
+    };
+
+    gsap.matchMedia().add({
+      desk: '(hover: hover) and (pointer: fine) and (min-width: 1001px)',
+      rest: 'not all and (hover: hover) and (pointer: fine) and (min-width: 1001px)'
+    }, ctx => {
+      if (ctx.conditions.rest) {
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: card, start: 'top 82%', end: 'center 48%', scrub: 1 }
+        });
+        flip(tl, 0);
+        /* no pointer to follow, so the foil drifts with the scroll — the
+           way it would catch the light as the card moves past */
+        gsap.fromTo(card, { '--hx': '0%', '--mx': '10%' }, {
+          '--hx': '100%', '--mx': '90%', ease: 'none',
+          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+        blocks.forEach(el => writeIn(gsap.timeline({
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        }), el, 0));
+        return cleanup;
+      }
+
+      /* Centred on the grid until it's dealt. Measured from the card's
+         layout box — the x this tween applies is taken back out. */
+      const centre = () => {
+        const g = grid.getBoundingClientRect(), c = card.getBoundingClientRect();
+        return g.left + g.width / 2 - (c.left - (gsap.getProperty(card, 'x') || 0) + c.width / 2);
+      };
+      const tl = gsap.timeline({
+        defaults: { ease: 'power2.out' },
+        scrollTrigger: {
+          trigger: grid, start: 'top 14%',
+          end: () => '+=' + Math.round(innerHeight * 1.6),
+          pin: '#about', scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+        }
+      });
+      flip(tl, 0);
+      tl.fromTo(card, { '--hx': '5%', '--mx': '15%' },
+                      { '--hx': '95%', '--mx': '85%', duration: 1.75, ease: 'none' }, 0)
+        .fromTo(card, { x: centre }, { x: 0, duration: 0.9, ease: 'power3.inOut' }, 0.85);
+      let at = 1.65;
+      blocks.forEach(el => { at += writeIn(tl, el, at); });
+      tl.to({}, { duration: 0.4 });            /* a beat on the finished section before the pin lets go */
+
+      /* Once it's dealt, it tilts toward the pointer and the light follows.
+         The light lives on a proxy so these tweens can overwrite each
+         other freely without touching the scroll timeline's own. */
+      gsap.set(tilt, { transformPerspective: 900 });
+      const rx = gsap.quickTo(tilt, 'rotationX', { duration: 0.6, ease: 'power3' });
+      const ry = gsap.quickTo(tilt, 'rotationY', { duration: 0.6, ease: 'power3' });
+      const light = { mx: 85, my: 20, hx: 95, hy: 50 };
+      const shine = () => {
+        card.style.setProperty('--mx', light.mx + '%'); card.style.setProperty('--my', light.my + '%');
+        card.style.setProperty('--hx', light.hx + '%'); card.style.setProperty('--hy', light.hy + '%');
+      };
+      const move = e => {
+        if (tl.time() < 1.8) return;           /* not while it's still being dealt */
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        ry((px - 0.5) * 16); rx((0.5 - py) * 16);
+        gsap.to(light, { mx: px * 100, my: py * 100, hx: 20 + px * 60, hy: 20 + py * 60,
+                         duration: 0.4, overwrite: true, onUpdate: shine });
+      };
+      const leave = () => {
+        rx(0); ry(0);
+        gsap.to(light, { mx: 85, my: 20, hx: 95, hy: 50, duration: 0.8, overwrite: true, onUpdate: shine });
+      };
+      card.addEventListener('pointermove', move);
+      card.addEventListener('pointerleave', leave);
+      return () => {
+        card.removeEventListener('pointermove', move);
+        card.removeEventListener('pointerleave', leave);
+        cleanup();
+      };
+    });
   })();
 
   // ── Scroll reveal ─────────────────────────────────────────────
