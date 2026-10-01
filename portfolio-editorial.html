@@ -369,33 +369,9 @@
   .pcard-index i { font-style: normal; font-size: .42em; margin-top: .3em; color: #c99a50; }
   .pcard-index--flip { top: auto; left: auto; bottom: 6.5%; right: 7.5%; transform: rotate(180deg); }
 
-  /* back: rust, a fine diamond lattice, a double rule, the monogram */
-  .pcard-back {
-    background: radial-gradient(120% 90% at 50% 38%, #b2532f 0%, #8a3a1f 55%, #5a2412 100%);
-  }
-  .pcard-back::before {
-    content: ''; position: absolute; inset: 0;
-    background:
-      repeating-linear-gradient(45deg,  rgba(237,232,223,.11) 0 1px, transparent 1px 13px),
-      repeating-linear-gradient(-45deg, rgba(237,232,223,.11) 0 1px, transparent 1px 13px);
-  }
-  .pcard-back .pcard-frame {
-    border-color: rgba(237,232,223,.55);
-    box-shadow: inset 0 0 0 5px transparent, inset 0 0 0 6px rgba(237,232,223,.22);
-  }
-  .pcard-medal {
-    position: absolute; left: 50%; top: 50%; z-index: 2;
-    width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 40%, #a8502c, #6e2c16);
-    border: 1px solid rgba(237,232,223,.6);
-    box-shadow: inset 0 0 0 6px transparent, inset 0 0 0 7px rgba(237,232,223,.28), 0 10px 30px rgba(0,0,0,.35);
-    display: grid; place-items: center;
-    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
-    font-size: 56px; font-size: 15cqi; letter-spacing: -.04em; color: #ede8df;
-    font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1;
-  }
-  .pcard-medal i { color: #c99a50; margin-left: -.06em; }
+  /* back: Alexander's own design, 1000 x 1400 */
+  .pcard-back { background: #ebe9dc; }
+  .pcard-back img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
   /* the foil: a rainbow that slides as the card turns or tilts, burned in
      with color-dodge, and a glare that follows the light */
@@ -1171,8 +1147,7 @@
       <div class="pcard reveal">
         <div class="pcard-tilt">
           <div class="pcard-face pcard-back" aria-hidden="true">
-            <span class="pcard-frame"></span>
-            <span class="pcard-medal"><span>A<i>B</i></span></span>
+            <img src="card/back.png" alt="">
             <span class="pcard-holo"></span>
             <span class="pcard-glare"></span>
           </div>
