@@ -2156,9 +2156,7 @@
       if (pills.length) tl.from(pills, { opacity: 0, y: rise, scale: 0.9, duration: 0.8,
                                          stagger: 0.35, ease: 'power3.out' }, 7.8);
       if (wink) tl.from(wink, { opacity: 0, scale: 0, rotate: 20, duration: 0.5, ease: 'back.out(3)' }, 9.5);
-      /* Night falls as the pills land (no stars on phones) */
-      gsap.set(sec, { backgroundColor: '#CDD308', '--st-ink': '#2D4C90', '--glow': 0 });
-      tl.to(sec, { backgroundColor: '#1e1e1c', '--st-ink': '#EBEADC', '--glow': 1, duration: 1.8, ease: 'none' }, 7.4);
+      /* phones keep the band in daylight: no night, one colour throughout */
       tl.to({}, { duration: 0.8 }, 10);        /* a beat on the finished line before the pin lets go */
 
       /* ── the travelling object ─────────────────────────────────────
