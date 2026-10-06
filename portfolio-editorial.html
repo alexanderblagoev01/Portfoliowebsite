@@ -3,11 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#EBEADC">
 <title>Alexander Blagoev — Graphic & Web Designer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;0,9..144,300..700,30,1;1,9..144,300..700,30,0;1,9..144,300..700,30,1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/Alfarn-W05-Regular.otf" as="font" type="font/otf" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
 <style>
+  /* ── Two typefaces ─────────────────────────────────────────────────
+     Alfarn (Celine Hurka, Adobe Originals) for display and headings;
+     JetBrains Mono for everything else. Alfarn is served from the site
+     (the W05 web cut, Latin only, 26 KB) and preloaded, since the
+     header logo is set in it. */
+  @font-face {
+    font-family: 'Alfarn';
+    src: url('fonts/Alfarn-W05-Regular.otf') format('opentype');
+    font-display: swap;
+  }
+  :root {
+    --display: 'Alfarn', 'Arial Black', system-ui, sans-serif;
+    --text: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
   :root {
     --paper: #1e1e1c;
     --paper-warm: #252523;
@@ -45,7 +62,7 @@
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'Fraunces', serif;
+    font-family: var(--text);
     font-optical-sizing: auto;
     font-weight: 400;
     font-size: 17px;
@@ -84,7 +101,7 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .logo {
-    font-family: 'Fraunces', serif;
+    font-family: var(--display);
     font-size: 1.5rem;
     font-weight: 500;
     font-style: italic;
@@ -229,7 +246,7 @@
   .hero-line-type { margin-top: .04em; }
 
   .hero-name {
-    font-family: 'Fraunces', serif;
+    font-family: var(--display);
     font-weight: 300;
     font-size: var(--hero-size, clamp(2.4rem, 13vw, 11.5rem));
     line-height: 0.92;
@@ -267,7 +284,7 @@
   }
   .section-num { color: var(--terracotta); }
   .section-heading {
-    font-family: 'Fraunces', serif;
+    font-family: var(--display);
     font-weight: 300;
     font-size: clamp(2.8rem, 6vw, 5rem);
     line-height: 1;
@@ -277,7 +294,7 @@
   }
   .section-heading em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
   .section-sub {
-    font-family: 'Fraunces', serif;
+    font-family: var(--text);
     font-style: italic;
     font-size: 1.15rem;
     color: var(--muted);
@@ -309,7 +326,7 @@
     text-transform: uppercase;
     display: flex; justify-content: space-between;
   }
-  .about-body { font-family: 'Fraunces', serif; }
+  .about-body { font-family: var(--text); }
   .drop-cap::first-letter {
     font-size: 5rem; line-height: 0.9; float: left;
     margin: 0.1rem 0.7rem 0 0;
@@ -362,7 +379,7 @@
   .pcard-index {
     position: absolute; top: 6.5%; left: 7.5%; z-index: 2;
     display: flex; flex-direction: column; align-items: center;
-    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-family: var(--display); font-style: italic; font-weight: 300;
     font-size: 34px; font-size: 9cqi; line-height: .9; color: #ede8df;
     text-shadow: 0 1px 8px rgba(0,0,0,.45);
   }
@@ -411,7 +428,7 @@
   }
   .skills-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .skill-tag {
-    font-family: 'Fraunces', serif;
+    font-family: var(--text);
     font-size: 0.95rem; color: var(--ink);
     padding: 0.35rem 1rem;
     border: 1px solid var(--hairline);
@@ -448,7 +465,7 @@
   .work-item:hover::before { transform: scaleY(1); }
   .work-num { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--muted); }
   .work-title {
-    font-family: 'Fraunces', serif;
+    font-family: var(--display);
     font-size: clamp(1.6rem, 2.5vw, 2.4rem);
     font-weight: 400; line-height: 1.1;
     letter-spacing: -0.015em;
@@ -456,7 +473,7 @@
     font-variation-settings: "opsz" 144, "SOFT" 30;
   }
   .work-cat { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
-  .work-client { font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); }
+  .work-client { font-family: var(--text); font-style: italic; font-size: 0.95rem; color: var(--muted); }
   .work-year-arrow { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink); }
 
   /* ── Hover-expand rows ───────────────────────────────────────────
@@ -549,10 +566,10 @@
     color: var(--ochre); border: 1px solid var(--ochre);
     padding: 0.2rem 0.5rem; display: inline-block; margin-bottom: 1rem;
   }
-  .edu-card h4 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.4rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
-  .edu-card .edu-school { font-family: 'Fraunces', serif; font-style: italic; color: var(--terracotta); font-size: 1rem; margin-bottom: 0.8rem; }
+  .edu-card h4 { font-family: var(--text); font-weight: 400; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.4rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .edu-card .edu-school { font-family: var(--text); font-style: italic; color: var(--terracotta); font-size: 1rem; margin-bottom: 0.8rem; }
   .edu-card .edu-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
-  .edu-card p { font-family: 'Fraunces', serif; font-size: 0.98rem; line-height: 1.6; color: var(--ink-soft); }
+  .edu-card p { font-family: var(--text); font-size: 0.98rem; line-height: 1.6; color: var(--ink-soft); }
   .cert-list { display: flex; flex-direction: column; }
   .cert-row {
     display: grid; grid-template-columns: 60px 1fr 1.2fr 100px;
@@ -564,20 +581,20 @@
   .cert-row:last-child { border-bottom: 1px solid var(--hairline); }
   .cert-row:hover { padding-left: 1rem; }
   .cert-num { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--sage); }
-  .cert-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 400; color: var(--ink); line-height: 1.3; }
-  .cert-org { font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); }
+  .cert-name { font-family: var(--text); font-size: 1.15rem; font-weight: 400; color: var(--ink); line-height: 1.3; }
+  .cert-org { font-family: var(--text); font-style: italic; font-size: 0.95rem; color: var(--muted); }
   .cert-year { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink); text-align: right; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--paper-warm); }
   .testi-feature { text-align: center; max-width: 900px; margin: 0 auto 5rem; padding: 2rem 0; }
-  .testi-feature .quote-icon { font-family: 'Fraunces', serif; font-style: italic; font-size: 5rem; color: var(--terracotta); line-height: 0.5; margin-bottom: 1rem; font-weight: 300; }
-  .testi-feature p { font-family: 'Fraunces', serif; font-style: italic; font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.4; color: var(--ink); font-weight: 300; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .testi-feature .quote-icon { font-family: var(--display); font-style: italic; font-size: 5rem; color: var(--terracotta); line-height: 0.5; margin-bottom: 1rem; font-weight: 300; }
+  .testi-feature p { font-family: var(--text); font-style: italic; font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.4; color: var(--ink); font-weight: 300; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
   .testi-attribution { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
   .testi-attribution strong { color: var(--ink); font-weight: 500; margin-right: 0.4rem; }
   .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; border-top: 1px solid var(--hairline); padding-top: 4rem; }
-  .testi-small p { font-family: 'Fraunces', serif; font-size: 1.15rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 1.5rem; }
-  .testi-small p::before { content: '"'; font-family: 'Fraunces', serif; font-style: italic; color: var(--terracotta); margin-right: 0.2rem; }
+  .testi-small p { font-family: var(--text); font-size: 1.15rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 1.5rem; }
+  .testi-small p::before { content: '"'; font-family: var(--text); font-style: italic; color: var(--terracotta); margin-right: 0.2rem; }
   .testi-small p::after { content: '"'; color: var(--terracotta); }
   .testi-author { display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--hairline); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
   .testi-author .name { color: var(--ink); }
@@ -585,22 +602,22 @@
   /* CONTACT */
   #contact { padding-bottom: 4rem; }
   .contact-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6rem; align-items: start; }
-  .contact-headline { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
+  .contact-headline { font-family: var(--display); font-weight: 300; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; }
   .contact-headline em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .contact-intro { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.2rem; color: var(--muted); line-height: 1.5; max-width: 460px; margin-bottom: 3rem; }
+  .contact-intro { font-family: var(--text); font-style: italic; font-size: 1.2rem; color: var(--muted); line-height: 1.5; max-width: 460px; margin-bottom: 3rem; }
   .contact-list { display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
   .contact-row { display: grid; grid-template-columns: 100px 1fr auto; gap: 1.5rem; padding: 1.2rem 0; border-bottom: 1px solid var(--hairline); align-items: baseline; transition: padding 0.25s; }
   .contact-row:hover { padding-left: 0.8rem; }
   .contact-row:hover .contact-value { color: var(--terracotta); }
   .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  .contact-value { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); transition: color 0.25s; }
+  .contact-value { font-family: var(--text); font-size: 1.05rem; color: var(--ink); transition: color 0.25s; }
   .contact-arrow { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.9rem; }
   .contact-form { background: var(--paper-warm); border: 1px solid var(--hairline); padding: 2.5rem; }
   .form-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; }
   .form-title .form-num { color: var(--terracotta); }
   .form-group { margin-bottom: 1.5rem; border-bottom: 1px solid var(--hairline); padding-bottom: 0.8rem; }
   .form-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.5rem; }
-  .form-input, .form-textarea { width: 100%; background: transparent; border: none; font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--ink); outline: none; padding: 0.3rem 0; resize: none; }
+  .form-input, .form-textarea { width: 100%; background: transparent; border: none; font-family: var(--text); font-size: 1.05rem; color: var(--ink); outline: none; padding: 0.3rem 0; resize: none; }
   .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); font-style: italic; }
   .form-textarea { min-height: 90px; }
   .form-submit { background: var(--ink); color: var(--paper); border: none; padding: 1rem 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.25s; width: 100%; margin-top: 1rem; }
@@ -608,7 +625,7 @@
 
   /* FOOTER */
   footer { border-top: 1px solid var(--hairline); padding: 3rem 2.5rem 2rem; position: relative; z-index: 2; background: var(--paper); }
-  .footer-big { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(5rem, 18vw, 18rem); line-height: 0.85; letter-spacing: -0.04em; color: var(--ink); margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; overflow: hidden; }
+  .footer-big { font-family: var(--display); font-weight: 300; font-size: clamp(5rem, 18vw, 18rem); line-height: 0.85; letter-spacing: -0.04em; color: var(--ink); margin-bottom: 2rem; font-variation-settings: "opsz" 144, "SOFT" 30; overflow: hidden; }
   .footer-big em { font-style: italic; color: var(--terracotta); font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
   .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--hairline); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; flex-wrap: wrap; gap: 1rem; }
   .footer-social { display: flex; gap: 2rem; }
@@ -635,12 +652,12 @@
 
   /* CYRILLIC FONT OVERRIDE */
   body.lang-bg .hero-name {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--display);
     font-weight: 300;
     font-size: clamp(4rem, 13vw, 12rem);
   }
   body.lang-bg .hero-name .italic {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--display);
     font-style: italic;
     font-weight: 300;
   }
@@ -704,7 +721,7 @@
   }
 
   .st-lead {
-    font-family: 'Fraunces', serif; font-weight: 400;
+    font-family: var(--display); font-weight: 400;
     font-size: calc(282 * var(--k)); line-height: 1; margin: 0;
     color: #c29c5c; white-space: nowrap;
   }
@@ -717,7 +734,7 @@
     font-variation-settings: 'wght' 700; white-space: nowrap;
   }
   .st-amp {
-    font-family: 'Fraunces', serif; font-style: italic;
+    font-family: var(--display); font-style: italic;
     font-size: calc(217 * var(--k)); line-height: 1;
   }
   .st-matter { font-size: calc(258 * var(--k)); line-height: 1; }
@@ -726,7 +743,7 @@
      without the two fighting over the same property */
   .st-caret i { font-style: normal; animation: stBlink .9s steps(1) infinite; }
   @keyframes stBlink { 50% { opacity: 0; } }
-  .st-comma { font-family: 'Fraunces', serif; font-size: calc(325 * var(--k)); font-weight: 400; }
+  .st-comma { font-family: var(--display); font-size: calc(325 * var(--k)); font-weight: 400; }
   .st-interfaces { font-size: calc(244 * var(--k)); line-height: 1; color: #09ba00; }
   .st-aim { font-size: calc(214 * var(--k)); line-height: 1.2; position: relative; display: inline-block; }
   .st-wink { font-size: calc(112 * var(--k)); font-style: italic; }
@@ -984,9 +1001,258 @@
     .form-input { min-height: 44px; }
     .footer-social a { display: inline-flex; align-items: center; min-height: 44px; }
   }
+  /* keep each "LINK ↗" on one line; the row wraps instead of the label */
+  .footer-social { flex-wrap: wrap; column-gap: 1.5rem; row-gap: 0; }
+  .footer-social a { white-space: nowrap; }
+</style>
+
+<style>
+  /* ══ Palette ══ The three colours from the
+     reference poster: cream P 3-9 C, cobalt P 104-8 C, and Alexander's
+     accent #CDD308 (it replaced the poster's magenta, then a brick red),
+     sampled from Alexander’s image. Light only (dark mode dropped), set in
+     Alfarn + JetBrains Mono, photos in their own colours. ══ */
+  :root, body.light {
+    --paper: #EBEADC;
+    --paper-warm: #E2E0D0;
+    --ink: #2D4C90;
+    --ink-soft: #4A649B;
+    --muted: #5E739F;
+    --terracotta: #CDD308;
+    --rust: #A4A906;
+    --accent-ink: #A4A906;   /* the accent at text size on cream */
+    --sage: #2D4C90;
+    --ochre: #CDD308;
+    --hairline: rgba(45, 76, 144, 0.18);
+    --hairline-soft: rgba(45, 76, 144, 0.08);
+    --nav-bg: rgba(235, 234, 220, 0.92);
+  }
+
+  /* ── Type, re-tuned for Alfarn + JetBrains Mono ─────────────────────
+     Alfarn is a single upright weight: accent words keep their colour but
+     stand upright (no fake slant), and it runs far wider than the serif it
+     replaces, so headings come down a size. Mono body copy reads larger
+     than a serif at the same size, so it comes down too, with more air. */
+  body { font-size: 16px; }
+  .section-heading, .contact-headline, .footer-big, .work-title, .logo,
+  .st-lead, .st-amp, .pcard-index, .hero-name {
+    font-style: normal; font-weight: 400; font-variation-settings: normal;
+  }
+  .section-heading em, .contact-headline em, .footer-big em, .st-lead em,
+  .work-item:hover .work-title { font-style: normal; font-variation-settings: normal; }
+  .section-heading  { font-size: clamp(1.9rem, 3.9vw, 3.4rem); line-height: 1.05; letter-spacing: -0.01em; }
+  .contact-headline { font-size: clamp(2.1rem, 4.6vw, 4rem);  line-height: 1.02; letter-spacing: -0.01em; }
+  .footer-big       { font-size: clamp(2.2rem, 10.5vw, 9.5rem); line-height: .95; letter-spacing: -0.02em; }
+  .work-title       { font-size: clamp(1.25rem, 1.9vw, 1.8rem); line-height: 1.1; letter-spacing: 0; }
+  .logo             { font-size: 1.05rem; letter-spacing: 0; }
+  .drop-cap::first-letter {
+    font-family: var(--display); font-style: normal; font-weight: 400; font-variation-settings: normal;
+    font-size: 3.6rem; line-height: .85; margin: .15rem .6rem 0 0;
+    color: var(--ink);
+  }
+  .pcard-index { font-size: 26px; font-size: 7cqi; }
+  .quote-icon  { font-style: normal; }
+  /* body copy */
+  .about-body p { font-size: .95rem; line-height: 1.75; }
+  .about-body em, .about-body strong { font-style: italic; font-weight: 500; }
+  .about-body .section-heading em { font-style: normal; font-weight: 400; }   /* Alfarn has no italic */
+  .section-sub, .contact-intro { font-size: .95rem; line-height: 1.65; }
+  .work-client { font-size: .8rem; }
+  .skill-tag   { font-size: .78rem; font-style: normal; }
+  .testi-small p   { font-size: .95rem; line-height: 1.7; }
+  .testi-feature p { font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.55; font-weight: 400; }
+  .contact-value, .form-input, .form-textarea { font-size: .95rem; }
+
+  /* Accent at text size. #CDD308 all but vanishes on the cream (1.3:1),
+     so the section numbers, quote marks and hover colours take the darker
+     --accent-ink; the big accent words ("worth keeping.", "soon.") keep the
+     bright yellow, and on the cobalt band --accent-ink is bright again.
+     The send button's hover fill stays bright, with cobalt lettering. */
+  .section-num, .form-title .form-num,
+  .testi-small p::before, .testi-small p::after,
+  .nav-links a:hover, .contact-row:hover .contact-value,
+  .footer-social a:hover { color: var(--accent-ink); }
+  .nav-links a::after { background: var(--accent-ink); }
+  .form-submit:hover { color: var(--ink); }
+
+  /* Words: the grid's own top rule and padding framed a featured quote
+     that is gone, leaving two rules around an empty gap under the header */
+  .testi-grid { border-top: 0; padding-top: 0; }
+
+  /* statement band: #CDD308 with cobalt type (about 5:1); the cobalt pills
+     carry cream lettering, the cream pills cobalt */
+  #statement { background: #CDD308; --st-ink: #2D4C90; --glow: 0; }
+  .st-lead, .st-interfaces { color: var(--st-ink); }
+  /* the star sits on BRANDS' corner and later rolls on INTERFACES — both
+     cobalt now — so it gets a cream outline to stay separate from them */
+  .st-morph path { fill: #2D4C90; stroke: #EBEADC; stroke-width: 6; paint-order: stroke; stroke-linejoin: round; }
+  .st-arrow path, .st-arrow polygon { stroke: var(--st-ink); }
+  .st-brands { background: #2D4C90; color: #EBEADC; }
+  /* the four pills keep their original fills — Ease's green texture and
+     ring, Intention's terracotta texture, Personality's mustard, VISION's
+     blue gradient (all from the base styles) — with the light lettering
+     they have on the live site */
+  .st-ease, .st-intention, .st-personality, .st-vision { color: #eee; }
+
+  /* Night: as the pills arrive the band goes dark (#1e1e1c), the type
+     turns cream and the stars come out — driven by --glow (0 → 1) and
+     --st-ink, which the scroll scrubs. The pills keep their own looks. */
+  /* the stars: a fixed sky behind the moving type, out only at night;
+     they twinkle on their own clocks and stop when the band is light */
+  .statement-track { z-index: 1; }
+  .st-stars { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: var(--glow); }
+  .st-stars svg {
+    position: absolute; width: var(--s); height: var(--s); fill: currentColor;
+    filter: drop-shadow(0 0 3px currentColor);
+    animation: stTwinkle var(--d) ease-in-out var(--delay) infinite;
+  }
+  .st-stars:not(.is-on) svg { animation-play-state: paused; }
+  @media not all and (hover: hover) and (pointer: fine) and (min-width: 1001px) { .st-stars { display: none; } }
+  @keyframes stTwinkle {
+    0%, 100% { opacity: .15; transform: scale(.55) rotate(0deg); }
+    50%      { opacity: 1;   transform: scale(1)   rotate(45deg); }
+  }
+
+  /* The pill cluster, tidied. The drawing's overlaps, Ease's ring, VISION's
+     overflowing N and Personality's dropped l read as texture when the
+     pills were image-filled; in flat colour they read as mistakes. Now:
+     one height, sized to the word with even padding, even gaps, nothing
+     overlapping, and the wink centred in the space left of Ease.
+     In artboard units (--k), so desktop and phone share it. */
+  #statement .st-cluster .st-pill {
+    width: auto !important; height: calc(330 * var(--k)) !important;
+    padding: 0 calc(120 * var(--k)) !important;
+  }
+  #statement .st-intention, #statement .st-vision { margin-left: calc(40 * var(--k)); }
+  #statement .st-row-b { margin-top: calc(40 * var(--k)); }
+  #statement .st-l { transform: none; }
+  #statement .st-wink {
+    position: absolute; z-index: 2; line-height: 1;
+    font-size: calc(150 * var(--k)); left: calc(70 * var(--k)); top: calc(90 * var(--k));
+  }
+
+  /* Selected Works: a cobalt band. Its text colours are re-pointed to
+     cream here, so everything inside follows; the accent ("finished", the
+     number) stays #CDD308, about 5:1 on cobalt. Labels at 75% cream keep
+     their secondary role and still clear 4.5:1. */
+  #portfolio {
+    background: #2D4C90; color: #EBEADC;
+    --ink: #EBEADC;
+    --ink-soft: rgba(235, 234, 220, 0.88);
+    --muted: rgba(235, 234, 220, 0.75);
+    --hairline: rgba(235, 234, 220, 0.22);
+    --hairline-soft: rgba(235, 234, 220, 0.1);
+    --accent-ink: #CDD308;
+  }
+
+</style>
+
+<style>
+  /* ══ The hero, from Alexander's artboard ══ */
+  #heroArt.hero-art {
+    position: relative; overflow: hidden; padding: 0; border-bottom: 0;
+    height: 100vh; min-height: 560px; background: #EBEADC;
+  }
+  #heroArt.is-tall { height: auto; min-height: 0; aspect-ratio: 1000 / 1760; }
+  .ha-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: hidden; }
+  .ha-art--tall, #heroArt.is-tall .ha-art--wide { display: none; }
+  #heroArt.is-tall .ha-art--tall { display: block; }
+  .ha-sub { font-family: 'JetBrains Mono', monospace; font-style: italic; font-weight: 500; }
+  .ha-shapes { overflow: visible; }
+  .ha-shape { position: absolute; display: block; overflow: hidden; }
+  .ha-shape.is-developing { will-change: opacity, filter; }
+  .ha-flow { position: absolute; inset: 0; }
+  .ha-flow span {
+    position: absolute; white-space: pre; line-height: 1;
+    font-family: 'JetBrains Mono', monospace; font-style: italic; font-weight: 500;
+    color: #bcbbc4;
+  }
+  .ha-sr {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* text effects */
+  .ha-flow span.fx-ink { color: transparent; -webkit-background-clip: text; background-clip: text; }
+  .ha-flow span.fx-current {
+    background-image: linear-gradient(90deg, #bcbbc4 calc(var(--c, -9999px) - var(--band)),
+      #2D4C90 var(--c, -9999px), #bcbbc4 calc(var(--c, -9999px) + var(--band)));
+  }
+  .ha-flow span.fx-lens {
+    background-image: radial-gradient(circle var(--r) at var(--lx, -9999px) var(--ly, -9999px),
+      #2D4C90 0%, #2D4C90 38%, #bcbbc4 100%);
+  }
+  .ha-w { font-style: inherit; }
+
+  /* loading screen */
+  .ha-loader {
+    position: fixed; inset: 0; z-index: 10000; overflow: hidden;
+    background: #EBEADC; color: #2D4C90;
+    animation: haLoaderFailsafe .4s ease 8s forwards;     /* never stuck, even if the script dies */
+  }
+  /* first guess at where the hero's wordmark is — full screen on desktop,
+     under the 77px name bar on a phone — corrected by the script */
+  .ha-loader-mark { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .ha-loader-mark--tall { display: none; top: 77px; height: 176vw; }
+  @media (max-aspect-ratio: 899/1000) {
+    .ha-loader-mark--wide { display: none; }
+    .ha-loader-mark--tall { display: block; }
+  }
+  .ha-loader-meter {
+    position: absolute; left: 50%; bottom: 9vh; transform: translateX(-50%);
+    display: grid; justify-items: center; gap: 12px;
+  }
+  .ha-loader-text {
+    font: italic 500 14px/1 'JetBrains Mono', monospace; letter-spacing: .04em; margin: 0;
+  }
+  .ha-loader-n { display: inline-block; min-width: 3ch; text-align: right; }
+  .ha-loader-bar { width: 160px; height: 1px; background: rgba(45,76,144,.2); overflow: hidden; }
+  .ha-loader-bar i { display: block; height: 100%; background: #2D4C90; transform: scaleX(0); transform-origin: left; }
+  @keyframes haLoaderFailsafe { to { opacity: 0; visibility: hidden; } }
+  html.is-loading, html.is-loading body { overflow: hidden; }
 </style>
 </head>
-<body>
+<body class="light">
+<!-- Loading screen — holds the page until the hero's fonts and
+     images are ready, so the develop animation starts with everything in
+     hand. Removed by the hero script; the CSS fails safe after 8s. -->
+<div class="ha-loader" aria-hidden="true">
+  <!-- the hero's wordmark, in cobalt, at the hero's own coordinates; the
+       script lines it up exactly with the real one underneath -->
+  <svg class="ha-loader-mark ha-loader-mark--wide" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice">
+    <g fill="#2D4C90">
+      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
+      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
+      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
+      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
+      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
+      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
+      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
+      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
+      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
+    </g>
+    <text class="ha-sub" x="915.9" y="1048.5" font-size="58.42" fill="#2D4C90">interactive and physical media</text>
+  </svg>
+  <svg class="ha-loader-mark ha-loader-mark--tall" viewBox="0 0 1000 1760" preserveAspectRatio="xMidYMin meet">
+    <g fill="#2D4C90" transform="translate(60 470) scale(.6797) translate(-792.63 -830.1)">
+      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
+      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
+      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
+      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
+      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
+      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
+      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
+      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
+      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
+    </g>
+    <text class="ha-sub" x="500" y="622" font-size="40" text-anchor="middle" fill="#2D4C90">interactive and physical media</text>
+  </svg>
+  <div class="ha-loader-meter">
+    <p class="ha-loader-text">developing <span class="ha-loader-n">0</span>%</p>
+    <span class="ha-loader-bar"><i></i></span>
+  </div>
+</div>
+
 
 
 <!-- DOCK (desktop only — replaces nav.main above 1000px) -->
@@ -1003,12 +1269,6 @@
       <span class="dock-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
         <rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/>
         <rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/>
-      </svg></span>
-    </a>
-    <a class="dock-item" href="#credentials" data-label-key="nav-credentials">
-      <span class="dock-label">Credentials</span>
-      <span class="dock-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.6 7 21l5-2.4L17 21l-1.5-7.4"/>
       </svg></span>
     </a>
     <a class="dock-item" href="#testimonials" data-label-key="nav-words">
@@ -1034,15 +1294,6 @@
         <path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5Z"/>
       </svg></span>
     </button>
-    <button class="dock-item" type="button" id="dockTheme" aria-label="Switch theme">
-      <span class="dock-label" id="dockThemeLabel">Light</span>
-      <span class="dock-glyph"><svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/>
-      </svg><svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
-        <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z"/>
-      </svg></span>
-    </button>
   </nav>
 </div>
 
@@ -1058,29 +1309,92 @@
   <ul class="nav-links">
     <li><a href="#about" data-i18n="nav-index">Index</a></li>
     <li><a href="#portfolio" data-i18n="nav-work">Work</a></li>
-    <li><a href="#credentials" data-i18n="nav-credentials">Credentials</a></li>
     <li><a href="#testimonials" data-i18n="nav-words">Words</a></li>
     <li><a href="#contact" data-i18n="nav-contact">Contact</a></li>
   </ul>
   <div class="nav-right">
     <button class="theme-toggle" id="langToggle">BG</button>
-    <button class="theme-toggle" id="themeToggle">☀ Light</button>
   </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="container">
-    <h1 class="hero-name">
-      <span class="hero-line">
-        <span data-i18n="hero-line1">Design for</span>
-        <span class="italic" data-i18n="hero-line2">Screen</span>
-      </span>
-      <span class="hero-line hero-line-type">
-        <span class="ampersand">&</span> <span id="cyclingWord"></span><span class="caret">|</span>
-      </span>
-    </h1>
+
+<!-- HERO — rebuilt from Alexander's artboard (2880 x 1800). The
+     shapes, image crops, wordmark outlines and subtitle are his, at his
+     coordinates. The body copy is live text: a small layout routine flows it
+     through the cream space line by line, left gap then right gap, the way
+     his Illustrator wrap does — CSS can only wrap text down one side of a
+     shape. Phones get a portrait arrangement of the same pieces. -->
+<section id="heroArt" class="hero-art" aria-labelledby="heroArtTitle">
+  <h1 class="ha-sr" id="heroArtTitle">A. Blagoev — interactive and physical media</h1>
+  <!-- each image is its own small layer, cut to its shape's box, so the
+       develop animation is opacity and blur on a GPU layer rather than a
+       repaint of one big SVG every frame -->
+  <div class="ha-art ha-art--wide ha-shapes">
+    <svg class="ha-shape" data-box="693 55 2142 1190" viewBox="693 55 2142 1190" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haW0"><path d="M1057.197,96.785c.759,42.271-10.219,84.498-25.87,123.468-39.87,99.276-100.814,188.391-160.691,276.394-58.816,86.444-118.408,173.479-159.737,269.969-6.574,16.115-11.883,32.471-14.702,49.661-1.385,12.712-1.436,25.48-.087,38.192,2.186,13.554,5.91,26.754,10.956,39.516,6.816,15.237,15.322,29.648,25.089,43.185,1.135,1.573,2.3,3.124,3.455,4.683.192.242.382.485.574.726,2.917,3.653,5.914,7.241,8.982,10.768,6.068,6.976,12.417,13.706,18.979,20.219,11.832,11.744,24.357,22.782,37.326,33.253,1.894,1.529,3.797,3.047,5.71,4.552.766.602,1.535,1.2,2.301,1.802,3.678,2.893-2.666-2.053-2.722-2.099,3.155,2.649,6.606,5.021,9.92,7.468,6.832,5.043,13.758,9.958,20.761,14.761,19.952,13.681,40.469,26.548,61.568,38.388,33.186,18.623,67.613,34.989,102.621,49.883,25.165,10.512,50.642,20.269,76.363,29.335,52.293,18.431,105.56,34.104,159.428,47.219,55.43,13.495,111.534,24.252,168.057,32.006,22.29,2.926,44.64,5.389,67.04,7.311,41.936,3.598,84.045,5.365,126.137,4.849,39.251-.481,78.49-2.971,117.428-7.979,12.605-1.751,25.175-3.755,37.688-6.08,44.509-8.272,88.392-20.399,130.269-37.683,20.135-8.693,39.752-18.586,58.545-29.901,8.587-5.17,17.002-10.628,25.211-16.381,4.08-2.86,8.11-5.791,12.084-8.796.074-.056.161-.122.258-.195.051-.04.106-.083.149-.117,1.949-1.538,3.884-3.093,5.804-4.667,15.353-12.585,29.758-26.329,42.968-41.149,3.32-3.724,6.565-7.515,9.731-11.37,1.498-1.824,2.975-3.665,4.438-5.518.206-.272.414-.543.619-.816,6.087-8.104,11.839-16.458,17.238-25.035,10.421-16.556,19.477-33.934,27.262-51.875,2.974-7.275,5.759-14.625,8.318-22.057,13.905-40.386,20.177-82.387,26.818-124.426,7.812-49.445,15.19-98.972,24.515-148.163,9.29-49.005,20.469-97.779,36.214-145.149,15.79-47.504,35.948-94.189,63.144-136.338,28.723-44.514,64.472-82.919,106.947-114.52,45.272-33.682,98.404-57.809,152.987-71.752,55.089-14.072,113.124-18.157,169.553-10.973,54.532,6.942,106.791,22.282,156.204,46.173V57.058h-1780.238c2.681,13.048,4.148,26.362,4.388,39.727Z"/></clipPath></defs>
+      <g clip-path="url(#haW0)"><image href="hero/capri.jpg" x="669.95" y="-1366.49" width="2163.06" height="3121.3" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="48 55 521 280" viewBox="48 55 521 280" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haW1"><path d="M70.439,287.833c49.715,17.945,101.136,31.535,153.505,38.923,40.907,5.154,82.412,6.377,123.384,1.304,25.218-3.749,50.022-10.023,73.691-19.542,12.639-5.578,24.853-12.116,36.399-19.712,2.752-1.81,5.465-3.679,8.137-5.605.915-.66,1.821-1.332,2.726-2.005,4.32-3.495,8.56-7.072,12.638-10.853,8.443-7.827,16.172-16.317,23.4-25.266.722-.969,1.44-1.941,2.147-2.921,1.722-2.384,3.4-4.799,5.035-7.243,3.28-4.9,6.388-9.914,9.33-15.024,5.296-9.199,10.032-18.702,14.313-28.411,15.829-38.611,24.654-79.712,30.447-120.94.583-4.49,1.122-8.984,1.642-13.481H49.914v223.062c6.809,2.656,13.65,5.231,20.525,7.712Z"/></clipPath></defs>
+      <g clip-path="url(#haW1)"><image href="hero/face.jpg" x="-259.33" y="-190.26" width="2000" height="1466" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="2467 609 368 1140" viewBox="2467 609 368 1140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haW2"><path d="M2804.691,619.529c-10.538,4.722-20.713,10.199-30.525,16.299-5.516,3.429-10.916,7.045-16.206,10.813-2.461,1.753-4.897,3.54-7.312,5.357-.134.101-.249.188-.368.277-1.008.8-2.018,1.596-3.021,2.402-35.85,28.86-66.674,63.596-94.977,99.738-.556.711-1.11,1.423-1.665,2.135-1.542,2.015-3.076,4.033-4.569,6.086-3.69,5.075-7.297,10.211-10.816,15.406-7.287,10.758-14.203,21.767-20.743,32.995-12.736,21.864-23.99,44.553-33.97,67.8-6.151,14.892-11.797,29.987-16.927,45.262-19.554,58.221-31.856,118.603-40.24,179.375-2.639,20.13-4.889,40.308-6.803,60.519-6.824,72.075-9.635,144.556-13.35,216.84-3.707,72.125-7.682,144.268-14.674,216.163-4.878,50.159-11.098,100.297-19.759,149.984h364.28V610.547c-9.659,2.254-19.116,5.291-28.356,8.982Z"/></clipPath></defs>
+      <g clip-path="url(#haW2)"><image href="hero/folk.jpg" x="2214.65" y="610.55" width="934.45" height="1174.68" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="48 1016 967 733" viewBox="48 1016 967 733" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haW3"><path d="M882.61,1669.872c-46.935-29.658-92.835-60.964-137.415-94.058-46.811-34.75-92.345-71.255-136.069-109.825-33.997-29.99-67.9-60.604-97.764-94.792-25.266-28.925-48.77-59.359-72.445-89.582-26.471-33.792-53.009-67.557-80.992-100.119-27.854-32.412-57.124-63.825-89.422-91.878-3.948-3.429-7.942-6.805-11.987-10.12-2-1.639-4.012-3.264-6.037-4.872-.496-.394-.993-.784-1.491-1.175-7.485-5.656-15.089-11.141-22.927-16.302-14.42-9.495-29.523-17.951-45.33-24.904-14.477-5.766-29.464-10.129-44.852-12.61-12.817-1.416-25.713-1.462-38.532-.064-13.581,2.141-27.075,5.557-39.875,10.564-2.555,1.173-5.072,2.422-7.556,3.733v713.11h963.37c-44.285-24.444-87.912-50.085-130.674-77.106Z"/></clipPath></defs>
+      <g clip-path="url(#haW3)"><image href="hero/leopards.jpg" x="-51.25" y="569.17" width="1236.97" height="1663.5" preserveAspectRatio="none"/></g>
+    </svg>
   </div>
+  <div class="ha-art ha-art--tall ha-shapes">
+    <svg class="ha-shape" data-box="26 26 948 872" viewBox="26 26 948 872" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haT0"><path d="M28,28H972V690C900,730,820,650,720,690C620,730,560,840,440,868C320,896,180,830,28,872Z"/></clipPath></defs>
+      <g clip-path="url(#haT0)"><image href="hero/capri.jpg" x="28" y="-381" width="944" height="1362" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="26 946 326 324" viewBox="26 946 326 324" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haT1"><path d="M28,960C150,948,286,990,318,1080C350,1170,282,1250,170,1262C110,1268,60,1258,28,1248Z"/></clipPath></defs>
+      <g clip-path="url(#haT1)"><image href="hero/face.jpg" x="-60" y="930" width="800" height="586" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="748 1188 226 546" viewBox="748 1188 226 546" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haT2"><path d="M972,1190C870,1206,788,1290,768,1420C750,1540,772,1660,812,1732H972Z"/></clipPath></defs>
+      <g clip-path="url(#haT2)"><image href="hero/folk.jpg" x="622" y="1170" width="469" height="590" preserveAspectRatio="none"/></g>
+    </svg>
+    <svg class="ha-shape" data-box="26 1498 356 236" viewBox="26 1498 356 236" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="haT3"><path d="M28,1500C150,1516,262,1572,330,1650C356,1680,372,1706,380,1732H28Z"/></clipPath></defs>
+      <g clip-path="url(#haT3)"><image href="hero/leopards.jpg" x="0" y="1440" width="377" height="507" preserveAspectRatio="none"/></g>
+    </svg>
+  </div>
+  <svg class="ha-art ha-art--wide" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g class="ha-mark" fill="#EBEADC">
+      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
+      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
+      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
+      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
+      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
+      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
+      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
+      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
+      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
+    </g>
+    <text class="ha-sub" x="915.9" y="1048.5" font-size="58.42" fill="#EBEADC">interactive and physical media</text>
+  </svg>
+  <svg class="ha-art ha-art--tall" viewBox="0 0 1000 1760" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
+    <g class="ha-mark" fill="#EBEADC" transform="translate(60 470) scale(.6797) translate(-792.63 -830.1)">
+      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
+      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
+      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
+      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
+      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
+      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
+      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
+      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
+      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
+    </g>
+    <text class="ha-sub" x="500" y="622" font-size="40" text-anchor="middle" fill="#EBEADC">interactive and physical media</text>
+  </svg>
+  <div class="ha-flow" aria-hidden="true"></div>
+  <p class="ha-sr ha-source">Brands, interfaces and the small details in between that make people stop, look twice and remember. Since 2017 I have worked remotely from Bulgaria for clients who needed more than a nice picture. They needed a voice, a system and a reason for people to care. I studied graphic design at university and left when the work became the better teacher. Real briefs, real deadlines and real clients sharpen you faster than any classroom ever could. Every project starts with a question, not a style. Who is this for? What should they feel? What will they do next? The answers decide the type, the colour, the grid and everything after. I sketch fast and refine slowly. The first idea is rarely the best one, so I make room for the second, the third and the one that only shows up at two in the morning. Type is my favourite material. It can whisper, shout or explain, sometimes in the same word. Colour is never decoration; it is often the first thing people remember. I like constraints. A small label, a narrow screen, a menu that has to work by candlelight. Small spaces force big ideas to become clear ones. On screen, I care about how a page moves as much as how it looks. A scroll should feel like turning a page, a button should want to be pressed, and a layout should hold together on a phone held in one hand on a crowded tram. I have designed a restaurant identity from the logo to the printed menu, a meal subscription app that makes cooking feel like a choice and not a chore, a label system for nine car care products, software for people who build for a living, and my own clothing label, Muave, where the person disappears and the movement stays. Hands at work, eyes on the detail. Let's make it matter.</p>
 </section>
 
 <!-- STATEMENT — scrolls sideways while pinned.
@@ -1251,59 +1565,11 @@
   </div>
 </section>
 
-<!-- CREDENTIALS -->
-<section id="credentials">
-  <div class="container">
-    <div class="section-meta">
-      <span><span class="section-num">03</span> <span data-i18n="creds-meta-left">&nbsp;— Credentials</span></span>
-      <span data-i18n="creds-meta-right">Education & Continued Practice</span>
-    </div>
-    <h2 class="section-heading reveal" data-i18n-html="creds-heading">Studied. <em>Certified.</em> Self-taught.</h2>
-    <p class="section-sub reveal d1" data-i18n="creds-sub">Formal study, recognised certifications, and the long apprenticeship of doing the work.</p>
-
-    <div class="creds-grid">
-      <div class="creds-side reveal">
-        <h3 data-i18n="edu-label">— Education —</h3>
-        <div class="edu-card">
-          <span class="edu-badge" data-i18n="edu-badge">Departed Early · Self-Directed</span>
-          <h4>Graphic Design <em>(B.A.)</em></h4>
-          <div class="edu-school">Varna Free University</div>
-          <div class="edu-meta" data-i18n="edu-meta">2020 — 2023 · Departed in third year</div>
-          <p data-i18n="edu-desc">Built the foundation in design theory, typography, and visual communication. Left when the curriculum fell behind the work I was already producing independently — the studio became the school.</p>
-        </div>
-      </div>
-      <div class="creds-main reveal d1">
-        <h3 data-i18n="cert-label">— Certifications —</h3>
-        <div class="cert-list">
-          <div class="cert-row">
-            <div class="cert-num">— 01</div>
-            <div class="cert-name">Graphic Design</div>
-            <div class="cert-org">SoftUni Creative</div>
-            <div class="cert-year">2022</div>
-          </div>
-          <div class="cert-row">
-            <div class="cert-num">— 02</div>
-            <div class="cert-name">Web Design & UI</div>
-            <div class="cert-org">SoftUni Creative</div>
-            <div class="cert-year">2022</div>
-          </div>
-          <div class="cert-row">
-            <div class="cert-num">— 03</div>
-            <div class="cert-name">Brand Identity Design</div>
-            <div class="cert-org">SoftUni Creative</div>
-            <div class="cert-year">2021</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- TESTIMONIALS -->
 <section id="testimonials">
   <div class="container">
     <div class="section-meta">
-      <span><span class="section-num">04</span> <span data-i18n="words-meta-left">&nbsp;— Words</span></span>
+      <span><span class="section-num">03</span> <span data-i18n="words-meta-left">&nbsp;— Words</span></span>
       <span data-i18n="words-meta-right">From those I've worked with</span>
     </div>
 
@@ -1330,7 +1596,7 @@
 <section id="contact">
   <div class="container">
     <div class="section-meta">
-      <span><span class="section-num">05</span> <span data-i18n="contact-meta-left">&nbsp;— Contact</span></span>
+      <span><span class="section-num">04</span> <span data-i18n="contact-meta-left">&nbsp;— Contact</span></span>
       <span data-i18n="contact-meta-right">Open for work</span>
     </div>
     <div class="contact-grid">
@@ -1393,7 +1659,7 @@
         <a href="https://www.instagram.com/blagoev01" target="_blank">Instagram ↗</a>
         <a href="mailto:alexanderblagoev01@gmail.com">Email ↗</a>
       </div>
-      <div data-i18n="footer-font">Set in Fraunces & JetBrains Mono</div>
+      <div data-i18n="footer-font">Set in Alfarn & JetBrains Mono</div>
     </div>
   </div>
 </footer>
@@ -1482,7 +1748,7 @@
       'form-submit': 'Send Message →',
       'footer-big': 'Until <em>soon</em>.',
       'footer-copy': '© 2026 — Alexander Blagoev. All rights reserved.',
-      'footer-font': 'Set in Fraunces & JetBrains Mono',
+      'footer-font': 'Set in Alfarn & JetBrains Mono',
       'cycling': ['Identity', 'Experience', 'Purpose', 'Culture', 'Print', 'the Web', 'Brands', 'Tomorrow']
     },
     bg: {
@@ -1527,7 +1793,7 @@
       'form-submit': 'Изпрати →',
       'footer-big': 'До <em>скоро</em>.',
       'footer-copy': '© 2026 — Александър Благоев. Всички права запазени.',
-      'footer-font': 'Шрифтове: Fraunces & JetBrains Mono',
+      'footer-font': 'Шрифтове: Alfarn & JetBrains Mono',
       'cycling': ['Хартия', 'Менюто', 'Опаковката', 'Всеки']
     }
   };
@@ -1569,104 +1835,32 @@
   document.getElementById('langToggle').addEventListener('click', flipLang);
   document.getElementById('dockLang')?.addEventListener('click', flipLang);
 
-  // ── Theme ─────────────────────────────────────────────────────
-  const themeToggle = document.getElementById('themeToggle');
-
-  const dockTheme = document.getElementById('dockTheme');
-
-  function paintTheme(isLight) {
-    document.body.classList.toggle('light', isLight);
-    themeToggle.textContent = isLight ? '☾ Dark' : '☀ Light';
-    if (dockTheme) {
-      /* show the theme you'd switch TO, same as the text button */
-      dockTheme.querySelector('.ico-sun').style.display  = isLight ? 'none' : '';
-      dockTheme.querySelector('.ico-moon').style.display = isLight ? '' : 'none';
-      document.getElementById('dockThemeLabel').textContent = isLight ? 'Dark' : 'Light';
-    }
-    store.set('theme', isLight ? 'light' : 'dark');
-  }
-
-  if (store.get('theme') === 'light') paintTheme(true);
-
-  /* origin is passed in: the nav button is display:none on desktop, so
-     reading its rect there would start the circle at 0,0 */
-  async function switchTheme(originEl) {
-    const toLight = !document.body.classList.contains('light');
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    /* No View Transitions support, or motion turned down — swap instantly. */
-    if (!document.startViewTransition || reduced) { paintTheme(toLight); return; }
-
-    /* Circle grows from the button out to the furthest viewport corner,
-       so it always finishes covering the screen wherever the button sits. */
-    const r = originEl.getBoundingClientRect();
-    const x = r.left + r.width / 2;
-    const y = r.top + r.height / 2;
-    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-
-    const t = document.startViewTransition(() => paintTheme(toLight));
-    try { await t.ready; } catch { return; }   // superseded by another toggle
-
-    document.documentElement.animate(
-      { clipPath: [`circle(0px at ${x}px ${y}px)`,
-                   `circle(${radius}px at ${x}px ${y}px)`] },
-      { duration: 620, easing: 'cubic-bezier(.4,0,.2,1)',
-        pseudoElement: '::view-transition-new(root)' }
-    );
-  }
-  themeToggle.addEventListener('click', () => switchTheme(themeToggle));
-  dockTheme?.addEventListener('click', () => switchTheme(dockTheme));
-
-  // ── Fit the hero's first line to the container ────────────────
-  /* Sized by measurement, not a vw guess: the line has to span exactly,
-     and "Design for Screen" and "Дизайн за Екрана" are different widths. */
-  (function () {
-    const name = document.querySelector('.hero-name');
-    const line = document.querySelector('.hero-line');
-    const box  = document.querySelector('#hero > .container');
-    if (!name || !line || !box) return;
-
-    function fit() {
-      const avail = box.clientWidth
-        - parseFloat(getComputedStyle(box).paddingLeft)
-        - parseFloat(getComputedStyle(box).paddingRight);
-      if (avail <= 0) return;
-
-      const REF = 200;                       // measure once at a known size
-      name.style.setProperty('--hero-size', REF + 'px');
-      /* Measure the TEXT, not the element. On desktop the line happens to
-         shrink-wrap because of the flex hero around it; on phones it is a
-         full-width block, so its box reads as the column width, the ratio
-         collapses to 1, and the headline came out at the 200px reference -
-         three times wider than the screen. A range over its contents gives
-         the real text extent whatever the layout is doing. */
-      const rg = document.createRange();
-      rg.selectNodeContents(line);
-      const w = rg.getBoundingClientRect().width;
-      if (!w) return;
-
-      /* letter-spacing is in em, so width scales linearly with size */
-      let size = REF * (avail / w);
-
-      /* two lines must still clear the dock and the bottom padding */
-      const maxByHeight = (innerHeight - 200) / 2 / 0.92;
-      size = Math.min(size, maxByHeight);
-
-      name.style.setProperty('--hero-size', size.toFixed(2) + 'px');
-    }
-
-    fit();
-    addEventListener('resize', fit);
-    document.fonts?.ready.then(fit);        // refit once Fraunces lands
-    document.getElementById('langToggle')?.addEventListener('click', () => setTimeout(fit, 30));
-    document.getElementById('dockLang')?.addEventListener('click', () => setTimeout(fit, 30));
-  })();
-
-
-
   /* the green shape from the artboard — the star becomes this on both the
      desktop strip and the phone stage */
   const ST_ROLLER = 'M98.385,54.842l10.704,24.45c7.857,17.948-10.271,36.267-28.3,28.598l-25.302-10.763-25.302,10.763c-18.029,7.669-36.157-10.651-28.3-28.598l10.704-24.45L1.884,30.391C-5.973,12.444,12.156-5.876,30.184,1.793l25.302,10.763L80.789,1.793c18.029-7.669,36.157,10.651,28.3,28.598l-10.704,24.45Z';
+
+  /* The night sky for the statement band — four-point sparkles
+     scattered on a low-discrepancy sequence (even, but not a grid), mostly
+     cream with every fourth in the accent. Built once, on first use. */
+  function stSky(sec) {
+    let sky = sec.querySelector('.st-stars');
+    if (sky) return sky;
+    sky = document.createElement('div');
+    sky.className = 'st-stars'; sky.setAttribute('aria-hidden', 'true');
+    const N = innerWidth < 700 ? 26 : 46;
+    const SPARK = 'M12 0C12.6 7 17 11.4 24 12C17 12.6 12.6 17 12 24C11.4 17 7 12.6 0 12C7 11.4 11.4 7 12 0Z';
+    let html = '';
+    for (let i = 0; i < N; i++) {
+      const x = ((i + 1) * 0.7548777) % 1, y = ((i + 1) * 0.5698403) % 1;
+      const size = 6 + ((i * 37) % 13), dur = 1.8 + ((i * 53) % 23) / 10, delay = -((i * 29) % 40) / 10;
+      const color = i % 4 === 3 ? '#CDD308' : '#EBEADC';
+      html += `<svg viewBox="0 0 24 24" style="left:${(x * 96 + 2).toFixed(2)}%;top:${(y * 92 + 4).toFixed(2)}%;` +
+              `--s:${size}px;--d:${dur}s;--delay:${delay}s;color:${color}"><path d="${SPARK}"/></svg>`;
+    }
+    sky.innerHTML = html;
+    sec.prepend(sky);
+    return sky;
+  }
 
   /* ── Statement strip ──────────────────────────────────────────────
      ScrollTrigger pins the section and scrubs the track sideways. Two
@@ -1791,6 +1985,16 @@
     /* the wink pops last */
     enter('.st-wink', { scale: 0, rotate: 20, ease: 'back.out(3)' });
 
+    /* Night falls as the pills arrive — the band darkens, the
+       type turns cream, the pills glow and the stars come out. Scrubbed,
+       so scrolling back brings the day back. */
+    const sky = stSky(sec);
+    gsap.fromTo(sec, { backgroundColor: '#CDD308', '--st-ink': '#2D4C90', '--glow': 0 },
+      { backgroundColor: '#1e1e1c', '--st-ink': '#EBEADC', '--glow': 1, ease: 'none',
+        scrollTrigger: { trigger: '.st-cluster', containerAnimation: horiz,
+                         start: 'left 110%', end: 'left 45%', scrub: true },
+        onUpdate() { sky.classList.toggle('is-on', this.progress() > 0.001); } });
+
     /* ── the travelling object ───────────────────────────────────────
        One shape carries the whole run. It rides on BRANDS as the white
        star, holds at a fixed point on screen while it morphs into the
@@ -1811,7 +2015,7 @@
       /* held paused and scrubbed by hand, so the shape change is tied to
          where the object is rather than to a clock */
       const change = gsap.to(path, {
-        morphSVG: { shape: ROLLER }, fill: '#09ba00',
+        morphSVG: { shape: ROLLER }, fill: '#2D4C90',
         duration: 1, paused: true, ease: 'none'
       });
 
@@ -1870,7 +2074,7 @@
       });
     }
 
-    /* Fraunces changes the track's width once it lands */
+    /* the display face changes the track's width once it lands */
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
   })();
 
@@ -1952,6 +2156,9 @@
       if (pills.length) tl.from(pills, { opacity: 0, y: rise, scale: 0.9, duration: 0.8,
                                          stagger: 0.35, ease: 'power3.out' }, 7.8);
       if (wink) tl.from(wink, { opacity: 0, scale: 0, rotate: 20, duration: 0.5, ease: 'back.out(3)' }, 9.5);
+      /* Night falls as the pills land (no stars on phones) */
+      gsap.set(sec, { backgroundColor: '#CDD308', '--st-ink': '#2D4C90', '--glow': 0 });
+      tl.to(sec, { backgroundColor: '#1e1e1c', '--st-ink': '#EBEADC', '--glow': 1, duration: 1.8, ease: 'none' }, 7.4);
       tl.to({}, { duration: 0.8 }, 10);        /* a beat on the finished line before the pin lets go */
 
       /* ── the travelling object ─────────────────────────────────────
@@ -1964,7 +2171,7 @@
       let change = null, size = 0;
       const path = morph && morph.querySelector('path');
       if (path && window.MorphSVGPlugin) {
-        change = gsap.to(path, { morphSVG: { shape: ST_ROLLER }, fill: '#09ba00',
+        change = gsap.to(path, { morphSVG: { shape: ST_ROLLER }, fill: '#2D4C90',
                                  duration: 1, paused: true, ease: 'none' });
       }
       const STAR = 238 / 165;                  /* the star is drawn larger than the roller */
@@ -2242,29 +2449,382 @@
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   }
 
-  // ── Typing / cycling hero word ────────────────────────────────
-  let wordIndex = 0, charIndex = 0, isDeleting = false;
-  const wordEl = document.getElementById('cyclingWord');
-
-  function type() {
-    const words = translations[currentLang]['cycling'];
-    const word = words[wordIndex % words.length];
-    if (isDeleting) {
-      wordEl.textContent = word.substring(0, charIndex - 1);
-      charIndex--;
-    } else {
-      wordEl.textContent = word.substring(0, charIndex + 1);
-      charIndex++;
-    }
-    let delay = isDeleting ? 55 : 110;
-    if (!isDeleting && charIndex === word.length) { delay = 2000; isDeleting = true; }
-    else if (isDeleting && charIndex === 0) { isDeleting = false; wordIndex = (wordIndex + 1) % words.length; delay = 350; }
-    setTimeout(type, delay);
-  }
-
-  setTimeout(type, 1400);
 </script>
 
+
+
+<script>
+  /* ── Hero text flow ─────────────────────────────────────────────
+     Flows the copy through whatever cream space is visible: the shapes
+     are drawn once into a small canvas (grown by a margin), and for every
+     line the free runs across it become slots, filled left to right. The
+     font is monospaced, so a slot's capacity is just its width over one
+     character's advance. If the copy runs out of room it ends on the last
+     whole sentence instead of mid-thought. */
+  (function () {
+    const sec = document.getElementById('heroArt');
+    if (!sec) return;
+    const flow = sec.querySelector('.ha-flow');
+    const words = sec.querySelector('.ha-source').textContent.trim().split(/\s+/);
+    const LAYOUT = {
+      /* anchors: how much of the spare width / height each shape moves by —
+         [.5,0] the tile painting, centred along the top, with the name on it
+         (so the name is always dead centre), [0,0] face top-left, [1,1]
+         dancer bottom-right, [0,1] leopards bottom-left */
+      wide: { svg: sec.querySelector('.ha-shapes.ha-art--wide'), w: 2880, h: 1800,
+              anchors: [[0.5, 0], [0, 0], [1, 1], [0, 1]],
+              frame: [50, 57, 2833, 1747], font: 45, lead: 54, first: 90, pad: 30 },
+      tall: { svg: sec.querySelector('.ha-shapes.ha-art--tall'), w: 1000, h: 1760,
+              frame: [28, 28, 972, 1732], font: 40, lead: 50, first: 62, pad: 22 }
+    };
+    const MIN_CHARS = 4, R = 4;          /* R: artboard units per mask pixel */
+
+    let maskCache = { key: '' };
+    const mask = (L, off, Wv, Hv, st) => {
+      const key = [L.w, Math.round(Wv), Math.round(Hv)].join(':');
+      if (maskCache.key === key) return maskCache;
+      const cw = Math.ceil(Wv / R), ch = Math.ceil(Hv / R);
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const x = c.getContext('2d');
+      x.scale(1 / R, 1 / R);
+      x.lineWidth = L.pad * 2; x.lineJoin = 'round';
+      L.svg.querySelectorAll('clipPath path').forEach((p, i) => {
+        const P = new Path2D(p.getAttribute('d'));
+        x.save();
+        if (i === 0 && st) x.transform(st.a, 0, 0, 1, st.b, 0); else x.translate(off[i][0], off[i][1]);
+        x.fill(P); x.stroke(P); x.restore();
+      });
+      const a = x.getImageData(0, 0, cw, ch).data;
+      return (maskCache = { key, cw, ch, on: (cx, cy) => a[(cy * cw + cx) * 4 + 3] > 0 });
+    };
+
+    let first = true;
+    function layout() {
+      const tall = innerWidth < innerHeight * 0.9;
+      sec.classList.toggle('is-tall', tall);
+      const L = tall ? LAYOUT.tall : LAYOUT.wide;
+      const W = sec.clientWidth, H = sec.clientHeight;
+      lastW = W; lastH = H;
+      /* Wide: the artboard is fitted whole, never cropped, and any spare
+         width or height is shared out by pinning each shape to its corner
+         of the frame — so the cream border is the same on all four sides at
+         any window shape, and the extra room goes to the text. (Filling the
+         window instead cropped the top and bottom edges on wide screens.)
+         Tall: fitted to the width, its own height. */
+      const ox = 0, oy = 0;
+      let s, Wv = L.w, Hv = L.h, off = [[0, 0], [0, 0], [0, 0], [0, 0]], frame = L.frame, st = null;
+      if (tall) s = W / L.w;
+      else {
+        s = Math.min(W / L.w, H / L.h);
+        Wv = W / s; Hv = H / s;
+        const dx = Wv - L.w, dy = Hv - L.h;
+        off = L.anchors.map(([ax, ay]) => [ax * dx, ay * dy]);
+        frame = [L.frame[0], L.frame[1], L.frame[2] + dx, L.frame[3] + dy];
+        /* The tile painting is stretched sideways rather than slid: its
+           left curve moves by half the spare width (so it — and the name on
+           it — stay centred) while its straight right edge still meets the
+           frame. Only the shape stretches; the image inside is scaled evenly
+           by the same factor (a slight zoom), so nothing in it distorts. */
+        const cap = L.svg.querySelector('.ha-shape');
+        const cx0 = Number(cap.dataset.box.split(' ')[0]);
+        const a = (L.frame[2] + dx - (cx0 + dx / 2)) / (L.frame[2] - cx0);
+        st = { a, b: cx0 + dx / 2 - a * cx0 };
+        const img = cap.querySelector('image');
+        if (!img.dataset.y0) { img.dataset.y0 = img.getAttribute('y'); img.dataset.h0 = img.getAttribute('height'); }
+        const y0 = +img.dataset.y0, h0 = +img.dataset.h0, CY = 650;   /* zoom about the painting's middle */
+        img.setAttribute('height', (h0 * a).toFixed(2));
+        img.setAttribute('y', (CY - (CY - y0) * a).toFixed(2));
+        /* the name rides on the tile painting, so it stays centred too */
+        const tr = `translate(${off[0][0].toFixed(1)} ${off[0][1].toFixed(1)})`;
+        [sec.querySelector('svg.ha-art--wide'), document.querySelector('.ha-loader-mark--wide')].forEach(svg => {
+          if (!svg) return;
+          svg.setAttribute('viewBox', `0 0 ${Wv.toFixed(1)} ${Hv.toFixed(1)}`);
+          svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+          svg.querySelectorAll(':scope > g, :scope > text').forEach(n => n.setAttribute('transform', tr));
+        });
+      }
+      L.svg.querySelectorAll('.ha-shape').forEach((el, i) => {
+        const [bx, by, bw, bh] = el.dataset.box.split(' ').map(Number);
+        const stretched = i === 0 && st;
+        /* one property at a time: cssText would wipe the opacity and blur
+           the develop animation keeps on the same element */
+        el.style.left = ((stretched ? bx * st.a + st.b : bx + off[i][0]) * s).toFixed(1) + 'px';
+        el.style.top = ((by + off[i][1]) * s).toFixed(1) + 'px';
+        el.style.width = (bw * (stretched ? st.a : 1) * s).toFixed(1) + 'px';
+        el.style.height = (bh * s).toFixed(1) + 'px';
+      });
+      const lm = document.querySelector('.ha-loader');
+      if (lm) {
+        const r = sec.getBoundingClientRect();
+        lm.querySelectorAll('.ha-loader-mark').forEach(m => {
+          const mine = m.classList.contains(tall ? 'ha-loader-mark--tall' : 'ha-loader-mark--wide');
+          m.style.display = mine ? 'block' : 'none';
+          if (mine) Object.assign(m.style, { left: r.left + 'px', top: r.top + 'px',
+                                             width: r.width + 'px', height: r.height + 'px' });
+        });
+      }
+      const [vx0, vy0, vx1, vy1] = frame;
+
+      /* the dock floats over the hero at the top of the page: keep clear */
+      const ex = [];
+      const dock = document.querySelector('.dock');
+      if (dock && dock.offsetParent !== null) {
+        const r = dock.getBoundingClientRect(), b = sec.getBoundingClientRect();
+        const top = b.top + scrollY;                 /* section's place in the page */
+        if (r.width) ex.push({ x0: (r.left - b.left - ox) / s - L.pad, x1: (r.right - b.left - ox) / s + L.pad,
+                               y0: (r.top - top - oy) / s - L.pad,   y1: (r.bottom - top - oy) / s + L.pad });
+      }
+
+      const m = mask(L, off, Wv, Hv, st), adv = L.font * 0.6, out = [];
+      let wi = 0;
+      for (let base = L.first; wi < words.length; base += L.lead) {
+        const top = base - L.font * 0.75, bot = base + L.font * 0.22;
+        if (bot > vy1) break;
+        if (base - L.font * 0.73 < vy0 - 1) continue;      /* cap height inside the frame */
+        const cy0 = Math.max(0, Math.floor(top / R)), cy1 = Math.min(m.ch - 1, Math.ceil(bot / R));
+        const cx0 = Math.ceil(vx0 / R), cx1 = Math.floor(vx1 / R);
+        const runs = []; let start = -1;
+        for (let cx = cx0; cx <= cx1; cx++) {
+          let free = cx < cx1;
+          for (let cy = cy0; free && cy <= cy1; cy++) if (m.on(cx, cy)) free = false;
+          const ux = cx * R;
+          if (free && ex.some(e => ux >= e.x0 && ux <= e.x1 && bot >= e.y0 && top <= e.y1)) free = false;
+          if (free && start < 0) start = ux;
+          if (!free && start >= 0) { runs.push([start, ux]); start = -1; }
+        }
+        for (const [a, b] of runs) {
+          const max = Math.floor((b - a) / adv);
+          if (max < MIN_CHARS) continue;
+          let line = '';
+          while (wi < words.length) {
+            const next = line ? line + ' ' + words[wi] : words[wi];
+            if (next.length > max) break;
+            line = next; wi++;
+          }
+          if (line) out.push({ a, b, base, text: line });
+        }
+      }
+      /* out of room: end on the last whole sentence */
+      if (wi < words.length) {
+        for (let i = out.length - 1; i >= 0; i--) {
+          const cut = Math.max(out[i].text.lastIndexOf('. '), out[i].text.lastIndexOf('? '));
+          const end = /[.?!]$/.test(out[i].text) ? out[i].text.length : (cut >= 0 ? cut + 1 : -1);
+          if (end > 0) { out[i].text = out[i].text.slice(0, end); out.length = i + 1; break; }
+        }
+      }
+
+      const px = L.font * s;
+      flow.textContent = '';
+      flow.style.setProperty('--band', (px * 0.6 * 9).toFixed(1) + 'px');   /* the current: ~9 characters each side */
+      flow.style.setProperty('--r', (px * 7).toFixed(1) + 'px');            /* the lens radius */
+      const frag = document.createDocumentFragment();
+      let start = 0;
+      SEGS = out.map(o => {
+        const sp = document.createElement('span');
+        const x = ox + (o.a + ((o.b - o.a) - o.text.length * adv) / 2) * s;   /* centred in its slot */
+        const y = oy + o.base * s - 0.86 * px;
+        sp.textContent = o.text;
+        sp.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;font-size:${px.toFixed(2)}px`;
+        frag.appendChild(sp);
+        const seg = { el: sp, text: o.text, start, x, y };
+        start += o.text.length + 1;
+        return seg;
+      });
+      TOTAL = start;
+      ADV = px * 0.6;
+      flow.appendChild(frag);
+
+      if (first) {
+        first = false;
+        /* the tile painting first — it's the one behind the wordmark — the
+           rest in random order */
+        const all = [...L.svg.querySelectorAll('.ha-shape')];
+        const shapes = window.gsap ? [all[0], ...gsap.utils.shuffle(all.slice(1))] : [];
+        const mark = [...sec.querySelectorAll(`svg.ha-art--${tall ? 'tall' : 'wide'} .ha-mark, svg.ha-art--${tall ? 'tall' : 'wide'} .ha-sub`)];
+        if (window.gsap && !REDUCED) gsap.set(mark, { fill: '#2D4C90' });   /* cobalt, matching the loading screen */
+        if (window.gsap && !REDUCED) {
+          /* The images develop like the text: each surfaces out of the
+             cream, soft and pale, and sharpens as the ink comes up. One at a
+             time, in random order. Each image is its own layer for this, so
+             it is the GPU that fades and un-blurs it; the layer is let go
+             afterwards. The wordmark and subtitle stay put. */
+          shapes.forEach(el => el.classList.add('is-developing'));
+          gsap.set(shapes, { opacity: 0, filter: 'blur(14px)' });
+        }
+        FX.prepare();         /* words in place but invisible, before anything is shown */
+        const srcs = [...new Set([...L.svg.querySelectorAll('.ha-shape image')].map(i => i.getAttribute('href')))];
+        loadHero(srcs).then(() => {
+          if (window.gsap && !REDUCED) {
+            /* cobalt to cream while the painting comes up behind it, so the
+               name never sits pale on pale */
+            gsap.to(mark, { fill: '#EBEADC', duration: 1.3, delay: 0.45, ease: 'power1.inOut',
+                            onComplete: () => gsap.set(mark, { clearProps: 'fill' }) });
+          }
+          if (window.gsap && !REDUCED)
+            gsap.to(shapes, { opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power2.out', stagger: 0.35,
+              onComplete() { gsap.set(this.targets(), { clearProps: 'filter' });
+                             this.targets().forEach(el => el.classList.remove('is-developing')); } });
+          FX.play(350);
+        });
+      } else if (FX.state === 'waiting') {
+        FX.prepare();         /* re-flowed before the develop began: stay hidden */
+      } else {
+        FX.settle();          /* re-flowed (resize): show it whole, keep the ongoing effect */
+      }
+    }
+
+    /* ── Loading screen ───────────────────────────────────────────────
+       Waits for what the opening screen needs — the fonts, and the hero
+       images fetched and decoded — not the whole page: everything below
+       the fold already loads as you scroll to it, and waiting for it all
+       would mean a long screen on a phone. Counts up as each piece lands,
+       stays at least 1.5s so the name can be read or more than 6s (a slow
+       connection just gets the page). Scrolling is held until it lifts. */
+    function loadHero(srcs) {
+      const el = document.querySelector('.ha-loader');
+      const root = document.documentElement;
+      const smoother = window.ScrollSmoother && ScrollSmoother.get();
+      if (!el) return Promise.resolve();
+      /* the smoother can hold the scroll itself; hiding overflow on top of
+         that removes a always-visible scrollbar, and the page then narrows
+         by its width the moment the lock lifts — re-flowing the text */
+      if (smoother) smoother.paused(true); else root.classList.add('is-loading');
+      const num = el.querySelector('.ha-loader-n'), bar = el.querySelector('.ha-loader-bar i');
+      const jobs = [document.fonts ? document.fonts.ready : Promise.resolve(),
+                    ...srcs.map(src => { const im = new Image(); im.src = src; return im.decode().catch(() => {}); })];
+      const MIN = 1500;                  /* ms the screen stays up, at least */
+      let done = 0, raf = 0;
+      const show = v => { num.textContent = Math.round(v * 100); bar.style.transform = `scaleX(${v})`; };
+      const counter = { v: 0 };
+      jobs.forEach(j => j.then(() => { done++; }));
+      const t0 = performance.now();
+      /* the meter follows what has actually loaded, but never faster than
+         the minimum time allows — so a fast connection still sees it fill
+         rather than jump to 100% and sit there */
+      const tickMeter = now => {
+        const target = Math.min(done / jobs.length, (now - t0) / MIN);
+        counter.v += (target - counter.v) * 0.18;
+        show(counter.v);
+        raf = requestAnimationFrame(tickMeter);
+      };
+      raf = requestAnimationFrame(tickMeter);
+      const all = Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 6000))])
+        .then(() => new Promise(r => setTimeout(r, Math.max(0, MIN - (performance.now() - t0)))))
+        .then(() => cancelAnimationFrame(raf));
+      return all.then(() => new Promise(resolve => {
+        const lift = () => {
+          el.remove(); root.classList.remove('is-loading');
+          if (smoother) smoother.paused(false);
+          resolve();
+        };
+        if (!window.gsap || REDUCED) { show(1); lift(); return; }
+        /* 100%, a beat to take the name in, the meter goes, and the screen
+           lifts — onto an identical cobalt wordmark in the hero, so the name
+           itself never moves */
+        gsap.timeline({ onComplete: lift })
+          .to(counter, { v: 1, duration: 0.25, onUpdate: () => show(counter.v) })
+          .to(el.querySelector('.ha-loader-meter'), { opacity: 0, y: 6, duration: 0.35, ease: 'power1.in' }, '+=0.5')
+          .to(el, { opacity: 0, duration: 0.3 });
+      }));
+    }
+
+    /* ── Text animation ───────────────────────────────────────────────
+       Develop, then the ink lens. The words surface at random out of a
+       slight blur, like ink soaking into paper, until the whole text is
+       there; after that, text near the pointer turns cobalt. Phones have
+       no pointer to follow, so there a band of ink travels the text in
+       reading order instead. Reduced motion: the text is simply there. */
+    let SEGS = [], TOTAL = 0, ADV = 0;
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const FX = {
+      raf: 0, timer: 0, off: null, tw: null,
+      state: 'idle',                 /* waiting → developing → done */
+
+      stop() {
+        cancelAnimationFrame(this.raf); clearTimeout(this.timer);
+        if (this.off) { this.off(); this.off = null; }
+        if (this.tw) { this.tw.kill(); this.tw = null; }
+        SEGS.forEach(g => { g.el.className = ''; g.el.textContent = g.text; });
+      },
+      settle() { this.stop(); this.state = 'done'; this.after(); },
+
+      /* words as separate pieces only while they develop; plain text after,
+         which is what the ink effects paint */
+      prepare() {
+        this.stop();
+        if (REDUCED || !window.gsap) return;
+        SEGS.forEach(g => (g.el.innerHTML = g.text.split(' ')
+          .map(w => '<i class="ha-w" style="opacity:0">' + w + '</i>').join(' ')));
+        this.state = 'waiting';
+      },
+      play(delay) {
+        if (REDUCED || !window.gsap) { this.settle(); return; }
+        if (this.state !== 'waiting') this.prepare();
+        this.state = 'developing';
+        this.timer = setTimeout(() => {
+          this.tw = gsap.fromTo(flow.querySelectorAll('.ha-w'),
+            { opacity: 0 },
+            { opacity: 1, duration: 1.1, ease: 'power1.out',
+              stagger: { each: 0.012, from: 'random' },
+              onComplete: () => { this.tw = null; this.settle(); } });
+        }, delay || 0);
+      },
+
+      after() {
+        if (FINE) {
+          SEGS.forEach(g => (g.el.className = 'fx-ink fx-lens'));
+          let mx = -9999, my = -9999, pending = false;
+          const reach = parseFloat(flow.style.getPropertyValue('--r')) + 40;
+          const lit = new Set();
+          const paint = () => {
+            pending = false;
+            for (const g of SEGS) {
+              const w = g.text.length * ADV, h = ADV / 0.6;
+              const near = mx > g.x - reach && mx < g.x + w + reach && my > g.y - reach && my < g.y + h + reach;
+              if (!near && !lit.has(g)) continue;        /* far, and already dark: nothing to repaint */
+              g.el.style.setProperty('--lx', (near ? mx - g.x : -9999).toFixed(1) + 'px');
+              g.el.style.setProperty('--ly', (near ? my - g.y : -9999).toFixed(1) + 'px');
+              near ? lit.add(g) : lit.delete(g);
+            }
+          };
+          const move = e => {
+            const r = sec.getBoundingClientRect();
+            mx = e.clientX - r.left; my = e.clientY - r.top;
+            if (!pending) { pending = true; requestAnimationFrame(paint); }
+          };
+          const leave = () => { mx = my = -9999; paint(); };
+          sec.addEventListener('pointermove', move);
+          sec.addEventListener('pointerleave', leave);
+          this.off = () => { sec.removeEventListener('pointermove', move); sec.removeEventListener('pointerleave', leave); };
+        } else if (!REDUCED) {
+          SEGS.forEach(g => (g.el.className = 'fx-ink fx-current'));
+          const SPEED = 42, band = 12, loop = TOTAL + band * 2;
+          const step = now => {
+            const head = (now / 1000 * SPEED) % loop - band;
+            for (const g of SEGS) g.el.style.setProperty('--c', ((head - g.start) * ADV).toFixed(1) + 'px');
+            this.raf = requestAnimationFrame(step);
+          };
+          this.raf = requestAnimationFrame(step);
+        }
+      }
+    };
+
+    /* re-flow whenever the hero itself changes size — window resizes, but
+       also a phone's toolbar collapsing, which fires no resize on some
+       browsers. Batched to one layout per frame. */
+    let queued = false, lastW = 0, lastH = 0;
+    const ro = new ResizeObserver(() => {
+      /* it also reports once on observe; only a real change re-flows */
+      if (queued || (sec.clientWidth === lastW && sec.clientHeight === lastH)) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; layout(); });
+    });
+    ro.observe(sec);
+    layout();
+    window.__haLayout = layout;
+  })();
+</script>
 
 </body>
 </html>
