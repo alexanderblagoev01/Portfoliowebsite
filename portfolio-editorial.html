@@ -914,6 +914,7 @@
        while pinned, content centred in the part the dock doesn't cover.
        100vh is the large viewport on iOS: with svh, the strip the toolbar
        frees up while pinned showed the page behind. */
+    .st-stick > #statement.st-live { position: sticky; top: 0; }
     #statement.st-live {
       /* 96px taller than the screen, padded by the same at the foot so the
          words stay where they were: the extra runs under Safari's toolbar
@@ -2066,6 +2067,20 @@
 
       sec.classList.add('st-live');
 
+      /* Held by CSS position: sticky inside a wrapper as tall as the run,
+         not by a ScrollTrigger pin. The browser keeps a sticky element in
+         place itself, so it never trails the finger (a transform pin did:
+         it jittered on iPhone), and it is never position: fixed (iOS
+         Safari colours its bars from a fixed element at the screen edge,
+         and kept the band's yellow there after it had scrolled on). */
+      const run = () => Math.round(innerHeight * 1.7);
+      const stick = document.createElement('div');
+      stick.className = 'st-stick';
+      sec.parentNode.insertBefore(stick, sec);
+      stick.appendChild(sec);
+      const fitStick = () => { stick.style.height = (sec.offsetHeight + run()) + 'px'; };
+      fitStick();
+
       /* Matter, one span per letter — the desktop script splits it too, so
          only if that hasn't happened */
       if (!matter.querySelector('.st-ch')) {
@@ -2088,12 +2103,8 @@
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out', duration: 1 },
         scrollTrigger: {
-          trigger: sec, start: 'top top',
-          end: () => '+=' + Math.round(innerHeight * 1.7),
-          /* held by transform, not position: fixed — iOS Safari colours its
-             status bar and toolbar from a fixed element at the screen edge,
-             and kept the band's yellow there long after it had scrolled on */
-          pin: true, pinType: 'transform', scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+          trigger: stick, start: 'top top', end: () => '+=' + run(),
+          scrub: 1, invalidateOnRefresh: true, onRefreshInit: fitStick
         }
       });
 
@@ -2191,6 +2202,8 @@
         ScrollTrigger.removeEventListener('refresh', remeasure);
         sec.classList.remove('st-live');
         if (morph) morph.removeAttribute('style');
+        stick.parentNode.insertBefore(sec, stick);     /* back as it was */
+        stick.remove();
       };
     });
   })();
