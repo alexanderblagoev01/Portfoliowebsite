@@ -915,9 +915,12 @@
        100vh is the large viewport on iOS: with svh, the strip the toolbar
        frees up while pinned showed the page behind. */
     #statement.st-live {
-      min-height: 100vh;
+      /* 96px taller than the screen, padded by the same at the foot so the
+         words stay where they were: the extra runs under Safari's toolbar
+         and home bar, so the band fills the screen while it is held */
+      min-height: calc(100vh + 96px);
       display: flex; flex-direction: column; justify-content: center;
-      padding: 1.25rem 0 calc(1.25rem + 78px + env(safe-area-inset-bottom, 0px));
+      padding: 1.25rem 0 calc(1.25rem + 78px + 96px + env(safe-area-inset-bottom, 0px));
     }
     #statement.st-live .st-morph { display: block; }
   }
@@ -1148,41 +1151,62 @@
 </style>
 
 <style>
-  /* ══ The hero, from Alexander's artboard ══ */
-  #heroArt.hero-art {
+  /* ══ The hero ══ */
+  /* Alexander's blobs, alive. Desktop: his 2880 x 1800 layout — three
+     shapes and three pebbles round "ALEXANDER / BLAGOEV", the left and the
+     long shape laid over the type. Phones: his 892 x 1800 layout, five
+     blobs, the lower one laid over "OEV". Both fill the hero the way an
+     SVG "slice" does. Soft (blurred) in WebGL; the plain SVG paths are the
+     fallback without it. */
+  .hb {
     position: relative; overflow: hidden; padding: 0; border-bottom: 0;
-    height: 100vh; min-height: 560px; background: #EBEADC;
+    height: 100vh; height: 100svh; min-height: 520px; background: #EBEADC;
   }
-  #heroArt.is-tall { height: auto; min-height: 0; aspect-ratio: 1000 / 1760; }
-  .ha-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: hidden; }
-  .ha-art--tall, #heroArt.is-tall .ha-art--wide { display: none; }
-  #heroArt.is-tall .ha-art--tall { display: block; }
-  .ha-sub { font-family: 'JetBrains Mono', monospace; font-style: italic; font-weight: 500; }
-  .ha-shapes { overflow: visible; }
-  .ha-shape { position: absolute; display: block; overflow: hidden; }
-  .ha-shape.is-developing { will-change: opacity, filter; }
-  .ha-flow { position: absolute; inset: 0; }
-  .ha-flow span {
-    position: absolute; white-space: pre; line-height: 1;
-    font-family: 'JetBrains Mono', monospace; font-style: italic; font-weight: 500;
-    color: #bcbbc4;
+  /* short landscape screens (a phone on its side): the screen's own height,
+     so the name centres clear of the dock */
+  @media (max-height: 520px) { .hb { min-height: 0; } }
+  .hb-wide, .hb-tall { position: absolute; inset: 0; }
+  .hb-tall { display: none; }
+  @media (max-aspect-ratio: 4/5) {
+    /* under the phone name bar: the rest of the first screen, measured on
+       the large viewport (100vh on iOS), so the hero, not the yellow band
+       after it, is what sits under Safari's see-through toolbar */
+    .hb { height: calc(100vh - var(--nav-h, 0px) + 64px); min-height: 480px; }
+    .hb-wide { display: none; }
+    /* the artboard fills the screen; the 64px of cream below it is what
+       shows under the home indicator, where the page runs past 100vh */
+    .hb-tall { display: block; bottom: 64px; }
   }
-  .ha-sr {
+  .hb-sr {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 
-  /* text effects */
-  .ha-flow span.fx-ink { color: transparent; -webkit-background-clip: text; background-clip: text; }
-  .ha-flow span.fx-current {
-    background-image: linear-gradient(90deg, #bcbbc4 calc(var(--c, -9999px) - var(--band)),
-      #2D4C90 var(--c, -9999px), #bcbbc4 calc(var(--c, -9999px) + var(--band)));
+  .hb.no-gl canvas { display: none; }
+  .hb-b { fill: #CED345; }
+  .hb:not(.no-gl) .hb-b { visibility: hidden; }
+
+  /* "PORTFOLIO website" (Owners Wide Medium Italic) and the script "for"
+     (P22 Allyson) are outlines, not live text: the shapes are drawn from
+     the fonts, so no font file is loaded or published */
+  .hb-ink { fill: #2D4C90; }
+  .hb-big { font-family: var(--display); }
+
+  .hb-wide svg, .hb-tall svg { position: relative; width: 100%; height: 100%; display: block; }
+  .hb-wide text, .hb-tall text, .ha-loader-art text { fill: #2D4C90; }
+  .hb-wide canvas, .hb-tall canvas { position: absolute; pointer-events: none; }
+  #hbFront, #hbWFront { z-index: 1; }
+  .hb-wide svg.hb-top { position: absolute; inset: 0; z-index: 2; }
+
+  /* phones and tablets: no name bar above the hero — the hero opens the
+     page, and the dock is the navigation */
+  @media not all and (hover: hover) and (pointer: fine) and (min-width: 1001px) {
+    nav.main { display: none; }
   }
-  .ha-flow span.fx-lens {
-    background-image: radial-gradient(circle var(--r) at var(--lx, -9999px) var(--ly, -9999px),
-      #2D4C90 0%, #2D4C90 38%, #bcbbc4 100%);
-  }
-  .ha-w { font-style: inherit; }
+
+  /* the blobs develop in as the loading screen lifts */
+  .hb .hb-fade { opacity: 0; transition: opacity 1.4s ease .1s; }
+  .hb.is-live .hb-fade { opacity: 1; }
 
   /* loading screen */
   .ha-loader {
@@ -1190,14 +1214,11 @@
     background: #EBEADC; color: #2D4C90;
     animation: haLoaderFailsafe .4s ease 8s forwards;     /* never stuck, even if the script dies */
   }
-  /* first guess at where the hero's wordmark is — full screen on desktop,
-     under the 77px name bar on a phone — corrected by the script */
-  .ha-loader-mark { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-  .ha-loader-mark--tall { display: none; top: 77px; height: 176vw; }
-  @media (max-aspect-ratio: 899/1000) {
-    .ha-loader-mark--wide { display: none; }
-    .ha-loader-mark--tall { display: block; }
-  }
+  /* the name and subtitle, set exactly as the desktop hero's (the script
+     lays this over the hero's own artboard; on a phone it is centred).
+     Hidden until the fonts are in, so no stand-in face flashes first */
+  .ha-loader-art { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s; }
+  .ha-loader.fonts-in .ha-loader-art { opacity: 1; }
   .ha-loader-meter {
     position: absolute; left: 50%; bottom: 9vh; transform: translateX(-50%);
     display: grid; justify-items: center; gap: 12px;
@@ -1213,39 +1234,15 @@
 </style>
 </head>
 <body class="light">
-<!-- Loading screen — holds the page until the hero's fonts and
-     images are ready, so the develop animation starts with everything in
-     hand. Removed by the hero script; the CSS fails safe after 8s. -->
+<!-- Loading screen — holds the page until the hero's fonts are
+     in, a beat to read the name, then lifts onto the hero. Removed by the
+     hero script; the CSS fails safe after 8s. -->
 <div class="ha-loader" aria-hidden="true">
-  <!-- the hero's wordmark, in cobalt, at the hero's own coordinates; the
-       script lines it up exactly with the real one underneath -->
-  <svg class="ha-loader-mark ha-loader-mark--wide" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice">
-    <g fill="#2D4C90">
-      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
-      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
-      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
-      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
-      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
-      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
-      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
-      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
-      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
-    </g>
-    <text class="ha-sub" x="915.9" y="1048.5" font-size="58.42" fill="#2D4C90">interactive and physical media</text>
-  </svg>
-  <svg class="ha-loader-mark ha-loader-mark--tall" viewBox="0 0 1000 1760" preserveAspectRatio="xMidYMin meet">
-    <g fill="#2D4C90" transform="translate(60 470) scale(.6797) translate(-792.63 -830.1)">
-      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
-      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
-      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
-      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
-      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
-      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
-      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
-      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
-      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
-    </g>
-    <text class="ha-sub" x="500" y="622" font-size="40" text-anchor="middle" fill="#2D4C90">interactive and physical media</text>
+  <!-- the hero's name and subtitle, in cobalt, where the hero's are -->
+  <svg class="ha-loader-art" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <text class="hb-big" id="hlAlex" x="858" y="916">ALEXANDER</text>
+    <text class="hb-big" id="hlBlag" x="878" y="1098">BLAGOEV</text>
+    <path class="hb-ink" d="M1118.6 1206L1127.5 1206L1130.7 1190.6L1148.1 1190.6C1156.4 1190.6 1162.5 1186.4 1164.1 1178.9C1164.3 1177.9 1164.4 1176.9 1164.4 1176.0C1164.4 1169.3 1159.2 1164.9 1150.6 1164.9L1127.4 1164.9ZM1149.1 1171.6C1153.4 1171.6 1155.7 1173.3 1155.7 1176.6C1155.7 1177.1 1155.7 1177.6 1155.5 1178.2C1154.7 1182.1 1152.0 1184.0 1148.0 1184.0L1132.1 1184.0L1134.7 1171.6ZM1185.5 1206.9C1197.4 1206.9 1207.5 1199.7 1210.2 1187.3C1210.6 1185.4 1210.8 1183.6 1210.8 1181.8C1210.8 1170.6 1202.6 1164 1190.1 1164C1178.2 1164 1168.0 1171.2 1165.3 1183.6C1164.9 1185.5 1164.8 1187.3 1164.8 1189.1C1164.8 1200.2 1172.9 1206.9 1185.5 1206.9ZM1185.8 1200.1C1178.4 1200.1 1173.6 1195.9 1173.6 1188.7C1173.6 1187.4 1173.8 1186.1 1174.1 1184.6C1176.0 1175.7 1182.4 1170.8 1189.7 1170.8C1197.1 1170.8 1201.9 1175.0 1201.9 1182.3C1201.9 1183.5 1201.8 1184.9 1201.5 1186.3C1199.6 1195.2 1193.1 1200.1 1185.8 1200.1ZM1209.6 1206L1218.4 1206L1221.9 1189.6L1237.4 1189.6C1240.7 1189.6 1242.1 1190.8 1242.1 1193.4C1242.1 1196.1 1240.6 1200.5 1240.6 1204.1C1240.6 1204.8 1240.7 1205.4 1240.8 1206L1249.7 1206C1249.5 1205.2 1249.4 1204.4 1249.4 1203.5C1249.4 1199.8 1250.8 1195.4 1250.8 1192.9C1250.8 1190.0 1249.6 1188.0 1246.9 1187.0C1251.4 1185.7 1254.5 1182.4 1255.4 1177.9C1255.6 1177.0 1255.7 1176.2 1255.7 1175.3C1255.7 1169.2 1250.6 1164.9 1242.6 1164.9L1218.3 1164.9ZM1241.2 1171.6C1244.9 1171.6 1246.9 1173.3 1246.9 1176.3C1246.9 1176.8 1246.9 1177.3 1246.8 1177.9C1246 1181.2 1243.6 1183.0 1239.9 1183.0L1223.2 1183.0L1225.7 1171.6ZM1267.0 1206L1275.7 1206L1283.1 1171.6L1300.0 1171.6L1301.5 1164.9L1258.7 1164.9L1257.3 1171.6L1274.3 1171.6ZM1295.7 1206L1304.5 1206L1308.3 1188.4L1327.9 1188.4L1329.4 1181.9L1309.6 1181.9L1311.8 1171.6L1338.7 1171.6L1340.2 1164.9L1304.4 1164.9ZM1356.2 1206.9C1368.1 1206.9 1378.2 1199.7 1380.9 1187.3C1381.3 1185.4 1381.5 1183.6 1381.5 1181.8C1381.5 1170.6 1373.4 1164 1360.8 1164C1348.9 1164 1338.7 1171.2 1336.1 1183.6C1335.6 1185.5 1335.5 1187.3 1335.5 1189.1C1335.5 1200.2 1343.6 1206.9 1356.2 1206.9ZM1356.5 1200.1C1349.1 1200.1 1344.3 1195.9 1344.3 1188.7C1344.3 1187.4 1344.5 1186.1 1344.8 1184.6C1346.7 1175.7 1353.1 1170.8 1360.4 1170.8C1367.8 1170.8 1372.6 1175.0 1372.6 1182.3C1372.6 1183.5 1372.5 1184.9 1372.2 1186.3C1370.3 1195.2 1363.8 1200.1 1356.5 1200.1ZM1380.3 1206L1415.5 1206L1417.0 1199.3L1390.5 1199.3L1397.8 1164.9L1389.0 1164.9ZM1418.7 1206L1427.5 1206L1436.2 1164.9L1427.5 1164.9ZM1455.8 1206.9C1467.7 1206.9 1477.8 1199.7 1480.5 1187.3C1480.9 1185.4 1481.1 1183.6 1481.1 1181.8C1481.1 1170.6 1472.9 1164 1460.3 1164C1448.4 1164 1438.3 1171.2 1435.6 1183.6C1435.2 1185.5 1435.0 1187.3 1435.0 1189.1C1435.0 1200.2 1443.2 1206.9 1455.8 1206.9ZM1456.1 1200.1C1448.7 1200.1 1443.9 1195.9 1443.9 1188.7C1443.9 1187.4 1444.1 1186.1 1444.4 1184.6C1446.2 1175.7 1452.7 1170.8 1460.0 1170.8C1467.4 1170.8 1472.2 1175.0 1472.2 1182.3C1472.2 1183.5 1472.0 1184.9 1471.7 1186.3C1469.9 1195.2 1463.4 1200.1 1456.1 1200.1ZM1500.6 1206L1509.8 1206L1515.4 1194.7L1521.2 1183.3L1522.0 1194.7L1522.9 1206L1532.0 1206L1547.7 1173.9L1539.8 1173.9L1534.2 1185.8L1528.7 1197.8L1527.8 1185.8L1526.8 1173.9L1519.3 1173.9L1513.2 1185.8L1507.1 1197.8L1506.8 1185.8L1506.3 1173.9L1498.5 1173.9ZM1560.6 1206.9C1569.1 1206.9 1575.9 1202.4 1579.1 1194.2L1571.0 1194.2C1568.8 1198.7 1565.4 1200.9 1561.1 1200.9C1555.9 1200.9 1552.6 1197.9 1552.6 1192.7C1552.6 1192.1 1552.7 1191.5 1552.7 1191.0L1580.2 1191.0C1580.5 1189.6 1580.6 1188.3 1580.6 1186.8C1580.6 1178.3 1574.0 1173.0 1564.7 1173.0C1554.9 1173.0 1547.0 1179.0 1544.9 1188.7C1544.6 1190.0 1544.5 1191.4 1544.5 1192.6C1544.5 1201.1 1550.9 1206.9 1560.6 1206.9ZM1564.2 1178.9C1569.0 1178.9 1572.7 1181.7 1572.7 1186.3L1554.0 1186.3C1556.0 1181.5 1559.9 1178.9 1564.2 1178.9ZM1580.1 1206L1588.5 1206L1589.8 1199.6C1591.8 1204.1 1596.0 1206.7 1601.8 1206.7C1610.7 1206.7 1618.0 1200.7 1620.1 1191.1C1620.4 1189.7 1620.5 1188.3 1620.5 1186.9C1620.5 1178.7 1615.1 1173.2 1606.5 1173.2C1601.9 1173.2 1597.6 1175.1 1594.3 1178.5L1597.2 1164.9L1588.9 1164.9ZM1600.4 1200.8C1594.9 1200.8 1591.6 1197.7 1591.6 1192.5C1591.6 1191.5 1591.8 1190.5 1592.0 1189.4C1593.3 1182.8 1597.9 1179.1 1603.4 1179.1C1608.8 1179.1 1612.1 1182.1 1612.1 1187.3C1612.1 1188.3 1612.0 1189.4 1611.7 1190.6C1610.4 1197.1 1605.9 1200.8 1600.4 1200.8ZM1638.7 1206.8C1646.9 1206.8 1654.4 1203.1 1654.4 1195.8C1654.4 1189.5 1646.6 1188.1 1640.3 1186.7C1636.0 1185.9 1632.3 1184.9 1632.3 1182.5C1632.3 1180.1 1635.3 1178.6 1639.0 1178.6C1643.9 1178.6 1647.9 1180.8 1648.7 1185.3L1656.4 1185.3C1655.7 1177.2 1648.5 1173.0 1639.3 1173.0C1631.3 1173.0 1624.3 1176.7 1624.3 1183.8C1624.3 1190.0 1631.6 1191.5 1637.9 1192.8C1642.4 1193.7 1646.4 1194.5 1646.4 1197.1C1646.4 1199.8 1643.1 1201.3 1639.2 1201.3C1634.2 1201.3 1629.9 1199.0 1629.5 1194.0L1621.7 1194.0C1622.2 1202.5 1629.4 1206.8 1638.7 1206.8ZM1663.1 1171.2L1671.4 1171.2L1672.9 1164.6L1664.5 1164.6ZM1655.7 1206L1664.0 1206L1670.8 1173.9L1662.5 1173.9ZM1685.6 1206L1695.7 1206L1697.1 1199.9L1690.2 1199.9C1687.7 1199.9 1686.3 1199.0 1686.3 1197.2C1686.3 1196.8 1686.4 1196.5 1686.4 1196.1L1689.8 1179.9L1701.3 1179.9L1702.6 1173.9L1691.1 1173.9L1692.6 1167.3L1684.3 1167.3L1682.9 1173.9L1673.8 1173.9L1672.5 1179.9L1681.6 1179.9L1678.0 1197.1C1677.8 1198.0 1677.7 1198.8 1677.7 1199.6C1677.7 1203.7 1680.3 1206 1685.6 1206ZM1716.0 1206.9C1724.5 1206.9 1731.3 1202.4 1734.6 1194.2L1726.4 1194.2C1724.3 1198.7 1720.8 1200.9 1716.5 1200.9C1711.3 1200.9 1708.1 1197.9 1708.1 1192.7C1708.1 1192.1 1708.1 1191.5 1708.2 1191.0L1735.6 1191.0C1735.9 1189.6 1736.0 1188.3 1736.0 1186.8C1736.0 1178.3 1729.4 1173.0 1720.2 1173.0C1710.3 1173.0 1702.4 1179.0 1700.4 1188.7C1700.1 1190.0 1700.0 1191.4 1700.0 1192.6C1700.0 1201.1 1706.3 1206.9 1716.0 1206.9ZM1719.6 1178.9C1724.4 1178.9 1728.1 1181.7 1728.1 1186.3L1709.4 1186.3C1711.4 1181.5 1715.3 1178.9 1719.6 1178.9Z"/>
   </svg>
   <div class="ha-loader-meter">
     <p class="ha-loader-text">developing <span class="ha-loader-n">0</span>%</p>
@@ -1318,83 +1315,51 @@
 </nav>
 
 
-<!-- HERO — rebuilt from Alexander's artboard (2880 x 1800). The
-     shapes, image crops, wordmark outlines and subtitle are his, at his
-     coordinates. The body copy is live text: a small layout routine flows it
-     through the cream space line by line, left gap then right gap, the way
-     his Illustrator wrap does — CSS can only wrap text down one side of a
-     shape. Phones get a portrait arrangement of the same pieces. -->
-<section id="heroArt" class="hero-art" aria-labelledby="heroArtTitle">
-  <h1 class="ha-sr" id="heroArtTitle">A. Blagoev — interactive and physical media</h1>
-  <!-- each image is its own small layer, cut to its shape's box, so the
-       develop animation is opacity and blur on a GPU layer rather than a
-       repaint of one big SVG every frame -->
-  <div class="ha-art ha-art--wide ha-shapes">
-    <svg class="ha-shape" data-box="693 55 2142 1190" viewBox="693 55 2142 1190" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haW0"><path d="M1057.197,96.785c.759,42.271-10.219,84.498-25.87,123.468-39.87,99.276-100.814,188.391-160.691,276.394-58.816,86.444-118.408,173.479-159.737,269.969-6.574,16.115-11.883,32.471-14.702,49.661-1.385,12.712-1.436,25.48-.087,38.192,2.186,13.554,5.91,26.754,10.956,39.516,6.816,15.237,15.322,29.648,25.089,43.185,1.135,1.573,2.3,3.124,3.455,4.683.192.242.382.485.574.726,2.917,3.653,5.914,7.241,8.982,10.768,6.068,6.976,12.417,13.706,18.979,20.219,11.832,11.744,24.357,22.782,37.326,33.253,1.894,1.529,3.797,3.047,5.71,4.552.766.602,1.535,1.2,2.301,1.802,3.678,2.893-2.666-2.053-2.722-2.099,3.155,2.649,6.606,5.021,9.92,7.468,6.832,5.043,13.758,9.958,20.761,14.761,19.952,13.681,40.469,26.548,61.568,38.388,33.186,18.623,67.613,34.989,102.621,49.883,25.165,10.512,50.642,20.269,76.363,29.335,52.293,18.431,105.56,34.104,159.428,47.219,55.43,13.495,111.534,24.252,168.057,32.006,22.29,2.926,44.64,5.389,67.04,7.311,41.936,3.598,84.045,5.365,126.137,4.849,39.251-.481,78.49-2.971,117.428-7.979,12.605-1.751,25.175-3.755,37.688-6.08,44.509-8.272,88.392-20.399,130.269-37.683,20.135-8.693,39.752-18.586,58.545-29.901,8.587-5.17,17.002-10.628,25.211-16.381,4.08-2.86,8.11-5.791,12.084-8.796.074-.056.161-.122.258-.195.051-.04.106-.083.149-.117,1.949-1.538,3.884-3.093,5.804-4.667,15.353-12.585,29.758-26.329,42.968-41.149,3.32-3.724,6.565-7.515,9.731-11.37,1.498-1.824,2.975-3.665,4.438-5.518.206-.272.414-.543.619-.816,6.087-8.104,11.839-16.458,17.238-25.035,10.421-16.556,19.477-33.934,27.262-51.875,2.974-7.275,5.759-14.625,8.318-22.057,13.905-40.386,20.177-82.387,26.818-124.426,7.812-49.445,15.19-98.972,24.515-148.163,9.29-49.005,20.469-97.779,36.214-145.149,15.79-47.504,35.948-94.189,63.144-136.338,28.723-44.514,64.472-82.919,106.947-114.52,45.272-33.682,98.404-57.809,152.987-71.752,55.089-14.072,113.124-18.157,169.553-10.973,54.532,6.942,106.791,22.282,156.204,46.173V57.058h-1780.238c2.681,13.048,4.148,26.362,4.388,39.727Z"/></clipPath></defs>
-      <g clip-path="url(#haW0)"><image href="hero/capri.jpg" x="669.95" y="-1366.49" width="2163.06" height="3121.3" preserveAspectRatio="none"/></g>
+<!-- HERO — Alexander's blobs, alive: his desktop (2880 x 1800)
+     and phone (892 x 1800) layouts, each blob a soft, wavy body that the
+     pointer pulls and that bumps the others. The name is live Alfarn; the
+     subtitle and the script "for" are outlines of his faces. -->
+<section id="heroBlob" class="hb" aria-labelledby="hbTitle">
+  <h1 class="hb-sr" id="hbTitle">Alexander Blagoev — portfolio website</h1>
+
+  <!-- desktop: the shapes behind the type, the type, then the left shape
+       laid over it (it softens the A and the B), as drawn (his SVG group sits at 355, 398 on the artboard;
+       the pebbles are fitted to the layout) -->
+  <div class="hb-wide" aria-hidden="true">
+    <canvas class="hb-fade" id="hbWBack"></canvas>
+    <svg viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice">
+      <path class="hb-b hb-fade" id="hbWBig"/>
+      <path class="hb-b hb-fade" id="hbWP1"/>
+      <path class="hb-b hb-fade" id="hbWP2"/>
+      <path class="hb-b hb-fade" id="hbWP3"/>
+      <path class="hb-b hb-fade" id="hbWLong"/>
+      <text class="hb-big" id="hbWAlex" x="858" y="916">ALEXANDER</text>
+      <text class="hb-big" id="hbWBlag" x="878" y="1098">BLAGOEV</text>
+      <path class="hb-b hb-fade" id="hbWLeft"/>
     </svg>
-    <svg class="ha-shape" data-box="48 55 521 280" viewBox="48 55 521 280" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haW1"><path d="M70.439,287.833c49.715,17.945,101.136,31.535,153.505,38.923,40.907,5.154,82.412,6.377,123.384,1.304,25.218-3.749,50.022-10.023,73.691-19.542,12.639-5.578,24.853-12.116,36.399-19.712,2.752-1.81,5.465-3.679,8.137-5.605.915-.66,1.821-1.332,2.726-2.005,4.32-3.495,8.56-7.072,12.638-10.853,8.443-7.827,16.172-16.317,23.4-25.266.722-.969,1.44-1.941,2.147-2.921,1.722-2.384,3.4-4.799,5.035-7.243,3.28-4.9,6.388-9.914,9.33-15.024,5.296-9.199,10.032-18.702,14.313-28.411,15.829-38.611,24.654-79.712,30.447-120.94.583-4.49,1.122-8.984,1.642-13.481H49.914v223.062c6.809,2.656,13.65,5.231,20.525,7.712Z"/></clipPath></defs>
-      <g clip-path="url(#haW1)"><image href="hero/face.jpg" x="-259.33" y="-190.26" width="2000" height="1466" preserveAspectRatio="none"/></g>
-    </svg>
-    <svg class="ha-shape" data-box="2467 609 368 1140" viewBox="2467 609 368 1140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haW2"><path d="M2804.691,619.529c-10.538,4.722-20.713,10.199-30.525,16.299-5.516,3.429-10.916,7.045-16.206,10.813-2.461,1.753-4.897,3.54-7.312,5.357-.134.101-.249.188-.368.277-1.008.8-2.018,1.596-3.021,2.402-35.85,28.86-66.674,63.596-94.977,99.738-.556.711-1.11,1.423-1.665,2.135-1.542,2.015-3.076,4.033-4.569,6.086-3.69,5.075-7.297,10.211-10.816,15.406-7.287,10.758-14.203,21.767-20.743,32.995-12.736,21.864-23.99,44.553-33.97,67.8-6.151,14.892-11.797,29.987-16.927,45.262-19.554,58.221-31.856,118.603-40.24,179.375-2.639,20.13-4.889,40.308-6.803,60.519-6.824,72.075-9.635,144.556-13.35,216.84-3.707,72.125-7.682,144.268-14.674,216.163-4.878,50.159-11.098,100.297-19.759,149.984h364.28V610.547c-9.659,2.254-19.116,5.291-28.356,8.982Z"/></clipPath></defs>
-      <g clip-path="url(#haW2)"><image href="hero/folk.jpg" x="2214.65" y="610.55" width="934.45" height="1174.68" preserveAspectRatio="none"/></g>
-    </svg>
-    <svg class="ha-shape" data-box="48 1016 967 733" viewBox="48 1016 967 733" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haW3"><path d="M882.61,1669.872c-46.935-29.658-92.835-60.964-137.415-94.058-46.811-34.75-92.345-71.255-136.069-109.825-33.997-29.99-67.9-60.604-97.764-94.792-25.266-28.925-48.77-59.359-72.445-89.582-26.471-33.792-53.009-67.557-80.992-100.119-27.854-32.412-57.124-63.825-89.422-91.878-3.948-3.429-7.942-6.805-11.987-10.12-2-1.639-4.012-3.264-6.037-4.872-.496-.394-.993-.784-1.491-1.175-7.485-5.656-15.089-11.141-22.927-16.302-14.42-9.495-29.523-17.951-45.33-24.904-14.477-5.766-29.464-10.129-44.852-12.61-12.817-1.416-25.713-1.462-38.532-.064-13.581,2.141-27.075,5.557-39.875,10.564-2.555,1.173-5.072,2.422-7.556,3.733v713.11h963.37c-44.285-24.444-87.912-50.085-130.674-77.106Z"/></clipPath></defs>
-      <g clip-path="url(#haW3)"><image href="hero/leopards.jpg" x="-51.25" y="569.17" width="1236.97" height="1663.5" preserveAspectRatio="none"/></g>
-    </svg>
-  </div>
-  <div class="ha-art ha-art--tall ha-shapes">
-    <svg class="ha-shape" data-box="26 26 948 872" viewBox="26 26 948 872" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haT0"><path d="M28,28H972V690C900,730,820,650,720,690C620,730,560,840,440,868C320,896,180,830,28,872Z"/></clipPath></defs>
-      <g clip-path="url(#haT0)"><image href="hero/capri.jpg" x="28" y="-381" width="944" height="1362" preserveAspectRatio="none"/></g>
-    </svg>
-    <svg class="ha-shape" data-box="26 946 326 324" viewBox="26 946 326 324" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haT1"><path d="M28,960C150,948,286,990,318,1080C350,1170,282,1250,170,1262C110,1268,60,1258,28,1248Z"/></clipPath></defs>
-      <g clip-path="url(#haT1)"><image href="hero/face.jpg" x="-60" y="930" width="800" height="586" preserveAspectRatio="none"/></g>
-    </svg>
-    <svg class="ha-shape" data-box="748 1188 226 546" viewBox="748 1188 226 546" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haT2"><path d="M972,1190C870,1206,788,1290,768,1420C750,1540,772,1660,812,1732H972Z"/></clipPath></defs>
-      <g clip-path="url(#haT2)"><image href="hero/folk.jpg" x="622" y="1170" width="469" height="590" preserveAspectRatio="none"/></g>
-    </svg>
-    <svg class="ha-shape" data-box="26 1498 356 236" viewBox="26 1498 356 236" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs><clipPath id="haT3"><path d="M28,1500C150,1516,262,1572,330,1650C356,1680,372,1706,380,1732H28Z"/></clipPath></defs>
-      <g clip-path="url(#haT3)"><image href="hero/leopards.jpg" x="0" y="1440" width="377" height="507" preserveAspectRatio="none"/></g>
+    <canvas class="hb-fade" id="hbWFront"></canvas>
+    <!-- the subtitle reads clear of everything, on top -->
+    <svg class="hb-top" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice">
+      <path class="hb-ink" d="M1118.6 1206L1127.5 1206L1130.7 1190.6L1148.1 1190.6C1156.4 1190.6 1162.5 1186.4 1164.1 1178.9C1164.3 1177.9 1164.4 1176.9 1164.4 1176.0C1164.4 1169.3 1159.2 1164.9 1150.6 1164.9L1127.4 1164.9ZM1149.1 1171.6C1153.4 1171.6 1155.7 1173.3 1155.7 1176.6C1155.7 1177.1 1155.7 1177.6 1155.5 1178.2C1154.7 1182.1 1152.0 1184.0 1148.0 1184.0L1132.1 1184.0L1134.7 1171.6ZM1185.5 1206.9C1197.4 1206.9 1207.5 1199.7 1210.2 1187.3C1210.6 1185.4 1210.8 1183.6 1210.8 1181.8C1210.8 1170.6 1202.6 1164 1190.1 1164C1178.2 1164 1168.0 1171.2 1165.3 1183.6C1164.9 1185.5 1164.8 1187.3 1164.8 1189.1C1164.8 1200.2 1172.9 1206.9 1185.5 1206.9ZM1185.8 1200.1C1178.4 1200.1 1173.6 1195.9 1173.6 1188.7C1173.6 1187.4 1173.8 1186.1 1174.1 1184.6C1176.0 1175.7 1182.4 1170.8 1189.7 1170.8C1197.1 1170.8 1201.9 1175.0 1201.9 1182.3C1201.9 1183.5 1201.8 1184.9 1201.5 1186.3C1199.6 1195.2 1193.1 1200.1 1185.8 1200.1ZM1209.6 1206L1218.4 1206L1221.9 1189.6L1237.4 1189.6C1240.7 1189.6 1242.1 1190.8 1242.1 1193.4C1242.1 1196.1 1240.6 1200.5 1240.6 1204.1C1240.6 1204.8 1240.7 1205.4 1240.8 1206L1249.7 1206C1249.5 1205.2 1249.4 1204.4 1249.4 1203.5C1249.4 1199.8 1250.8 1195.4 1250.8 1192.9C1250.8 1190.0 1249.6 1188.0 1246.9 1187.0C1251.4 1185.7 1254.5 1182.4 1255.4 1177.9C1255.6 1177.0 1255.7 1176.2 1255.7 1175.3C1255.7 1169.2 1250.6 1164.9 1242.6 1164.9L1218.3 1164.9ZM1241.2 1171.6C1244.9 1171.6 1246.9 1173.3 1246.9 1176.3C1246.9 1176.8 1246.9 1177.3 1246.8 1177.9C1246 1181.2 1243.6 1183.0 1239.9 1183.0L1223.2 1183.0L1225.7 1171.6ZM1267.0 1206L1275.7 1206L1283.1 1171.6L1300.0 1171.6L1301.5 1164.9L1258.7 1164.9L1257.3 1171.6L1274.3 1171.6ZM1295.7 1206L1304.5 1206L1308.3 1188.4L1327.9 1188.4L1329.4 1181.9L1309.6 1181.9L1311.8 1171.6L1338.7 1171.6L1340.2 1164.9L1304.4 1164.9ZM1356.2 1206.9C1368.1 1206.9 1378.2 1199.7 1380.9 1187.3C1381.3 1185.4 1381.5 1183.6 1381.5 1181.8C1381.5 1170.6 1373.4 1164 1360.8 1164C1348.9 1164 1338.7 1171.2 1336.1 1183.6C1335.6 1185.5 1335.5 1187.3 1335.5 1189.1C1335.5 1200.2 1343.6 1206.9 1356.2 1206.9ZM1356.5 1200.1C1349.1 1200.1 1344.3 1195.9 1344.3 1188.7C1344.3 1187.4 1344.5 1186.1 1344.8 1184.6C1346.7 1175.7 1353.1 1170.8 1360.4 1170.8C1367.8 1170.8 1372.6 1175.0 1372.6 1182.3C1372.6 1183.5 1372.5 1184.9 1372.2 1186.3C1370.3 1195.2 1363.8 1200.1 1356.5 1200.1ZM1380.3 1206L1415.5 1206L1417.0 1199.3L1390.5 1199.3L1397.8 1164.9L1389.0 1164.9ZM1418.7 1206L1427.5 1206L1436.2 1164.9L1427.5 1164.9ZM1455.8 1206.9C1467.7 1206.9 1477.8 1199.7 1480.5 1187.3C1480.9 1185.4 1481.1 1183.6 1481.1 1181.8C1481.1 1170.6 1472.9 1164 1460.3 1164C1448.4 1164 1438.3 1171.2 1435.6 1183.6C1435.2 1185.5 1435.0 1187.3 1435.0 1189.1C1435.0 1200.2 1443.2 1206.9 1455.8 1206.9ZM1456.1 1200.1C1448.7 1200.1 1443.9 1195.9 1443.9 1188.7C1443.9 1187.4 1444.1 1186.1 1444.4 1184.6C1446.2 1175.7 1452.7 1170.8 1460.0 1170.8C1467.4 1170.8 1472.2 1175.0 1472.2 1182.3C1472.2 1183.5 1472.0 1184.9 1471.7 1186.3C1469.9 1195.2 1463.4 1200.1 1456.1 1200.1ZM1500.6 1206L1509.8 1206L1515.4 1194.7L1521.2 1183.3L1522.0 1194.7L1522.9 1206L1532.0 1206L1547.7 1173.9L1539.8 1173.9L1534.2 1185.8L1528.7 1197.8L1527.8 1185.8L1526.8 1173.9L1519.3 1173.9L1513.2 1185.8L1507.1 1197.8L1506.8 1185.8L1506.3 1173.9L1498.5 1173.9ZM1560.6 1206.9C1569.1 1206.9 1575.9 1202.4 1579.1 1194.2L1571.0 1194.2C1568.8 1198.7 1565.4 1200.9 1561.1 1200.9C1555.9 1200.9 1552.6 1197.9 1552.6 1192.7C1552.6 1192.1 1552.7 1191.5 1552.7 1191.0L1580.2 1191.0C1580.5 1189.6 1580.6 1188.3 1580.6 1186.8C1580.6 1178.3 1574.0 1173.0 1564.7 1173.0C1554.9 1173.0 1547.0 1179.0 1544.9 1188.7C1544.6 1190.0 1544.5 1191.4 1544.5 1192.6C1544.5 1201.1 1550.9 1206.9 1560.6 1206.9ZM1564.2 1178.9C1569.0 1178.9 1572.7 1181.7 1572.7 1186.3L1554.0 1186.3C1556.0 1181.5 1559.9 1178.9 1564.2 1178.9ZM1580.1 1206L1588.5 1206L1589.8 1199.6C1591.8 1204.1 1596.0 1206.7 1601.8 1206.7C1610.7 1206.7 1618.0 1200.7 1620.1 1191.1C1620.4 1189.7 1620.5 1188.3 1620.5 1186.9C1620.5 1178.7 1615.1 1173.2 1606.5 1173.2C1601.9 1173.2 1597.6 1175.1 1594.3 1178.5L1597.2 1164.9L1588.9 1164.9ZM1600.4 1200.8C1594.9 1200.8 1591.6 1197.7 1591.6 1192.5C1591.6 1191.5 1591.8 1190.5 1592.0 1189.4C1593.3 1182.8 1597.9 1179.1 1603.4 1179.1C1608.8 1179.1 1612.1 1182.1 1612.1 1187.3C1612.1 1188.3 1612.0 1189.4 1611.7 1190.6C1610.4 1197.1 1605.9 1200.8 1600.4 1200.8ZM1638.7 1206.8C1646.9 1206.8 1654.4 1203.1 1654.4 1195.8C1654.4 1189.5 1646.6 1188.1 1640.3 1186.7C1636.0 1185.9 1632.3 1184.9 1632.3 1182.5C1632.3 1180.1 1635.3 1178.6 1639.0 1178.6C1643.9 1178.6 1647.9 1180.8 1648.7 1185.3L1656.4 1185.3C1655.7 1177.2 1648.5 1173.0 1639.3 1173.0C1631.3 1173.0 1624.3 1176.7 1624.3 1183.8C1624.3 1190.0 1631.6 1191.5 1637.9 1192.8C1642.4 1193.7 1646.4 1194.5 1646.4 1197.1C1646.4 1199.8 1643.1 1201.3 1639.2 1201.3C1634.2 1201.3 1629.9 1199.0 1629.5 1194.0L1621.7 1194.0C1622.2 1202.5 1629.4 1206.8 1638.7 1206.8ZM1663.1 1171.2L1671.4 1171.2L1672.9 1164.6L1664.5 1164.6ZM1655.7 1206L1664.0 1206L1670.8 1173.9L1662.5 1173.9ZM1685.6 1206L1695.7 1206L1697.1 1199.9L1690.2 1199.9C1687.7 1199.9 1686.3 1199.0 1686.3 1197.2C1686.3 1196.8 1686.4 1196.5 1686.4 1196.1L1689.8 1179.9L1701.3 1179.9L1702.6 1173.9L1691.1 1173.9L1692.6 1167.3L1684.3 1167.3L1682.9 1173.9L1673.8 1173.9L1672.5 1179.9L1681.6 1179.9L1678.0 1197.1C1677.8 1198.0 1677.7 1198.8 1677.7 1199.6C1677.7 1203.7 1680.3 1206 1685.6 1206ZM1716.0 1206.9C1724.5 1206.9 1731.3 1202.4 1734.6 1194.2L1726.4 1194.2C1724.3 1198.7 1720.8 1200.9 1716.5 1200.9C1711.3 1200.9 1708.1 1197.9 1708.1 1192.7C1708.1 1192.1 1708.1 1191.5 1708.2 1191.0L1735.6 1191.0C1735.9 1189.6 1736.0 1188.3 1736.0 1186.8C1736.0 1178.3 1729.4 1173.0 1720.2 1173.0C1710.3 1173.0 1702.4 1179.0 1700.4 1188.7C1700.1 1190.0 1700.0 1191.4 1700.0 1192.6C1700.0 1201.1 1706.3 1206.9 1716.0 1206.9ZM1719.6 1178.9C1724.4 1178.9 1728.1 1181.7 1728.1 1186.3L1709.4 1186.3C1711.4 1181.5 1715.3 1178.9 1719.6 1178.9Z"/>
     </svg>
   </div>
-  <svg class="ha-art ha-art--wide" viewBox="0 0 2880 1800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <g class="ha-mark" fill="#EBEADC">
-      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
-      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
-      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
-      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
-      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
-      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
-      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
-      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
-      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
-    </g>
-    <text class="ha-sub" x="915.9" y="1048.5" font-size="58.42" fill="#EBEADC">interactive and physical media</text>
-  </svg>
-  <svg class="ha-art ha-art--tall" viewBox="0 0 1000 1760" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
-    <g class="ha-mark" fill="#EBEADC" transform="translate(60 470) scale(.6797) translate(-792.63 -830.1)">
-      <path d="M903.043,832.229l39.376,135.544h-46.904l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM852.857,917.814h29.339l-13.125-49.764h-3.088l-13.125,49.764Z"/>
-      <path d="M998.199,931.95v35.822h-45.167v-35.822h45.167Z"/>
-      <path d="M1170.333,832.229c27.41,0,44.203,15.685,44.203,42.793,0,9.101-3.088,17.621-8.107,24.397,5.019,6.971,8.107,15.878,8.107,25.367,0,27.108-16.793,42.986-44.203,42.986h-96.512v-135.544h96.512ZM1118.988,867.664v14.716h44.782c4.247,0,7.335-2.904,7.335-7.552s-3.088-7.165-7.335-7.165h-44.782ZM1118.988,917.428v14.91h44.782c4.247,0,7.335-2.905,7.335-7.552s-3.088-7.358-7.335-7.358h-44.782Z"/>
-      <path d="M1275.141,832.229v99.722h70.261v35.822h-115.428v-135.544h45.167Z"/>
-      <path d="M1458.703,832.229l39.377,135.544h-46.905l-3.667-13.748h-48.642l-3.667,13.748h-46.905l39.377-135.544h71.033ZM1408.517,917.814h29.34l-13.125-49.764h-3.088l-13.126,49.764Z"/>
-      <path d="M1502.902,900c0-39.308,30.69-69.902,71.611-69.902,40.343,0,66.787,25.947,68.91,57.509h-43.237c-1.158-7.552-11.195-18.008-26.831-18.008s-28.76,11.23-28.76,29.626,13.704,30.594,28.182,30.594c11.195,0,18.916-3.873,23.935-12.006h-23.742v-14.328h70.646c-.386,35.628-28.181,66.416-69.103,66.416s-71.611-30.4-71.611-69.902Z"/>
-      <path d="M1656.161,899.807c0-38.533,31.27-69.708,69.682-69.708s69.681,31.175,69.681,69.708c0,38.727-31.27,69.902-69.681,69.902s-69.682-31.175-69.682-69.902ZM1750.742,899.807c0-13.748-11.195-24.979-24.899-24.979s-24.9,11.231-24.9,24.979c0,13.942,11.195,25.172,24.9,25.172s24.899-11.23,24.899-25.172Z"/>
-      <path d="M1931.218,832.229v35.629h-74.121v14.135h74.121v35.822h-74.121v14.329h74.121v35.629h-119.289v-135.544h119.289Z"/>
-      <path d="M1988.155,832.229l24.514,99.722h1.545l24.514-99.722h48.642l-37.446,135.544h-72.963l-37.446-135.544h48.642Z"/>
-    </g>
-    <text class="ha-sub" x="500" y="622" font-size="40" text-anchor="middle" fill="#EBEADC">interactive and physical media</text>
-  </svg>
-  <div class="ha-flow" aria-hidden="true"></div>
-  <p class="ha-sr ha-source">Brands, interfaces and the small details in between that make people stop, look twice and remember. Since 2017 I have worked remotely from Bulgaria for clients who needed more than a nice picture. They needed a voice, a system and a reason for people to care. I studied graphic design at university and left when the work became the better teacher. Real briefs, real deadlines and real clients sharpen you faster than any classroom ever could. Every project starts with a question, not a style. Who is this for? What should they feel? What will they do next? The answers decide the type, the colour, the grid and everything after. I sketch fast and refine slowly. The first idea is rarely the best one, so I make room for the second, the third and the one that only shows up at two in the morning. Type is my favourite material. It can whisper, shout or explain, sometimes in the same word. Colour is never decoration; it is often the first thing people remember. I like constraints. A small label, a narrow screen, a menu that has to work by candlelight. Small spaces force big ideas to become clear ones. On screen, I care about how a page moves as much as how it looks. A scroll should feel like turning a page, a button should want to be pressed, and a layout should hold together on a phone held in one hand on a crowded tram. I have designed a restaurant identity from the logo to the printed menu, a meal subscription app that makes cooking feel like a choice and not a chore, a label system for nine car care products, software for people who build for a living, and my own clothing label, Muave, where the person disappears and the movement stays. Hands at work, eyes on the detail. Let's make it matter.</p>
+
+  <div class="hb-tall">
+    <canvas class="hb-fade" id="hbBack"></canvas>
+    <svg viewBox="0 0 892 1800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path class="hb-b hb-fade" id="hbBig"/>
+      <path class="hb-b hb-fade" id="hbP1"/>
+      <path class="hb-b hb-fade" id="hbP2"/>
+      <path class="hb-b hb-fade" id="hbP3"/>
+      <path class="hb-ink" d="M332.6 688.4L337.7 688.4L339.6 679.5L349.7 679.5C354.5 679.5 358.0 677.1 358.9 672.7C359.1 672.1 359.1 671.6 359.1 671.0C359.1 667.2 356.1 664.6 351.1 664.6L337.7 664.6ZM350.2 668.5C352.7 668.5 354.1 669.5 354.1 671.4C354.1 671.7 354.0 672.0 354.0 672.3C353.5 674.6 351.9 675.7 349.6 675.7L340.4 675.7L341.9 668.5ZM371.3 688.9C378.2 688.9 384.0 684.8 385.6 677.6C385.9 676.5 386.0 675.4 386.0 674.4C386.0 667.9 381.2 664.1 374.0 664.1C367.1 664.1 361.2 668.2 359.6 675.4C359.4 676.5 359.3 677.6 359.3 678.6C359.3 685.1 364.0 688.9 371.3 688.9ZM371.5 685.0C367.2 685.0 364.4 682.6 364.4 678.4C364.4 677.7 364.5 676.9 364.7 676.0C365.8 670.9 369.5 668.0 373.8 668.0C378.0 668.0 380.8 670.5 380.8 674.7C380.8 675.4 380.7 676.2 380.5 677.0C379.5 682.1 375.7 685.0 371.5 685.0ZM385.2 688.4L390.3 688.4L392.3 678.9L401.3 678.9C403.2 678.9 404.0 679.6 404.0 681.1C404.0 682.7 403.2 685.2 403.2 687.3C403.2 687.7 403.2 688.1 403.3 688.4L408.5 688.4C408.3 688.0 408.3 687.4 408.3 686.9C408.3 684.8 409.1 682.2 409.1 680.8C409.1 679.2 408.4 678.0 406.9 677.4C409.4 676.6 411.2 674.8 411.7 672.1C411.8 671.6 411.9 671.1 411.9 670.7C411.9 667.1 409.0 664.6 404.3 664.6L390.3 664.6ZM403.5 668.5C405.7 668.5 406.9 669.5 406.9 671.2C406.9 671.5 406.8 671.8 406.8 672.1C406.3 674.1 404.9 675.1 402.8 675.1L393.1 675.1L394.6 668.5ZM418.4 688.4L423.5 688.4L427.8 668.5L437.6 668.5L438.4 664.6L413.7 664.6L412.9 668.5L422.7 668.5ZM435.1 688.4L440.2 688.4L442.3 678.2L453.7 678.2L454.5 674.4L443.1 674.4L444.4 668.5L459.9 668.5L460.8 664.6L440.1 664.6ZM470.1 688.9C477.0 688.9 482.8 684.8 484.4 677.6C484.6 676.5 484.7 675.4 484.7 674.4C484.7 667.9 480.0 664.1 472.7 664.1C465.8 664.1 459.9 668.2 458.4 675.4C458.2 676.5 458.1 677.6 458.1 678.6C458.1 685.1 462.8 688.9 470.1 688.9ZM470.2 685.0C466.0 685.0 463.2 682.6 463.2 678.4C463.2 677.7 463.3 676.9 463.5 676.0C464.6 670.9 468.3 668.0 472.5 668.0C476.8 668.0 479.5 670.5 479.5 674.7C479.5 675.4 479.5 676.2 479.3 677.0C478.2 682.1 474.5 685.0 470.2 685.0ZM484.0 688.4L504.4 688.4L505.2 684.5L489.9 684.5L494.2 664.6L489.1 664.6ZM506.2 688.4L511.3 688.4L516.4 664.6L511.3 664.6ZM527.7 688.9C534.6 688.9 540.4 684.8 542.0 677.6C542.2 676.5 542.3 675.4 542.3 674.4C542.3 667.9 537.6 664.1 530.3 664.1C523.4 664.1 517.5 668.2 516.0 675.4C515.8 676.5 515.7 677.6 515.7 678.6C515.7 685.1 520.4 688.9 527.7 688.9ZM527.8 685.0C523.6 685.0 520.8 682.6 520.8 678.4C520.8 677.7 520.9 676.9 521.1 676.0C522.2 670.9 525.9 668.0 530.1 668.0C534.4 668.0 537.2 670.5 537.2 674.7C537.2 675.4 537.1 676.2 536.9 677.0C535.8 682.1 532.1 685.0 527.8 685.0Z"/>
+      <path class="hb-ink" d="M376.7 731.6L382.0 731.6L385.3 725.0L388.6 718.4L389.1 725.0L389.6 731.6L394.8 731.6L403.9 713.0L399.3 713.0L396.1 719.9L392.9 726.8L392.4 719.9L391.8 713.0L387.5 713.0L383.9 719.9L380.4 726.8L380.2 719.9L380.0 713.0L375.4 713.0ZM411.4 732.1C416.3 732.1 420.2 729.5 422.1 724.8L417.4 724.8C416.1 727.4 414.1 728.7 411.7 728.7C408.6 728.7 406.8 726.9 406.8 723.9C406.8 723.6 406.8 723.2 406.8 722.9L422.7 722.9C422.9 722.1 422.9 721.3 422.9 720.5C422.9 715.6 419.1 712.5 413.8 712.5C408.1 712.5 403.5 716.0 402.3 721.6C402.1 722.4 402.1 723.1 402.1 723.9C402.1 728.8 405.7 732.1 411.4 732.1ZM413.5 715.9C416.2 715.9 418.4 717.5 418.4 720.2L407.5 720.2C408.7 717.4 411.0 715.9 413.5 715.9ZM422.7 731.6L427.5 731.6L428.3 727.9C429.4 730.5 431.9 732.0 435.2 732.0C440.3 732.0 444.6 728.5 445.8 723.0C446.0 722.2 446.1 721.3 446.1 720.6C446.1 715.8 442.9 712.6 437.9 712.6C435.2 712.6 432.8 713.7 430.9 715.7L432.6 707.8L427.7 707.8ZM434.4 728.6C431.2 728.6 429.3 726.8 429.3 723.8C429.3 723.2 429.4 722.6 429.5 722.0C430.3 718.2 433.0 716.0 436.2 716.0C439.3 716.0 441.2 717.8 441.2 720.8C441.2 721.4 441.1 722.0 441.0 722.7C440.2 726.5 437.6 728.6 434.4 728.6ZM456.6 732.1C461.3 732.1 465.7 729.9 465.7 725.7C465.7 722.0 461.1 721.2 457.5 720.5C455.0 719.9 452.9 719.4 452.9 718.0C452.9 716.6 454.6 715.8 456.7 715.8C459.6 715.8 461.9 717.0 462.3 719.6L466.8 719.6C466.4 714.9 462.2 712.5 456.9 712.5C452.3 712.5 448.2 714.7 448.2 718.8C448.2 722.4 452.5 723.2 456.1 724.0C458.7 724.5 461.0 725.0 461.0 726.4C461.0 728.0 459.1 728.9 456.8 728.9C453.9 728.9 451.5 727.5 451.3 724.7L446.7 724.7C447.0 729.6 451.2 732.1 456.6 732.1ZM470.7 711.4L475.5 711.4L476.3 707.7L471.5 707.7ZM466.4 731.6L471.2 731.6L475.1 713.0L470.4 713.0ZM483.7 731.6L489.6 731.6L490.3 728.1L486.4 728.1C484.9 728.1 484.1 727.5 484.1 726.5C484.1 726.3 484.2 726.1 484.2 725.9L486.2 716.5L492.8 716.5L493.5 713.0L486.9 713.0L487.7 709.2L483.0 709.2L482.1 713.0L476.9 713.0L476.1 716.5L481.4 716.5L479.3 726.4C479.2 726.9 479.1 727.5 479.1 727.9C479.1 730.2 480.7 731.6 483.7 731.6ZM501.3 732.1C506.2 732.1 510.2 729.5 512.0 724.8L507.3 724.8C506.1 727.4 504.1 728.7 501.6 728.7C498.6 728.7 496.7 726.9 496.7 723.9C496.7 723.6 496.7 723.2 496.8 722.9L512.6 722.9C512.8 722.1 512.9 721.3 512.9 720.5C512.9 715.6 509.1 712.5 503.7 712.5C498.0 712.5 493.4 716.0 492.2 721.6C492.1 722.4 492.0 723.1 492.0 723.9C492.0 728.8 495.7 732.1 501.3 732.1ZM503.4 715.9C506.2 715.9 508.3 717.5 508.3 720.2L497.5 720.2C498.6 717.4 500.9 715.9 503.4 715.9Z"/>
+      <path class="hb-ink" d="M440.5 818.6C451.0 808.4 459.2 799.9 462.5 799.9C463.0 799.9 463.4 800.4 463.4 801.1C463.4 808.9 440.0 826.6 420.0 839.7C429.2 830.0 436.8 822.2 440.5 818.6ZM419.1 853.9C411.2 858.0 405.3 859.4 404.1 859.4C403.3 859.4 402.4 859.3 402.4 858.6C402.4 858.4 402.5 858.2 402.6 858.0C407.9 852.5 412.9 847.1 417.6 842.2C438.6 828.8 464.3 809.5 464.3 801.1C464.3 799.9 463.9 799.1 462.7 799.1C459.1 799.1 450.3 807.6 439.6 817.9C433.2 824.0 424.8 832.8 415.0 842.9C407.1 847.9 400.1 851.9 395.7 853.9C395.4 854.1 395.3 854.3 395.3 854.4C395.3 854.7 395.5 854.8 395.7 854.8C399.7 852.9 405.8 849.5 412.8 845.2C409.7 848.5 406.4 851.8 403.0 855.3L403.0 854.2C403.0 853.6 402.7 853.1 402.2 853.1C401.3 853.1 400.7 854.3 400.7 855.7C400.7 856.4 400.7 857.1 400.8 857.6C392.5 866.2 383.6 875.2 374.4 884.2L374.6 884.6L377.0 884.6C384.9 876.4 393.4 867.6 401.4 859.2C401.9 859.9 402.6 860.2 403.6 860.2C405.7 860.2 411.3 858.7 419.1 854.8C419.4 854.6 419.5 854.4 419.5 854.3C419.5 854.0 419.4 853.9 419.1 853.9ZM424.1 858.4C424.1 855.3 433.6 847.5 437.0 847.5C438.1 847.5 438.6 848.1 438.6 849.2C438.6 853.6 430.8 859.5 426.0 859.5C424.5 859.5 424.1 859.0 424.1 858.4ZM419.1 853.9C418.8 854.1 418.7 854.3 418.7 854.4C418.7 854.7 418.8 854.8 419.1 854.8C423.6 852.6 425.6 851.7 428.0 850.7L428.1 850.9C425.5 853.0 423.3 855.9 423.3 858.3C423.3 859.6 424.2 860.4 426.1 860.4C429.0 860.4 433.1 858.2 435.9 855.4C436.4 855.9 437.0 856.0 437.8 856.0C439.1 856.0 440.5 855.7 442.5 854.8C442.8 854.6 442.9 854.4 442.9 854.3C442.9 854.0 442.7 853.9 442.5 853.9C440.4 854.9 439.0 855.3 438.0 855.3C437.4 855.3 437.0 855.2 436.5 854.7C438.2 852.9 439.3 850.9 439.3 849.2C439.3 847.6 438.7 846.7 437.0 846.7C435.5 846.7 433.4 847.5 431.3 848.7C426.2 850.7 423.5 851.8 419.1 853.9ZM442.5 854.8C447.2 852.7 452.9 849.8 457.8 847.5C458.5 848.1 459.4 848.8 460.3 849.3C451.1 853.3 449.0 856.7 449.0 859.1C449.0 859.7 449.4 860.2 450.4 860.2C453.3 860.2 461.5 856.7 465.8 854.8C466.2 854.6 466.3 854.4 466.3 854.3C466.3 854.0 466.1 853.9 465.8 853.9C461.6 856.0 452.9 859.4 450.8 859.4C450.3 859.4 450.0 859.2 450.0 858.8C450.0 857.5 453.8 853.5 460.9 849.8C462.0 849.2 462.7 849.2 462.7 848.7C462.7 848.5 462.5 848.4 462.3 848.4C462.0 848.4 461.5 848.7 461.0 848.9C460.2 848.6 459.2 847.8 458.5 847.0C461.7 845.8 463.0 844.4 463.0 843.6C463.0 843.3 462.7 843.0 462.4 843.0C461.3 843.0 459.3 844.1 457.9 846.6C452.6 849.2 446.7 852.1 442.5 853.9C442.1 854.1 442.1 854.3 442.1 854.4C442.1 854.7 442.2 854.8 442.5 854.8Z"/>
+      <text class="hb-big" id="hbBlag" x="70" y="1134">BLAG</text>
+      <text class="hb-big" id="hbOev" x="70" y="1377">OEV</text>
+      <path class="hb-b hb-fade" id="hbLow"/>
+    </svg>
+    <canvas class="hb-fade" id="hbFront"></canvas>
+  </div>
 </section>
 
 <!-- STATEMENT — scrolls sideways while pinned.
@@ -2125,7 +2090,10 @@
         scrollTrigger: {
           trigger: sec, start: 'top top',
           end: () => '+=' + Math.round(innerHeight * 1.7),
-          pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
+          /* held by transform, not position: fixed — iOS Safari colours its
+             status bar and toolbar from a fixed element at the screen edge,
+             and kept the band's yellow there long after it had scrolled on */
+          pin: true, pinType: 'transform', scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
         }
       });
 
@@ -2449,256 +2417,498 @@
 
 </script>
 
-
-
 <script>
-  /* ── Hero text flow ─────────────────────────────────────────────
-     Flows the copy through whatever cream space is visible: the shapes
-     are drawn once into a small canvas (grown by a margin), and for every
-     line the free runs across it become slots, filled left to right. The
-     font is monospaced, so a slot's capacity is just its width over one
-     character's advance. If the copy runs out of room it ends on the last
-     whole sentence instead of mid-thought. */
+  /* ── Hero: Alexander's blobs, alive ───────────────────────────────── */
   (function () {
-    const sec = document.getElementById('heroArt');
+    const sec = document.getElementById('heroBlob');
     if (!sec) return;
-    const flow = sec.querySelector('.ha-flow');
-    const words = sec.querySelector('.ha-source').textContent.trim().split(/\s+/);
-    const LAYOUT = {
-      /* anchors: how much of the spare width / height each shape moves by —
-         [.5,0] the tile painting, centred along the top, with the name on it
-         (so the name is always dead centre), [0,0] face top-left, [1,1]
-         dancer bottom-right, [0,1] leopards bottom-left */
-      wide: { svg: sec.querySelector('.ha-shapes.ha-art--wide'), w: 2880, h: 1800,
-              anchors: [[0.5, 0], [0, 0], [1, 1], [0, 1]],
-              frame: [50, 57, 2833, 1747], font: 45, lead: 54, first: 90, pad: 30 },
-      tall: { svg: sec.querySelector('.ha-shapes.ha-art--tall'), w: 1000, h: 1760,
-              frame: [28, 28, 972, 1732], font: 40, lead: 50, first: 62, pad: 22 }
+
+  function Blob(D, o) {
+    const NUM = /-?\d*\.?\d+(?:e-?\d+)?/g;
+    const nums = D.match(NUM).map(Number);
+    const segs = [];
+    let x = nums[0], y = nums[1];
+    const re = /([cC])([^cCzZ]*)/g; let m;
+    while ((m = re.exec(D))) {
+      const v = m[2].match(NUM).map(Number), abs = m[1] === 'C';
+      for (let i = 0; i + 5 < v.length; i += 6) {
+        const bx = abs ? 0 : x, by = abs ? 0 : y;
+        const s = { c1: [bx + v[i], by + v[i + 1]], c2: [bx + v[i + 2], by + v[i + 3]], p: [bx + v[i + 4], by + v[i + 5]] };
+        segs.push(s); x = s.p[0]; y = s.p[1];
+      }
+    }
+    const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    for (let i = segs.length - 1; i >= 0; i--) {
+      const s = segs[i], p0 = i ? segs[i - 1].p : segs[segs.length - 1].p;
+      const a = lerp(p0, s.c1, .5), b = lerp(s.c1, s.c2, .5), c = lerp(s.c2, s.p, .5);
+      const d = lerp(a, b, .5), e = lerp(b, c, .5), mm = lerp(d, e, .5);
+      segs.splice(i, 1, { c1: a, c2: d, p: mm }, { c1: e, c2: c, p: s.p });
+    }
+    const n = segs.length;
+    const pts = segs.map((s, k) => ({ p: s.p, hin: s.c2, hout: segs[(k + 1) % n].c1, u: k / n * Math.PI * 2 }));
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    pts.forEach(q => { x0 = Math.min(x0, q.p[0]); x1 = Math.max(x1, q.p[0]); y0 = Math.min(y0, q.p[1]); y1 = Math.max(y1, q.p[1]); });
+    const CX = (x0 + x1) / 2, CY = (y0 + y1) / 2, SW = x1 - x0, SH = y1 - y0;
+    const dx0 = o.dx || 0, dy0 = o.dy || 0, sc = o.scale || 1, seed = o.seed || 0;
+
+    const off = pts.map(() => ({ x: 0, y: 0, vx: 0, vy: 0 }));
+    const lean = { x: 0, y: 0, vx: 0, vy: 0 };
+    const body = { x: 0, y: 0, vx: 0, vy: 0, fx: 0, fy: 0, mass: o.mass || 1, wander: o.wander || 0 };
+    const A = o.amp, PULL = o.pull || 8200, REACH = o.reach || 400, K = 55, STIFF = o.stiff || 105, DAMP = 8.5;
+
+    /* pointer arrives in the blob's own path units (null when absent) */
+    function physics(dt, t, px, py) {
+      const on = px !== null;
+      for (let i = 0; i < n; i++) {
+        const q = pts[i], s = off[i];
+        let fx = 0, fy = 0;
+        if (on) {
+          const vx = px - (q.p[0] + s.x + lean.x + body.x), vy = py - (q.p[1] + s.y + lean.y + body.y), d = Math.hypot(vx, vy) || 1;
+          const f = PULL * Math.exp(-d / REACH) * Math.min(1, d / 60);     // no snapping onto the pointer
+          fx = vx / d * f; fy = vy / d * f;
+        }
+        const r = Math.hypot(s.x, s.y), k = K * (1 + (r / STIFF) ** 2);  // resistance grows with stretch
+        s.vx += (fx - k * s.x - DAMP * s.vx) * dt; s.vy += (fy - k * s.y - DAMP * s.vy) * dt;
+        s.x += s.vx * dt; s.y += s.vy * dt;
+      }
+      let gx = 0, gy = 0;
+      if (on) { gx = Math.max(-1, Math.min(1, (px - CX) / SW)) * SW * .026; gy = Math.max(-1, Math.min(1, (py - CY) / SH)) * SH * .045; }
+      lean.vx += (14 * (gx - lean.x) - 5 * lean.vx) * dt; lean.vy += (14 * (gy - lean.y) - 5 * lean.vy) * dt;
+      lean.x += lean.vx * dt; lean.y += lean.vy * dt;
+      /* the body: a soft tether home, a slow wander, little friction (so
+         knocks carry), plus whatever collide() pushed on it */
+      const wx = body.wander * (Math.sin(t * .41 + seed * 3) + .5 * Math.sin(t * .93 + seed));
+      const wy = body.wander * (Math.sin(t * .33 + seed * 5) + .5 * Math.sin(t * .77 + seed * 2));
+      body.vx += (wx - 5 * body.x - 1.1 * body.vx + body.fx / body.mass) * dt;
+      body.vy += (wy - 5 * body.y - 1.1 * body.vy + body.fy / body.mass) * dt;
+      body.x += body.vx * dt; body.y += body.vy * dt;
+      body.fx = body.fy = 0;
+    }
+
+    /* the outline as drawn this frame, in artboard units: bezier segments
+       for drawing, and points sampled along them for collisions */
+    const geo = { segs: [], samples: [], box: [0, 0, 0, 0] };
+    function path(t, grow) {
+      const a0 = A * grow;
+      const out = pts.map((q, i) => {
+        const u = q.u, s = off[i];
+        let dx = a0 * (.7 * Math.sin(t * .9 - u * 2 + seed) + .45 * Math.sin(t * 1.4 + u * 3 + seed * 2));
+        let dy = a0 * (Math.sin(t * .75 - u * 2 + seed * 1.3) + .55 * Math.sin(t * 1.25 - u * 3 + seed));
+        dx += s.x + lean.x; dy += s.y + lean.y;
+        const k = 1 + .16 * grow * Math.sin(t * .8 - u + seed), a = .22 * grow * Math.sin(t * .6 + u * 2 + seed);
+        const ca = Math.cos(a), sa = Math.sin(a);
+        const h = hp => { const vx = (hp[0] - q.p[0]) * k, vy = (hp[1] - q.p[1]) * k;
+                          return [q.p[0] + vx * ca - vy * sa + dx, q.p[1] + vx * sa + vy * ca + dy]; };
+        return { p: [q.p[0] + dx, q.p[1] + dy], hin: h(q.hin), hout: h(q.hout) };
+      });
+      const s = 1 + .025 * grow * Math.sin(t * .31 + seed), rot = .02 * grow * Math.sin(t * .23 + seed);
+      const cos = Math.cos(rot), sin = Math.sin(rot);
+      const T = ([px, py]) => {
+        const ux = (px - CX) * s, uy = (py - CY) * s;
+        return [(CX + ux * cos - uy * sin + body.x) * sc + dx0, (CY + ux * sin + uy * cos + body.y) * sc + dy0];
+      };
+      const f = v => v[0].toFixed(1) + ',' + v[1].toFixed(1);
+      const P = out.map(q => ({ p: T(q.p), hin: T(q.hin), hout: T(q.hout) }));
+      let d = 'M' + f(P[n - 1].p);
+      geo.segs.length = 0; geo.samples.length = 0;
+      let bx0 = 1e9, bx1 = -1e9, by0 = 1e9, by1 = -1e9;
+      for (let k = 0; k < n; k++) {
+        const pv = P[(k - 1 + n) % n], p0 = pv.p, c1 = pv.hout, c2 = P[k].hin, p3 = P[k].p;
+        d += 'C' + f(c1) + ' ' + f(c2) + ' ' + f(p3);
+        const len = Math.hypot(c1[0] - p0[0], c1[1] - p0[1]) + Math.hypot(c2[0] - c1[0], c2[1] - c1[1]) + Math.hypot(p3[0] - c2[0], p3[1] - c2[1]);
+        const m = Math.max(2, Math.ceil(len / 24));
+        for (let j = 1; j <= m; j++) {
+          const tt = j / m, mt = 1 - tt;
+          const X = mt * mt * mt * p0[0] + 3 * mt * mt * tt * c1[0] + 3 * mt * tt * tt * c2[0] + tt * tt * tt * p3[0];
+          const Y = mt * mt * mt * p0[1] + 3 * mt * mt * tt * c1[1] + 3 * mt * tt * tt * c2[1] + tt * tt * tt * p3[1];
+          geo.samples.push({ x: X, y: Y, k, t: tt });
+          bx0 = Math.min(bx0, X); bx1 = Math.max(bx1, X); by0 = Math.min(by0, Y); by1 = Math.max(by1, Y);
+        }
+      }
+      geo.box = [bx0, by0, bx1, by1];
+      const poly = new Float32Array(geo.samples.length * 2);
+      geo.samples.forEach((q, i) => { poly[i * 2] = q.x; poly[i * 2 + 1] = q.y; });
+      return { d: d + 'Z', poly };
+    }
+    /* a knock at sample s: the two points either side of it take it */
+    function kick(smp, nx, ny, amt) {
+      const a = off[smp.k], b = off[(smp.k - 1 + n) % n];
+      a.vx += nx * amt * smp.t; a.vy += ny * amt * smp.t;
+      b.vx += nx * amt * (1 - smp.t); b.vy += ny * amt * (1 - smp.t);
+    }
+    const local = (ax, ay) => [(ax - dx0) / sc, (ay - dy0) / sc];
+    return { physics, path, local, geo, body, kick };
+  }
+
+  /* ── blobs bump: wherever two outlines come within reach of each other,
+     both bodies are pushed apart (lighter ones further) and the touching
+     parts of both outlines squash in; springs and momentum do the bounce.
+     Each pair's reach is kept under the gap it has at rest, so the layout
+     as drawn is calm and only movement brings them into contact. ── */
+  function collide(list, reach) {
+    for (let a = 0; a < list.length; a++) for (let b = a + 1; b < list.length; b++) {
+      const c = reach[a][b]; if (!c) continue;
+      const A = list[a], B = list[b], ba = A.geo.box, bb = B.geo.box;
+      if (ba[0] - c > bb[2] || bb[0] - c > ba[2] || ba[1] - c > bb[3] || bb[1] - c > ba[3]) continue;
+      let fx = 0, fy = 0;
+      for (const sa of A.geo.samples) {
+        if (sa.x < bb[0] - c || sa.x > bb[2] + c || sa.y < bb[1] - c || sa.y > bb[3] + c) continue;
+        let best = c * c, sb = null;
+        for (const s of B.geo.samples) {
+          const dx = sa.x - s.x, dy = sa.y - s.y, d2 = dx * dx + dy * dy;
+          if (d2 < best) { best = d2; sb = s; }
+        }
+        if (!sb) continue;
+        const d = Math.sqrt(best) || 1, nx = (sa.x - sb.x) / d, ny = (sa.y - sb.y) / d, ov = c - d;
+        fx += nx * ov; fy += ny * ov;
+        A.kick(sa, nx, ny, ov * 9); B.kick(sb, -nx, -ny, ov * 9);
+      }
+      A.body.fx += fx * 26; A.body.fy += fy * 26;
+      B.body.fx -= fx * 26; B.body.fy -= fy * 26;
+    }
+  }
+  function restReach(list, max) {           // per pair: under the gap at rest
+    return list.map((A, a) => list.map((B, b) => {
+      if (b <= a) return 0;
+      let g = 1e9;
+      for (const p of A.geo.samples) for (const q of B.geo.samples) g = Math.min(g, Math.hypot(p.x - q.x, p.y - q.y));
+      return g < 8 ? 0 : Math.min(max, g * .7);
+    }));
+  }
+
+  /* ── soft rendering, in WebGL. Each blob's outline is filled straight
+     on the GPU (a triangle fan whose overlaps cancel out, so any shape
+     fills right), the fills are merged, blurred with a two-pass gaussian
+     shader, and laid down in the blob colour. Nothing is read back from a
+     canvas (iOS Safari adds noise to canvas reads, which washed an earlier
+     version out), there is no CSS filter (Safari tiles those and the tiles
+     seam on a shape that changes every frame), and canvas 2D blur filters
+     don't exist in Safari. ── */
+  function Soft(cv, VW, VH, M, R, colour) {
+    const CW = Math.round((VW + 2 * M) * R), CH = Math.round((VH + 2 * M) * R);
+    cv.width = CW; cv.height = CH;
+    const gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
+    if (!gl || gl.isContextLost()) return null;
+    const prog = (vs, fs) => {
+      const p = gl.createProgram();
+      [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]].forEach(([t, src]) => {
+        const sh = gl.createShader(t); gl.shaderSource(sh, src); gl.compileShader(sh); gl.attachShader(p, sh); });
+      gl.linkProgram(p); return p;
     };
-    const MIN_CHARS = 4, R = 4;          /* R: artboard units per mask pixel */
-
-    let maskCache = { key: '' };
-    const mask = (L, off, Wv, Hv, st) => {
-      const key = [L.w, Math.round(Wv), Math.round(Hv)].join(':');
-      if (maskCache.key === key) return maskCache;
-      const cw = Math.ceil(Wv / R), ch = Math.ceil(Hv / R);
-      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
-      const x = c.getContext('2d');
-      x.scale(1 / R, 1 / R);
-      x.lineWidth = L.pad * 2; x.lineJoin = 'round';
-      L.svg.querySelectorAll('clipPath path').forEach((p, i) => {
-        const P = new Path2D(p.getAttribute('d'));
-        x.save();
-        if (i === 0 && st) x.transform(st.a, 0, 0, 1, st.b, 0); else x.translate(off[i][0], off[i][1]);
-        x.fill(P); x.stroke(P); x.restore();
-      });
-      const a = x.getImageData(0, 0, cw, ch).data;
-      return (maskCache = { key, cw, ch, on: (cx, cy) => a[(cy * cw + cx) * 4 + 3] > 0 });
+    const pPoly = prog('attribute vec2 a; uniform vec4 m; void main(){ gl_Position = vec4(a * m.xy + m.zw, 0., 1.); }',
+                       'precision mediump float; void main(){ gl_FragColor = vec4(1.); }');
+    const QV = 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }';
+    const pBlur = prog(QV, `precision mediump float; varying vec2 v; uniform sampler2D t; uniform vec2 dir; uniform float sig;
+      void main(){ float s = 0., w = 0.;
+        for (int i = -24; i <= 24; i++) { float k = exp(-float(i * i) / 128.); s += texture2D(t, v + dir * (float(i) * sig / 8.)).a * k; w += k; }
+        gl_FragColor = vec4(s / w); }`);
+    const pComp = prog(QV, `precision mediump float; varying vec2 v; uniform sampler2D t; uniform vec4 c;
+      void main(){ float a = texture2D(t, v).a * c.a; gl_FragColor = vec4(c.rgb * a, a); }`);
+    const quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const vbuf = gl.createBuffer();
+    const target = () => {
+      const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, CW, CH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]
+        .forEach(([k, v]) => gl.texParameteri(gl.TEXTURE_2D, k, v));
+      const fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      return { tex, fb };
     };
-
-    let first = true;
-    function layout() {
-      const tall = innerWidth < innerHeight * 0.9;
-      sec.classList.toggle('is-tall', tall);
-      const L = tall ? LAYOUT.tall : LAYOUT.wide;
-      const W = sec.clientWidth, H = sec.clientHeight;
-      lastW = W; lastH = H;
-      /* Wide: the artboard is fitted whole, never cropped, and any spare
-         width or height is shared out by pinning each shape to its corner
-         of the frame — so the cream border is the same on all four sides at
-         any window shape, and the extra room goes to the text. (Filling the
-         window instead cropped the top and bottom edges on wide screens.)
-         Tall: fitted to the width, its own height. */
-      const ox = 0, oy = 0;
-      let s, Wv = L.w, Hv = L.h, off = [[0, 0], [0, 0], [0, 0], [0, 0]], frame = L.frame, st = null;
-      if (tall) s = W / L.w;
-      else {
-        s = Math.min(W / L.w, H / L.h);
-        Wv = W / s; Hv = H / s;
-        const dx = Wv - L.w, dy = Hv - L.h;
-        off = L.anchors.map(([ax, ay]) => [ax * dx, ay * dy]);
-        frame = [L.frame[0], L.frame[1], L.frame[2] + dx, L.frame[3] + dy];
-        /* The tile painting is stretched sideways rather than slid: its
-           left curve moves by half the spare width (so it — and the name on
-           it — stay centred) while its straight right edge still meets the
-           frame. Only the shape stretches; the image inside is scaled evenly
-           by the same factor (a slight zoom), so nothing in it distorts. */
-        const cap = L.svg.querySelector('.ha-shape');
-        const cx0 = Number(cap.dataset.box.split(' ')[0]);
-        const a = (L.frame[2] + dx - (cx0 + dx / 2)) / (L.frame[2] - cx0);
-        st = { a, b: cx0 + dx / 2 - a * cx0 };
-        const img = cap.querySelector('image');
-        if (!img.dataset.y0) { img.dataset.y0 = img.getAttribute('y'); img.dataset.h0 = img.getAttribute('height'); }
-        const y0 = +img.dataset.y0, h0 = +img.dataset.h0, CY = 650;   /* zoom about the painting's middle */
-        img.setAttribute('height', (h0 * a).toFixed(2));
-        img.setAttribute('y', (CY - (CY - y0) * a).toFixed(2));
-        /* the name rides on the tile painting, so it stays centred too */
-        const tr = `translate(${off[0][0].toFixed(1)} ${off[0][1].toFixed(1)})`;
-        [sec.querySelector('svg.ha-art--wide'), document.querySelector('.ha-loader-mark--wide')].forEach(svg => {
-          if (!svg) return;
-          svg.setAttribute('viewBox', `0 0 ${Wv.toFixed(1)} ${Hv.toFixed(1)}`);
-          svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-          svg.querySelectorAll(':scope > g, :scope > text').forEach(n => n.setAttribute('transform', tr));
-        });
+    const P = target(), A = target(), B = target();
+    const rgb = [1, 3, 5].map(i => parseInt(colour.slice(i, i + 2), 16) / 255);
+    const bind = (t) => { gl.bindFramebuffer(gl.FRAMEBUFFER, t ? t.fb : null); };
+    const drawQuad = (p, tex) => {
+      gl.useProgram(p); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+      const loc = gl.getAttribLocation(p, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(gl.getUniformLocation(p, 't'), 0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    gl.viewport(0, 0, CW, CH);
+    /* layers: [{ polys: [Float32Array of x,y in artboard units], sigma
+       (artboard units), alpha, sx, sy }], back to front */
+    return function paint(layers) {
+      bind(null); gl.disable(gl.BLEND); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      for (const L of layers) {
+        const sx = L.sx || 1, sy = L.sy || 1;
+        bind(A); gl.disable(gl.BLEND); gl.clear(gl.COLOR_BUFFER_BIT);
+        for (const poly of L.polys) {
+          /* fill: every fan triangle flips the pixels it covers, so only
+             the inside ends up set, whatever the outline does */
+          bind(P); gl.disable(gl.BLEND); gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.useProgram(pPoly);
+          gl.uniform4f(gl.getUniformLocation(pPoly, 'm'), 2 * R * sx / CW, -2 * R * sy / CH,
+                       2 * (VW / 2 - VW / 2 * sx + M) * R / CW - 1, 1 - 2 * (VH / 2 - VH / 2 * sy + M) * R / CH);
+          gl.bindBuffer(gl.ARRAY_BUFFER, vbuf); gl.bufferData(gl.ARRAY_BUFFER, poly, gl.DYNAMIC_DRAW);
+          const loc = gl.getAttribLocation(pPoly, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+          gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.ONE_MINUS_DST_COLOR, gl.ZERO, gl.ONE_MINUS_DST_ALPHA, gl.ZERO);
+          gl.drawArrays(gl.TRIANGLE_FAN, 0, poly.length / 2);
+          /* merge into this layer */
+          bind(A); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          gl.useProgram(pComp); gl.uniform4f(gl.getUniformLocation(pComp, 'c'), 1, 1, 1, 1);
+          drawQuad(pComp, P.tex);
+        }
+        /* blur: across into B, down back into A */
+        gl.disable(gl.BLEND);
+        gl.useProgram(pBlur); gl.uniform1f(gl.getUniformLocation(pBlur, 'sig'), L.sigma * R);
+        bind(B); gl.uniform2f(gl.getUniformLocation(pBlur, 'dir'), 1 / CW, 0); drawQuad(pBlur, A.tex);
+        bind(A); gl.uniform2f(gl.getUniformLocation(pBlur, 'dir'), 0, 1 / CH); drawQuad(pBlur, B.tex);
+        /* lay it down in colour */
+        bind(null); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.useProgram(pComp); gl.uniform4f(gl.getUniformLocation(pComp, 'c'), rgb[0], rgb[1], rgb[2], L.alpha == null ? 1 : L.alpha);
+        drawQuad(pComp, A.tex);
       }
-      L.svg.querySelectorAll('.ha-shape').forEach((el, i) => {
-        const [bx, by, bw, bh] = el.dataset.box.split(' ').map(Number);
-        const stretched = i === 0 && st;
-        /* one property at a time: cssText would wipe the opacity and blur
-           the develop animation keeps on the same element */
-        el.style.left = ((stretched ? bx * st.a + st.b : bx + off[i][0]) * s).toFixed(1) + 'px';
-        el.style.top = ((by + off[i][1]) * s).toFixed(1) + 'px';
-        el.style.width = (bw * (stretched ? st.a : 1) * s).toFixed(1) + 'px';
-        el.style.height = (bh * s).toFixed(1) + 'px';
+    };
+  }
+
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const BLOB = '#CED345';
+    const tallMQ = matchMedia('(max-aspect-ratio: 4/5)');
+
+    /* phones: the name bar sits above the hero, which fills the rest of
+       the first screen */
+    const nav = document.querySelector('nav.main');
+    const setNav = () => document.documentElement.style.setProperty('--nav-h',
+      (nav && getComputedStyle(nav).display !== 'none' ? nav.offsetHeight : 0) + 'px');
+    setNav();
+
+    /* the pointer, in client px: the mouse as it moves, a finger while it
+       is down (until the page takes the gesture as a scroll) */
+    let cx = null, cy = null;
+    sec.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || e.buttons) { cx = e.clientX; cy = e.clientY; } });
+    sec.addEventListener('pointerdown', e => { cx = e.clientX; cy = e.clientY; });
+    const letGo = e => { if (e.pointerType !== 'mouse') cx = cy = null; };
+    sec.addEventListener('pointerup', letGo); sec.addEventListener('pointercancel', letGo);
+    sec.addEventListener('pointerleave', () => { cx = cy = null; });
+
+    /* ── desktop: his 2880 x 1800 layout. The three shapes come from his
+       SVG at its own scale, placed at (355, 398) as measured off the
+       layout; the pebbles are ellipses fitted to it. Behind the type: the
+       big and long shapes and the pebbles; over it: the left shape. ── */
+    const wide = [
+      { el: 'hbWBig',  amp: 30, mass: 14, seed: .4, dx: 355, dy: 398, D: 'M888.116,692.384c52.838,14.837,105.192,31.322,157.458,48.042,48.694,15.577,98.674,30.562,149.416,37.838,21.575,2.577,43.321,3.291,64.938.924,15.087-2.336,29.805-6.243,44.006-11.862,9.423-4.263,18.54-9.191,27.419-14.49,9.9-5.908,19.486-12.336,28.769-19.171,2.211-1.628,11.543-9.107,2.74-1.989,2.191-1.771,4.426-3.489,6.613-5.265,4.407-3.58,8.744-7.247,13.016-10.988,18.251-15.987,35.292-33.324,51.461-51.403,7.96-8.899,15.71-17.985,23.291-27.208,4.143-5.04,8.234-10.121,12.282-15.237,1.832-2.316,3.655-4.639,5.47-6.969,4.554-5.971,1.354-1.738.126-.16-.042.054-.084.107-.126.16-.286.375-.6.788-.95,1.247.917-1.204,1.846-2.399,2.767-3.601,15.349-20.05,30.129-40.527,44.688-61.155,27.649-39.174,54.385-79.022,83.172-117.38,29.601-39.443,60.368-78.203,91.328-116.588,31.595-39.173,64.466-77.481,100.718-112.45,36.688-35.389,77.237-68.166,122.343-92.233.351-.188.703-.375,1.055-.561,22.99-12.178,13.786-47.133-12.212-46.144-58.787,2.235-117.207,12.606-167.734,29.693-139.986,47.339-183.177,133.34-285.493,115.557-86.656-15.062-88.626-82.48-197.127-146.146-114.662-67.281-279.411-89.949-424.841-30.588-25.07,10.232-188.024,79.587-251.506,244.708-.575,1.496-1.138,2.99-1.689,4.481-60.763,164.417,38.363,344.987,209.327,383.672,33.286,7.532,66.377,16.03,99.274,25.268Z' },
+      { el: 'hbWP1',   amp: 9, mass: 1, wander: 260, seed: 1.3, D: 'M571.13,539.60C623.23,542.65,662.18,601.33,658.12,670.65C654.05,739.98,608.52,793.70,556.42,790.65C504.31,787.59,465.37,728.92,469.43,659.60C473.49,590.27,519.02,536.55,571.13,539.60Z' },
+      { el: 'hbWP2',   amp: 9, mass: 1, wander: 260, seed: 2.9, D: 'M1868.33,533.83C1818.76,550.01,1761.07,509.47,1739.46,443.29C1717.85,377.10,1740.51,310.33,1790.08,294.15C1839.64,277.97,1897.33,318.50,1918.94,384.69C1940.55,450.88,1917.89,517.65,1868.33,533.83Z' },
+      { el: 'hbWP3',   amp: 8, mass: .9, wander: 240, seed: 4.4, D: 'M2387.75,1015.93C2398.95,1062.28,2362.60,1110.83,2306.55,1124.37C2250.51,1137.92,2195.99,1111.33,2184.79,1064.99C2173.59,1018.64,2209.94,970.09,2265.99,956.54C2322.03,943.00,2376.55,969.59,2387.75,1015.93Z' },
+      { el: 'hbWLeft', amp: 12, mass: 6, wander: 20, seed: 3.1, dx: 355, dy: 398, D: 'M650.529,78.438c19.71,63.992-112.28,100.37-142.746,244.708-20.175,95.584,10.204,209.938,20.392,248.291,21.962,82.671,46.522,114.272,27.19,145.649-27.272,44.264-118.239,49.687-184.044,26.808-66.658-23.175-66.473-61.128-119.496-70.678-83.044-14.957-127.207,70.266-181.554,51.076-58.976-20.825-96.189-152.685-48.506-216.07,57.855-76.908,189.878,14.543,288.892-59.321,133.683-99.728,19.94-361.117,139.348-428.24,68.487-38.499,183.858,3.669,200.525,57.778Z' },
+      { el: 'hbWLong', amp: 22, mass: 12, seed: 5.7, dx: 355, dy: 398, D: 'M2222.573,186.813c-25.601-32.386-58.999-45.025-58.999-45.025-10.657-3.042-24.9-6.454-41.921-8.7-36.302-4.789-64.639-1.556-74.137-.296-46.754,6.199-80.078,23.31-100.138,33.835-23.895,12.537-40.655,24.947-54.173,35.043,0,0-33.091,24.715-58.706,51.576-53.826,56.444-41.562,130.702-76.875,199.266-38.937,75.6-82.905,38.876-189.426,138.081-90.034,83.85-117.042,163-208.337,216.448-25.378,14.857-52.942,26.286-82.09,30.915-33.344,5.294-65.733,4.069-99.048-.691-58.863-8.412-116.1-27.307-172.579-45.254,0,0-213.566-76.499-357.569-89.069-15.029-1.312-23.556,2.454-27.732,4.829-3.49,1.985-8.839,5.784-20.808,22.745-6.748,9.562-8.011,15.806-15.434,24.27-100.301,114.366-396.229-69.903-489.417,47.582-48.289,60.879-26.609,183.205,37.386,244.865,95.477,91.995,230.374-.465,530.202-13.752,339.182-15.031,387.092,104.289,693.34,54.38,146.79-23.923,296.261-48.282,380.658-166.538,100.088-140.243,23.62-293.393,132.551-373.86,92.597-68.402,182.734,16.461,282.094-61.177,100.669-78.661,112.424-247.267,71.156-299.472Z' },
+    ].map(b => ({
+      el: document.getElementById(b.el),
+      blob: Blob(b.D, { amp: b.amp, mass: b.mass, wander: b.wander, seed: b.seed, dx: b.dx || 0, dy: b.dy || 0,
+                        reach: 260, pull: 6000, stiff: 70 }),
+    }));
+    const wBlobs = wide.map(b => b.blob);
+    wBlobs.forEach(b => b.path(0, 0));
+    const wReach = restReach(wBlobs, 40);
+    const wSvg = sec.querySelector('.hb-wide svg');
+    const WM = 150, WR = 0.25;
+    const wBackCv = document.getElementById('hbWBack'), wFrontCv = document.getElementById('hbWFront');
+
+    /* ── phones: the five blobs at their places in his layout. His SVGs
+       sit in it at 1.111 (the layout PNG is the 892-wide artboard at 991
+       px), so each box below is the blob's box in that PNG. ── */
+    const S = 1.1112;
+  const tall = [
+    { el: 'hbBig', amp: 30, mass: 14, D: 'M138.663,16.612C40.783,71.972,29.882,253.432,70.689,374.103c35.065,103.692,98.769,135.685,85.597,211.474-11.157,64.189-61.096,65.648-108.254,146.018-49.837,84.934-66.628,206.968-22.658,314.693,7.58,18.57,58.953,139.275,181.263,186.299,159.931,61.487,282.237-64.101,352.456-2.518,84.714,74.296-51.779,293.499,35.246,362.526,45.095,35.769,135.706,19.71,181.38-27.693,68.144-70.723-.344-170.645-10.187-392.737-11.134-251.243,77.25-286.731,40.281-513.579-17.72-108.732-35.764-219.45-123.36-281.965-103.882-74.138-217.325-17.496-276.93-98.184-50.463-68.313,9.461-137.869-45.316-208.956C312.155,7.12,203.745-20.198,138.663,16.612Z', box: [26, 87, 931, 1877], w: 814.91 },
+    { el: 'hbP1', amp: 9, mass: 1, wander: 260, seed: 1.3, D: 'M100.934.287C57.026-3.08,4.136,23.562.232,60.708c-4.227,40.223,50.054,82.552,100.702,80.562,40.27-1.583,88.291-31.579,88.114-70.728C188.87,31.067,139.786,3.267,100.934.287Z', box: [527, 218, 730, 377], w: 189.049 },
+    { el: 'hbP2', amp: 8, mass: .8, wander: 240, seed: 2.9, D: 'M38.591,1.133C11.486,7.805-8.804,47.284,3.861,86.229c13.714,42.171,62.588,73.013,91.487,59.299,22.978-10.904,39.063-52.695,23.198-92.751C102.55,12.388,62.574-4.771,38.591,1.133Z', box: [749, 101, 887, 265], w: 124.909 },
+    { el: 'hbP3', amp: 9, mass: 1, wander: 260, seed: 4.4, D: 'M73.173,4.851C31.077,17.78-8.4,61.924,1.555,97.923c10.78,38.981,76.785,58.519,123.193,38.138,36.899-16.205,70.618-61.689,56.132-98.06C166.274,1.328,110.422-6.589,73.173,4.851Z', box: [130, 1693, 339, 1848], w: 184.317 },
+    { el: 'hbLow', amp: 20, mass: 6, wander: 40, seed: 5.7, D: 'M53.831,1.479c47.401-14.6,74.347,83.169,181.263,105.737,70.802,14.944,155.508-7.558,183.917-15.105,61.237-16.268,84.645-34.46,107.887-20.141,32.787,20.201,36.805,87.583,19.858,136.327-17.167,49.375-45.28,49.238-52.354,88.515-11.079,61.514,52.048,94.226,37.833,134.483-15.426,43.685-113.099,71.25-160.05,35.93-56.968-42.855,10.772-140.649-43.941-213.992C254.372,154.21,60.753,238.463,11.033,150.014-17.484,99.284,13.751,13.825,53.831,1.479Z', box: [31, 1398, 648, 1934], w: 556.566 },
+  ].map(b => ({
+      el: document.getElementById(b.el),
+      blob: Blob(b.D, { amp: b.amp, mass: b.mass, wander: b.wander, seed: b.seed, scale: (b.box[2] - b.box[0]) / S / b.w,
+                        dx: b.box[0] / S, dy: b.box[1] / S, reach: 260, pull: 6000, stiff: 70 }),
+    }));
+    const tBlobs = tall.map(b => b.blob);
+    tBlobs.forEach(b => b.path(0, 0));
+    const tReach = restReach(tBlobs, 34);
+    const tSvg = sec.querySelector('.hb-tall svg');
+    const TM = 120, TR = 0.4;
+    const tBackCv = document.getElementById('hbBack'), tFrontCv = document.getElementById('hbFront');
+
+    /* the canvases sit over an artboard the way its SVG's slice does */
+    function place(svg, cvs, VW, VH, M) {
+      const r = svg.getBoundingClientRect();
+      if (!r.width) return;
+      const k = Math.max(r.width / VW, r.height / VH);
+      const left = (r.width - VW * k) / 2 - M * k, top = (r.height - VH * k) / 2 - M * k;
+      for (const c of cvs) Object.assign(c.style, {
+        left: left + 'px', top: top + 'px', width: (VW + 2 * M) * k + 'px', height: (VH + 2 * M) * k + 'px' });
+    }
+    const placeTall = () => place(tSvg, [tBackCv, tFrontCv], 892, 1800, TM);
+    const placeWide = () => place(wSvg, [wBackCv, wFrontCv], 2880, 1800, WM);
+
+    /* the big words: Alfarn at the drawing's cap height, stretched to its
+       exact width */
+    function fitWords() {
+      const c = document.createElement('canvas').getContext('2d');
+      c.font = '100px Alfarn';
+      const cap = c.measureText('BLAG').actualBoundingBoxAscent / 100 || .72;
+      /* [id, cap top, baseline, width] in artboard units, off the layouts;
+         the hl* copies are the loading screen's */
+      [['hbBlag', 945, 1134, 780], ['hbOev', 1192, 1377, 587],
+       ['hbWAlex', 794, 916, 1252], ['hbWBlag', 938, 1098, 1174],
+       ['hlAlex', 794, 916, 1252], ['hlBlag', 938, 1098, 1174]].forEach(([id, top, base, w]) => {
+        const t = document.getElementById(id);
+        t.setAttribute('font-size', ((base - top) / cap).toFixed(1));
+        t.setAttribute('textLength', w); t.setAttribute('lengthAdjust', 'spacingAndGlyphs');
       });
-      const lm = document.querySelector('.ha-loader');
-      if (lm) {
-        const r = sec.getBoundingClientRect();
-        lm.querySelectorAll('.ha-loader-mark').forEach(m => {
-          const mine = m.classList.contains(tall ? 'ha-loader-mark--tall' : 'ha-loader-mark--wide');
-          m.style.display = mine ? 'block' : 'none';
-          if (mine) Object.assign(m.style, { left: r.left + 'px', top: r.top + 'px',
-                                             width: r.width + 'px', height: r.height + 'px' });
-        });
-      }
-      const [vx0, vy0, vx1, vy1] = frame;
+    }
+    fitWords();
+    /* load the display face outright (the phone's words sit in a hidden
+       layout on desktop, which wouldn't fetch it), then fit */
+    const FONTS = document.fonts ? document.fonts.load('100px Alfarn').catch(() => {}) : Promise.resolve();
+    FONTS.then(fitWords);
 
-      /* the dock floats over the hero at the top of the page: keep clear */
-      const ex = [];
-      const dock = document.querySelector('.dock');
-      if (dock && dock.offsetParent !== null) {
-        const r = dock.getBoundingClientRect(), b = sec.getBoundingClientRect();
-        const top = b.top + scrollY;                 /* section's place in the page */
-        if (r.width) ex.push({ x0: (r.left - b.left - ox) / s - L.pad, x1: (r.right - b.left - ox) / s + L.pad,
-                               y0: (r.top - top - oy) / s - L.pad,   y1: (r.bottom - top - oy) / s + L.pad });
+    /* client px -> artboard units for whichever layout is showing */
+    function toArt(el, vw, vh, slice) {
+      if (cx === null) return [null, null];
+      const r = el.getBoundingClientRect();
+      if (slice) {
+        const k = Math.max(r.width / vw, r.height / vh);
+        return [(cx - r.left - (r.width - vw * k) / 2) / k, (cy - r.top - (r.height - vh * k) / 2) / k];
       }
+      return [(cx - r.left) / r.width * vw, (cy - r.top) / r.height * vh];
+    }
 
-      const m = mask(L, off, Wv, Hv, st), adv = L.font * 0.6, out = [];
-      let wi = 0;
-      for (let base = L.first; wi < words.length; base += L.lead) {
-        const top = base - L.font * 0.75, bot = base + L.font * 0.22;
-        if (bot > vy1) break;
-        if (base - L.font * 0.73 < vy0 - 1) continue;      /* cap height inside the frame */
-        const cy0 = Math.max(0, Math.floor(top / R)), cy1 = Math.min(m.ch - 1, Math.ceil(bot / R));
-        const cx0 = Math.ceil(vx0 / R), cx1 = Math.floor(vx1 / R);
-        const runs = []; let start = -1;
-        for (let cx = cx0; cx <= cx1; cx++) {
-          let free = cx < cx1;
-          for (let cy = cy0; free && cy <= cy1; cy++) if (m.on(cx, cy)) free = false;
-          const ux = cx * R;
-          if (free && ex.some(e => ux >= e.x0 && ux <= e.x1 && bot >= e.y0 && top <= e.y1)) free = false;
-          if (free && start < 0) start = ux;
-          if (!free && start >= 0) { runs.push([start, ux]); start = -1; }
-        }
-        for (const [a, b] of runs) {
-          const max = Math.floor((b - a) / adv);
-          if (max < MIN_CHARS) continue;
-          let line = '';
-          while (wi < words.length) {
-            const next = line ? line + ' ' + words[wi] : words[wi];
-            if (next.length > max) break;
-            line = next; wi++;
-          }
-          if (line) out.push({ a, b, base, text: line });
-        }
-      }
-      /* out of room: end on the last whole sentence */
-      if (wi < words.length) {
-        for (let i = out.length - 1; i >= 0; i--) {
-          const cut = Math.max(out[i].text.lastIndexOf('. '), out[i].text.lastIndexOf('? '));
-          const end = /[.?!]$/.test(out[i].text) ? out[i].text.length : (cut >= 0 ? cut + 1 : -1);
-          if (end > 0) { out[i].text = out[i].text.slice(0, end); out.length = i + 1; break; }
-        }
-      }
-
-      const px = L.font * s;
-      flow.textContent = '';
-      flow.style.setProperty('--band', (px * 0.6 * 9).toFixed(1) + 'px');   /* the current: ~9 characters each side */
-      flow.style.setProperty('--r', (px * 7).toFixed(1) + 'px');            /* the lens radius */
-      const frag = document.createDocumentFragment();
-      let start = 0;
-      SEGS = out.map(o => {
-        const sp = document.createElement('span');
-        const x = ox + (o.a + ((o.b - o.a) - o.text.length * adv) / 2) * s;   /* centred in its slot */
-        const y = oy + o.base * s - 0.86 * px;
-        sp.textContent = o.text;
-        sp.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;font-size:${px.toFixed(2)}px`;
-        frag.appendChild(sp);
-        const seg = { el: sp, text: o.text, start, x, y };
-        start += o.text.length + 1;
-        return seg;
+    /* WebGL contexts are made for a layout the first time it shows */
+    let wBack = null, wFront = null, tBack = null, tFront = null, gl = true;
+    const noGL = () => { gl = false; sec.classList.add('no-gl'); };
+    /* a lost WebGL context (iOS drops them in background tabs, Chrome when
+       its GPU process restarts) would leave the hero blank: the plain SVG
+       blobs stand in until the browser gives it back, then the soft ones
+       are rebuilt on the same canvases */
+    [wBackCv, wFrontCv, tBackCv, tFrontCv].forEach(c => {
+      c.addEventListener('webglcontextlost', e => {
+        e.preventDefault();                       // or the browser never restores it
+        wBack = wFront = tBack = tFront = null; noGL();
+        render(tNow, eNow, 0);                    // the stand-ins show at once
       });
-      TOTAL = start;
-      ADV = px * 0.6;
-      flow.appendChild(frag);
-
-      if (first) {
-        first = false;
-        /* the tile painting first — it's the one behind the wordmark — the
-           rest in random order */
-        const all = [...L.svg.querySelectorAll('.ha-shape')];
-        const shapes = window.gsap ? [all[0], ...gsap.utils.shuffle(all.slice(1))] : [];
-        const mark = [...sec.querySelectorAll(`svg.ha-art--${tall ? 'tall' : 'wide'} .ha-mark, svg.ha-art--${tall ? 'tall' : 'wide'} .ha-sub`)];
-        if (window.gsap && !REDUCED) gsap.set(mark, { fill: '#2D4C90' });   /* cobalt, matching the loading screen */
-        if (window.gsap && !REDUCED) {
-          /* The images develop like the text: each surfaces out of the
-             cream, soft and pale, and sharpens as the ink comes up. One at a
-             time, in random order. Each image is its own layer for this, so
-             it is the GPU that fades and un-blurs it; the layer is let go
-             afterwards. The wordmark and subtitle stay put. */
-          shapes.forEach(el => el.classList.add('is-developing'));
-          gsap.set(shapes, { opacity: 0, filter: 'blur(14px)' });
-        }
-        FX.prepare();         /* words in place but invisible, before anything is shown */
-        const srcs = [...new Set([...L.svg.querySelectorAll('.ha-shape image')].map(i => i.getAttribute('href')))];
-        loadHero(srcs).then(() => {
-          if (window.gsap && !REDUCED) {
-            /* cobalt to cream while the painting comes up behind it, so the
-               name never sits pale on pale */
-            gsap.to(mark, { fill: '#EBEADC', duration: 1.3, delay: 0.45, ease: 'power1.inOut',
-                            onComplete: () => gsap.set(mark, { clearProps: 'fill' }) });
+      c.addEventListener('webglcontextrestored', () => {
+        gl = true; sec.classList.remove('no-gl');
+        if (!running) render(tNow, eNow, 0);
+      });
+    });
+    function render(t, e, dt) {
+      if (tallMQ.matches) {
+        const [ax, ay] = toArt(tSvg, 892, 1800, true);
+        if (dt) {
+          for (let step = 0; step < 2; step++) {
+            collide(tBlobs, tReach);
+            tBlobs.forEach(b => { const [lx, ly] = ax === null ? [null, null] : b.local(ax, ay); b.physics(dt / 2, t, lx, ly); });
           }
-          if (window.gsap && !REDUCED)
-            gsap.to(shapes, { opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power2.out', stagger: 0.35,
-              onComplete() { gsap.set(this.targets(), { clearProps: 'filter' });
-                             this.targets().forEach(el => el.classList.remove('is-developing')); } });
-          FX.play(350);
-        });
-      } else if (FX.state === 'waiting') {
-        FX.prepare();         /* re-flowed before the develop began: stay hidden */
+        }
+        const ds = tBlobs.map(b => b.path(t, e));
+        if (gl && (!tBack || !tFront)) {
+          tBack = tBack || Soft(tBackCv, 892, 1800, TM, TR, BLOB); tFront = tFront || Soft(tFrontCv, 892, 1800, TM, TR, BLOB);
+          if (!tBack || !tFront) noGL(); else placeTall();
+        }
+        if (gl) {
+          tBack([{ polys: ds.slice(0, 4).map(x => x.poly), sigma: 16 }]);
+          tFront([{ polys: [ds[4].poly], sigma: 16 }]);
+        } else tall.forEach((b, i) => b.el.setAttribute('d', ds[i].d));
       } else {
-        FX.settle();          /* re-flowed (resize): show it whole, keep the ongoing effect */
+        const [ax, ay] = toArt(wSvg, 2880, 1800, true);
+        if (dt) {
+          for (let step = 0; step < 2; step++) {
+            collide(wBlobs, wReach);
+            wBlobs.forEach(b => { const [lx, ly] = ax === null ? [null, null] : b.local(ax, ay); b.physics(dt / 2, t, lx, ly); });
+          }
+        }
+        const ds = wBlobs.map(b => b.path(t, e));
+        if (gl && (!wBack || !wFront)) {
+          wBack = wBack || Soft(wBackCv, 2880, 1800, WM, WR, BLOB); wFront = wFront || Soft(wFrontCv, 2880, 1800, WM, WR, BLOB);
+          if (!wBack || !wFront) noGL(); else placeWide();
+        }
+        if (gl) {
+          wBack([{ polys: [0, 1, 2, 3, 5].map(i => ds[i].poly), sigma: 28 }]);
+          /* the left shape, over the type: a tighter blur and gentler
+             waves, so only its edge reaches the A and the B, as drawn */
+          wFront([{ polys: [ds[4].poly], sigma: 20 }]);
+        } else wide.forEach((b, i) => b.el.setAttribute('d', ds[i].d));
       }
     }
 
+    /* ── the loop: only once the loading screen has lifted, only while
+       the hero is on screen, never with reduced motion ── */
+    let woke = false, visible = true, running = false, raf = 0, t0 = 0, last = 0, tNow = 0, eNow = 0;
+    function frame(now) {
+      const t = (now - t0) / 1000, dt = Math.min(1 / 30, (now - last) / 1000); last = now;
+      const wake = Math.min(1, t / 3), e = wake * wake * (3 - 2 * wake);   // eases the motion in
+      tNow = t; eNow = e;
+      render(t, e, dt * e);
+      raf = requestAnimationFrame(frame);
+    }
+    function start() {
+      if (running || REDUCED || !woke || !visible) return;
+      running = true; last = performance.now(); raf = requestAnimationFrame(frame);
+    }
+    function stop() { running = false; cancelAnimationFrame(raf); }
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; visible ? start() : stop(); }).observe(sec);
+
+    /* the loading screen's name and subtitle: on desktop, laid over the
+       hero's own artboard so they are the same type in the same place; on
+       a phone, the type alone, centred */
+    function alignLoader() {
+      const art = document.querySelector('.ha-loader-art');
+      if (!art) return;
+      if (tallMQ.matches) {
+        art.setAttribute('viewBox', '800 740 1370 520'); art.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        Object.assign(art.style, { left: '6vw', top: 'calc(46% - 16.7vw)', width: '88vw', height: '33.4vw', inset: 'auto' });
+        return;
+      }
+      const r = wSvg.getBoundingClientRect();
+      art.setAttribute('viewBox', '0 0 2880 1800'); art.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      Object.assign(art.style, { inset: 'auto', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    }
+
+    let queued = false;
+    new ResizeObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false; setNav(); placeTall(); placeWide(); alignLoader();
+        if (!running) render(tNow, eNow, 0);
+      });
+    }).observe(sec);
+    tallMQ.addEventListener('change', () => { placeTall(); placeWide(); alignLoader(); render(tNow, eNow, 0); });
+
+    render(0, 0, 0);          // at rest: exactly as drawn
+    placeTall(); placeWide(); alignLoader();
+    loadHero().then(() => {
+      sec.classList.add('is-live');
+      woke = true; t0 = performance.now();
+      start();
+    });
+
     /* ── Loading screen ───────────────────────────────────────────────
-       Waits for what the opening screen needs — the fonts, and the hero
-       images fetched and decoded — not the whole page: everything below
-       the fold already loads as you scroll to it, and waiting for it all
-       would mean a long screen on a phone. Counts up as each piece lands,
-       stays at least 1.5s so the name can be read or more than 6s (a slow
-       connection just gets the page). Scrolling is held until it lifts. */
-    function loadHero(srcs) {
+       Waits for the fonts the opening screen is set in, and stays at least
+       1.5s so the name can be read (never more than 6s: a slow connection
+       just gets the page). Scrolling is held until it lifts. */
+    function loadHero() {
       const el = document.querySelector('.ha-loader');
       const root = document.documentElement;
       const smoother = window.ScrollSmoother && ScrollSmoother.get();
       if (!el) return Promise.resolve();
+      /* the CSS failsafe clears the screen 8s after the page started; if
+         the scripts got here too late to beat it, don't hold the page */
+      if (performance.now() > 6500) { el.remove(); return Promise.resolve(); }
       /* the smoother can hold the scroll itself; hiding overflow on top of
-         that removes a always-visible scrollbar, and the page then narrows
-         by its width the moment the lock lifts — re-flowing the text */
+         that removes an always-visible scrollbar, and the page then narrows
+         by its width the moment the lock lifts */
       if (smoother) smoother.paused(true); else root.classList.add('is-loading');
       const num = el.querySelector('.ha-loader-n'), bar = el.querySelector('.ha-loader-bar i');
-      const jobs = [document.fonts ? document.fonts.ready : Promise.resolve(),
-                    ...srcs.map(src => { const im = new Image(); im.src = src; return im.decode().catch(() => {}); })];
-      const MIN = 1500;                  /* ms the screen stays up, at least */
+      const jobs = [FONTS.then(() => document.fonts && document.fonts.ready)];
+      jobs[0].then(() => el.classList.add('fonts-in'));
+      const MIN = 1500;
       let done = 0, raf = 0;
       const show = v => { num.textContent = Math.round(v * 100); bar.style.transform = `scaleX(${v})`; };
       const counter = { v: 0 };
       jobs.forEach(j => j.then(() => { done++; }));
       const t0 = performance.now();
-      /* the meter follows what has actually loaded, but never faster than
-         the minimum time allows — so a fast connection still sees it fill
-         rather than jump to 100% and sit there */
+      /* the meter follows what has loaded, but never faster than the
+         minimum time allows, so it fills rather than jumps */
       const tickMeter = now => {
         const target = Math.min(done / jobs.length, (now - t0) / MIN);
         counter.v += (target - counter.v) * 0.18;
@@ -2706,8 +2916,10 @@
         raf = requestAnimationFrame(tickMeter);
       };
       raf = requestAnimationFrame(tickMeter);
-      const all = Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 6000))])
-        .then(() => new Promise(r => setTimeout(r, Math.max(0, MIN - (performance.now() - t0)))))
+      /* both clocks count from the page's start, which is when the screen
+         (and its CSS failsafe) appeared: the lift always lands by ~7.4s */
+      const all = Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, Math.max(0, 6000 - performance.now())))])
+        .then(() => new Promise(r => setTimeout(r, Math.max(0, MIN - performance.now()))))
         .then(() => cancelAnimationFrame(raf));
       return all.then(() => new Promise(resolve => {
         const lift = () => {
@@ -2717,110 +2929,15 @@
         };
         if (!window.gsap || REDUCED) { show(1); lift(); return; }
         /* 100%, a beat to take the name in, the meter goes, and the screen
-           lifts — onto an identical cobalt wordmark in the hero, so the name
-           itself never moves */
+           lifts — onto the same cobalt name in the hero, so on desktop the
+           name itself never moves while the blob develops in behind it */
         gsap.timeline({ onComplete: lift })
           .to(counter, { v: 1, duration: 0.25, onUpdate: () => show(counter.v) })
           .to(el.querySelector('.ha-loader-meter'), { opacity: 0, y: 6, duration: 0.35, ease: 'power1.in' }, '+=0.5')
+          .add(() => sec.classList.add('is-live'))
           .to(el, { opacity: 0, duration: 0.3 });
       }));
     }
-
-    /* ── Text animation ───────────────────────────────────────────────
-       Develop, then the ink lens. The words surface at random out of a
-       slight blur, like ink soaking into paper, until the whole text is
-       there; after that, text near the pointer turns cobalt. Phones have
-       no pointer to follow, so there a band of ink travels the text in
-       reading order instead. Reduced motion: the text is simply there. */
-    let SEGS = [], TOTAL = 0, ADV = 0;
-    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const FX = {
-      raf: 0, timer: 0, off: null, tw: null,
-      state: 'idle',                 /* waiting → developing → done */
-
-      stop() {
-        cancelAnimationFrame(this.raf); clearTimeout(this.timer);
-        if (this.off) { this.off(); this.off = null; }
-        if (this.tw) { this.tw.kill(); this.tw = null; }
-        SEGS.forEach(g => { g.el.className = ''; g.el.textContent = g.text; });
-      },
-      settle() { this.stop(); this.state = 'done'; this.after(); },
-
-      /* words as separate pieces only while they develop; plain text after,
-         which is what the ink effects paint */
-      prepare() {
-        this.stop();
-        if (REDUCED || !window.gsap) return;
-        SEGS.forEach(g => (g.el.innerHTML = g.text.split(' ')
-          .map(w => '<i class="ha-w" style="opacity:0">' + w + '</i>').join(' ')));
-        this.state = 'waiting';
-      },
-      play(delay) {
-        if (REDUCED || !window.gsap) { this.settle(); return; }
-        if (this.state !== 'waiting') this.prepare();
-        this.state = 'developing';
-        this.timer = setTimeout(() => {
-          this.tw = gsap.fromTo(flow.querySelectorAll('.ha-w'),
-            { opacity: 0 },
-            { opacity: 1, duration: 1.1, ease: 'power1.out',
-              stagger: { each: 0.012, from: 'random' },
-              onComplete: () => { this.tw = null; this.settle(); } });
-        }, delay || 0);
-      },
-
-      after() {
-        if (FINE) {
-          SEGS.forEach(g => (g.el.className = 'fx-ink fx-lens'));
-          let mx = -9999, my = -9999, pending = false;
-          const reach = parseFloat(flow.style.getPropertyValue('--r')) + 40;
-          const lit = new Set();
-          const paint = () => {
-            pending = false;
-            for (const g of SEGS) {
-              const w = g.text.length * ADV, h = ADV / 0.6;
-              const near = mx > g.x - reach && mx < g.x + w + reach && my > g.y - reach && my < g.y + h + reach;
-              if (!near && !lit.has(g)) continue;        /* far, and already dark: nothing to repaint */
-              g.el.style.setProperty('--lx', (near ? mx - g.x : -9999).toFixed(1) + 'px');
-              g.el.style.setProperty('--ly', (near ? my - g.y : -9999).toFixed(1) + 'px');
-              near ? lit.add(g) : lit.delete(g);
-            }
-          };
-          const move = e => {
-            const r = sec.getBoundingClientRect();
-            mx = e.clientX - r.left; my = e.clientY - r.top;
-            if (!pending) { pending = true; requestAnimationFrame(paint); }
-          };
-          const leave = () => { mx = my = -9999; paint(); };
-          sec.addEventListener('pointermove', move);
-          sec.addEventListener('pointerleave', leave);
-          this.off = () => { sec.removeEventListener('pointermove', move); sec.removeEventListener('pointerleave', leave); };
-        } else if (!REDUCED) {
-          SEGS.forEach(g => (g.el.className = 'fx-ink fx-current'));
-          const SPEED = 42, band = 12, loop = TOTAL + band * 2;
-          const step = now => {
-            const head = (now / 1000 * SPEED) % loop - band;
-            for (const g of SEGS) g.el.style.setProperty('--c', ((head - g.start) * ADV).toFixed(1) + 'px');
-            this.raf = requestAnimationFrame(step);
-          };
-          this.raf = requestAnimationFrame(step);
-        }
-      }
-    };
-
-    /* re-flow whenever the hero itself changes size — window resizes, but
-       also a phone's toolbar collapsing, which fires no resize on some
-       browsers. Batched to one layout per frame. */
-    let queued = false, lastW = 0, lastH = 0;
-    const ro = new ResizeObserver(() => {
-      /* it also reports once on observe; only a real change re-flows */
-      if (queued || (sec.clientWidth === lastW && sec.clientHeight === lastH)) return;
-      queued = true;
-      requestAnimationFrame(() => { queued = false; layout(); });
-    });
-    ro.observe(sec);
-    layout();
-    window.__haLayout = layout;
   })();
 </script>
 
