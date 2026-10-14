@@ -1346,7 +1346,7 @@
   </div>
 
   <div class="hb-tall">
-    <canvas id="hbBack"></canvas>
+    <canvas class="hb-fade" id="hbBack"></canvas>
     <svg viewBox="0 0 892 1800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <path class="hb-b hb-fade" id="hbBig"/>
       <path class="hb-b hb-fade" id="hbP1"/>
@@ -1359,7 +1359,7 @@
       <text class="hb-big" id="hbOev" x="70" y="1377">OEV</text>
       <path class="hb-b hb-fade" id="hbLow"/>
     </svg>
-    <canvas id="hbFront"></canvas>
+    <canvas class="hb-fade" id="hbFront"></canvas>
   </div>
 </section>
 
@@ -2812,7 +2812,8 @@
        overshoot), the blur tightens and the colour deepens from a light
        glow to the yellow, with a brief bloom around it on the way. They
        come one after another, the big shapes first, the pebbles last.
-       gT is the time since the lift; with reduced motion it is over. */
+       Desktop only — on phones they fade in. gT is the time since the
+       lift; with reduced motion it is over. */
     let gT = REDUCED ? 99 : 0;
     const GLOW = [0xF6 / 255, 0xF8 / 255, 0xC4 / 255], BASE = [0xCE / 255, 0xD3 / 255, 0x45 / 255];
     const ease = x => x * x * (3 - 2 * x);
@@ -2843,7 +2844,8 @@
             tBlobs.forEach(b => { const [lx, ly] = ax === null ? [null, null] : b.local(ax, ay); b.physics(dt / 2, t, lx, ly); });
           }
         }
-        const ta = T_DELAY.map(grown);
+        /* phones: no glow, the blobs simply fade in (the canvases' CSS) */
+        const ta = T_DELAY.map(() => 1);
         const ds = tBlobs.map((b, i) => b.path(t, e, size(ta[i])));
         if (gl && (!tBack || !tFront)) {
           tBack = tBack || Soft(tBackCv, 892, 1800, TM, TR, BLOB); tFront = tFront || Soft(tFrontCv, 892, 1800, TM, TR, BLOB);
