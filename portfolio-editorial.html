@@ -2132,8 +2132,11 @@
       if (arrow) tl.fromTo(arrow, { clipPath: 'inset(0% 100% 0% 0%)' },
                                   { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'none' }, 6.8);
 
-      if (pills.length) tl.from(pills, { opacity: 0, y: rise, scale: 0.9, duration: 0.8,
-                                         stagger: 0.35, ease: 'power3.out' }, 7.8);
+      /* one tween per pill, at the stagger's times: a single staggered
+         from() only applied its start (hidden) to the first pill, so the
+         other three showed from the start of the run */
+      pills.forEach((p, i) => tl.from(p, { opacity: 0, y: rise, scale: 0.9, duration: 0.8,
+                                           ease: 'power3.out' }, 7.8 + i * 0.35));
       if (wink) tl.from(wink, { opacity: 0, scale: 0, rotate: 20, duration: 0.5, ease: 'back.out(3)' }, 9.5);
       /* phones keep the band in daylight: no night, one colour throughout */
       tl.to({}, { duration: 0.8 }, 10);        /* a beat on the finished line before the pin lets go */
