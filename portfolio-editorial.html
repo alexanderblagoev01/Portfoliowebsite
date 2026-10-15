@@ -1231,6 +1231,9 @@
      Hidden until the fonts are in, so no stand-in face flashes first */
   .ha-loader-art { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s; overflow: visible; }   /* its type flies out of the frame on a phone */
   .ha-loader.fonts-in .ha-loader-art { opacity: 1; }
+  /* phones: the loading screen's type, in flight to the hero's */
+  .ha-fly { position: fixed; inset: 0; z-index: 10001; pointer-events: none; }
+  .ha-fly svg { position: absolute; overflow: hidden; fill: #2D4C90; transform-origin: 50% 50%; will-change: transform; }
   .ha-loader-meter {
     position: absolute; left: 50%; bottom: 9vh; transform: translateX(-50%);
     display: grid; justify-items: center; gap: 12px;
@@ -2921,12 +2924,16 @@
 
     /* ── phones: the loading screen's type springs into the hero's ──────
        The two set the name differently, so on a phone each piece of the
-       loading screen's type flies to its counterpart in the hero: it
-       squashes to take off, stretches tall in flight and lands with a
-       jelly wobble, then hands over to the hero's own type. "BLAGOEV"
-       splits at the O into its two lines, the subtitle into its two, and
-       the script "for" pops in last. The cream screen clears as they go,
-       onto the blobs fading in. Returns the timeline. */
+       loading screen's type flies to its counterpart in the hero. One
+       spring carries each piece the whole way — it speeds up, overshoots,
+       jiggles and settles without ever stopping — and the piece stretches
+       along its direction of travel by its speed (thinning across it), so
+       the squash on landing comes out of the spring itself. "BLAGOEV"
+       splits at the O, the subtitle into its two lines, and the script
+       "for" pops in as they land. Each piece is its own layer, drawn at
+       its landing size and scaled, so the phone's GPU moves it (no
+       repaint) and the type is never blown up. The cream screen fades
+       out underneath. Resolves when every piece has landed. */
     function morphToHero(loader) {
       const art = loader.querySelector('.ha-loader-art'), NS = 'http://www.w3.org/2000/svg';
       morphing = true;
@@ -2936,49 +2943,83 @@
       const unite = (a, b) => { const x0 = Math.min(a.x, b.x), y0 = Math.min(a.y, b.y);
         return { x: x0, y: y0, width: Math.max(a.x + a.width, b.x + b.width) - x0, height: Math.max(a.y + a.height, b.y + b.height) - y0 }; };
       const chars = (from, to) => { let r = blag.getExtentOfChar(from); for (let i = from + 1; i <= to; i++) r = unite(r, blag.getExtentOfChar(i)); return r; };
-      const cutX = blag.getExtentOfChar(4).x;           /* where the O starts */
-      /* a copy of "BLAGOEV" clipped to one side of the O; the clip moves
-         with the copy as it flies */
-      const half = (id, x0, x1) => {
-        const cp = document.createElementNS(NS, 'clipPath'), r = document.createElementNS(NS, 'rect');
-        cp.id = id; Object.entries({ x: x0, y: -4000, width: x1 - x0, height: 9000 }).forEach(([a, v]) => r.setAttribute(a, v));
-        cp.appendChild(r); art.appendChild(cp);
-        const g = document.createElementNS(NS, 'g'); g.setAttribute('clip-path', `url(#${id})`);
-        const c = blag.cloneNode(true); c.removeAttribute('id'); g.appendChild(c); art.appendChild(g);
-        return g;
-      };
       const pieces = [
-        { from: art.querySelector('#hlAlex'), to: '#hbTAlex' },
-        { from: half('hlCutA', -9000, cutX - 3), box: chars(0, 3), to: '#hbTBlag' },
-        { from: half('hlCutB', cutX - 3, 9000), box: chars(4, 6), to: '#hbTOev' },
-        { from: art.querySelector('#hlSub1'), to: '#hbTSub1' },
-        { from: art.querySelector('#hlSub2'), to: '#hbTSub2' },
+        { src: art.querySelector('#hlAlex'), box: null, to: '#hbTAlex' },
+        { src: blag, box: chars(0, 3), to: '#hbTBlag' },          /* "BLAGOEV" cut at the O by each layer's own box */
+        { src: blag, box: chars(4, 6), to: '#hbTOev' },
+        { src: art.querySelector('#hlSub1'), box: null, to: '#hbTSub1' },
+        { src: art.querySelector('#hlSub2'), box: null, to: '#hbTSub2' },
       ];
       const heroes = pieces.map(p => sec.querySelector(p.to)), forEl = sec.querySelector('#hbTFor');
-      if (heroes.some(h => !h) || !forEl) throw new Error('hero type missing');
-      blag.style.visibility = 'hidden';
-      gsap.set([...heroes, forEl], { opacity: 0 });
+      if (heroes.some(h => !h) || !forEl || pieces.some(p => !p.src)) throw new Error('type missing');
 
-      const tl = gsap.timeline();
-      tl.to(loader, { backgroundColor: 'rgba(235,234,220,0)', duration: .8, ease: 'power1.inOut' }, 0);
-      pieces.forEach((p, i) => {
-        const b = p.box || p.from.getBBox(), cx = b.x + b.width / 2, cy = b.y + b.height / 2;
-        const c = toScreen(cx, cy), h = heroes[i].getBoundingClientRect();
-        const dx = (h.left + h.width / 2 - c.x) / k, dy = (h.top + h.height / 2 - c.y) / k;
-        const sx = h.width / (b.width * k), sy = h.height / (b.height * k);
-        /* the origin is set once: stating it again on each step makes GSAP
-           shift the piece to make up for an origin it thinks has moved */
-        gsap.set(p.from, { svgOrigin: cx + ' ' + cy });
-        const at = i * .09;
-        tl.to(p.from, { scaleX: 1.12, scaleY: .84, duration: .16, ease: 'power2.out' }, at)                  /* squash, to take off */
-          .to(p.from, { x: dx, y: dy, duration: .62, ease: 'power3.inOut' }, at + .16)                        /* fly */
-          .to(p.from, { scaleX: sx * .82, scaleY: sy * 1.22, duration: .34, ease: 'power2.in' }, at + .16)     /* stretch on the way */
-          .to(p.from, { scaleX: sx, scaleY: sy, duration: .95, ease: 'elastic.out(1.1, .33)' }, at + .78)     /* land, and wobble */
-          .add(() => { heroes[i].style.opacity = ''; p.from.style.visibility = 'hidden'; }, at + 1.73);
+      /* each piece as a layer the size and place of its landing spot */
+      const fly = document.createElement('div'); fly.className = 'ha-fly'; document.body.appendChild(fly);
+      const flyers = pieces.map((p, i) => {
+        const b = p.box || p.src.getBBox(), h = heroes[i].getBoundingClientRect();
+        const a0 = toScreen(b.x, b.y), w0 = b.width * k, h0 = b.height * k;
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('viewBox', [b.x, b.y, b.width, b.height].join(' ')); svg.setAttribute('preserveAspectRatio', 'none');
+        const c = p.src.cloneNode(true); c.removeAttribute('id'); svg.appendChild(c);
+        Object.assign(svg.style, { left: h.left + 'px', top: h.top + 'px', width: h.width + 'px', height: h.height + 'px' });
+        fly.appendChild(svg);
+        return { el: svg, delay: i * .07, done: false,
+                 x: a0.x + w0 / 2 - (h.left + h.width / 2), y: a0.y + h0 / 2 - (h.top + h.height / 2), vx: 0, vy: 0,
+                 sx: w0 / h.width, sy: h0 / h.height, vsx: 0, vsy: 0 };
       });
-      tl.fromTo(forEl, { opacity: 0, scale: 0, transformOrigin: '50% 50%' },
-                       { opacity: 1, scale: 1, duration: .55, ease: 'back.out(3)' }, 1.45);
-      return tl;
+      const paint = f => {
+        const sp = Math.hypot(f.vx, f.vy), e = Math.min(.38, sp * .0011), th = Math.atan2(f.vy, f.vx) * 180 / Math.PI;
+        f.el.style.transform = `translate3d(${f.x.toFixed(2)}px,${f.y.toFixed(2)}px,0) rotate(${th.toFixed(1)}deg) ` +
+          `scale(${(1 + e).toFixed(4)},${(1 / (1 + e)).toFixed(4)}) rotate(${(-th).toFixed(1)}deg) scale(${f.sx.toFixed(4)},${f.sy.toFixed(4)})`;
+      };
+      flyers.forEach(paint);
+      art.style.visibility = 'hidden';
+      gsap.set([...heroes, forEl], { opacity: 0 });
+      gsap.to(loader, { opacity: 0, duration: .55, ease: 'power1.inOut' });      /* the cream clears underneath */
+
+      /* the springs: about 1 Hz, damped to ~0.5 so they overshoot and
+         wobble twice; the scale a touch quicker than the move */
+      const W = 2 * Math.PI * 1.05, Z = .5, Ws = W * 1.15;
+      return new Promise(resolve => {
+        let t0 = null, last = null, popped = false;
+        const finish = () => {
+          flyers.forEach((f, i) => { if (!f.done) { f.done = true; heroes[i].style.opacity = ''; } });
+          gsap.set(forEl, { opacity: 1, scale: 1 });
+          fly.remove(); resolve();
+        };
+        const step = now => {
+          try {
+            if (t0 === null) { t0 = last = now; }
+            const t = (now - t0) / 1000, dt = Math.min(1 / 30, (now - last) / 1000); last = now;
+            let left = 0;
+            for (const f of flyers) {
+              if (f.done) continue;
+              left++;
+              if (t < f.delay) continue;
+              for (let n = 0; n < 4; n++) {                       /* four small steps a frame: smooth and stable */
+                const h = dt / 4;
+                f.vx += (-W * W * f.x - 2 * Z * W * f.vx) * h; f.vy += (-W * W * f.y - 2 * Z * W * f.vy) * h;
+                f.x += f.vx * h; f.y += f.vy * h;
+                f.vsx += (-Ws * Ws * (f.sx - 1) - 2 * Z * Ws * f.vsx) * h; f.vsy += (-Ws * Ws * (f.sy - 1) - 2 * Z * Ws * f.vsy) * h;
+                f.sx += f.vsx * h; f.sy += f.vsy * h;
+              }
+              const settled = Math.abs(f.x) < .35 && Math.abs(f.y) < .35 && Math.hypot(f.vx, f.vy) < 4 &&
+                              Math.abs(f.sx - 1) < .002 && Math.abs(f.sy - 1) < .002;
+              if (settled || t > f.delay + 3) {                     /* landed: the hero's own type takes over */
+                f.done = true; f.el.style.visibility = 'hidden'; heroes[flyers.indexOf(f)].style.opacity = '';
+              } else paint(f);
+            }
+            if (!popped && t > .75) {
+              popped = true;
+              gsap.fromTo(forEl, { opacity: 0, scale: 0, transformOrigin: '50% 50%' },
+                                 { opacity: 1, scale: 1, duration: .6, ease: 'back.out(3)' });
+            }
+            if (left) requestAnimationFrame(step);
+            else setTimeout(finish, 120);
+          } catch (e) { finish(); }
+        };
+        requestAnimationFrame(step);
+      });
     }
 
     /* ── Loading screen ───────────────────────────────────────────────
@@ -3045,7 +3086,7 @@
               sec.querySelectorAll('#hbTAlex, #hbTBlag, #hbTOev, #hbTSub1, #hbTSub2, #hbTFor').forEach(n => { n.style.opacity = ''; });
               out = gsap.to(el, { opacity: 0, duration: 0.3 });
             }
-            out.eventCallback('onComplete', lift);
+            out.then(lift);
           });
       }));
     }
