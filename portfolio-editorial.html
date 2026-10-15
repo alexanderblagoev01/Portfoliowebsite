@@ -1233,7 +1233,7 @@
   .ha-loader.fonts-in .ha-loader-art { opacity: 1; }
   /* phones: the loading screen's type, in flight to the hero's */
   .ha-fly { position: fixed; inset: 0; z-index: 10001; pointer-events: none; }
-  .ha-fly svg { position: absolute; overflow: hidden; fill: #2D4C90; transform-origin: 50% 50%; will-change: transform; }
+  .ha-fly svg { position: absolute; overflow: visible; fill: #2D4C90; transform-origin: 50% 50%; will-change: transform; }
   .ha-loader-meter {
     position: absolute; left: 50%; bottom: 9vh; transform: translateX(-50%);
     display: grid; justify-items: center; gap: 12px;
@@ -2930,91 +2930,150 @@
        along its direction of travel by its speed (thinning across it), so
        the squash on landing comes out of the spring itself. "BLAGOEV"
        splits at the O, the subtitle into its two lines, and the script
-       "for" pops in as they land. Each piece is its own layer, drawn at
-       its landing size and scaled, so the phone's GPU moves it (no
-       repaint) and the type is never blown up. The cream screen fades
-       out underneath. Resolves when every piece has landed. */
+       "for" pops in as they land.
+       Each piece in flight is a copy of the hero's own type, in a layer
+       laid exactly over its landing spot, transformed at take-off onto the
+       loading screen's: so it lands as the hero's type to the pixel, and
+       the hand-over can't be seen. The hero's BLAGOEV is the same Alfarn
+       capitals set tighter, so inside each word every letter also springs
+       from the loading screen's spacing to the hero's. The layers are moved
+       by the phone's GPU, drawn at landing size so the type is never blown
+       up. The cream screen fades out underneath. Resolves when every piece
+       has landed. */
     function morphToHero(loader) {
       const art = loader.querySelector('.ha-loader-art'), NS = 'http://www.w3.org/2000/svg';
+      const blag = art.querySelector('#hlBlag'), heroSvg = sec.querySelector('.hb-tall svg');
+      if (!loader.classList.contains('fonts-in') || !blag || !heroSvg) throw new Error('not ready');
       morphing = true;
-      const ctm = art.getScreenCTM(), k = ctm.a;
-      const toScreen = (x, y) => { const q = art.createSVGPoint(); q.x = x; q.y = y; return q.matrixTransform(ctm); };
-      const blag = art.querySelector('#hlBlag');
-      const unite = (a, b) => { const x0 = Math.min(a.x, b.x), y0 = Math.min(a.y, b.y);
-        return { x: x0, y: y0, width: Math.max(a.x + a.width, b.x + b.width) - x0, height: Math.max(a.y + a.height, b.y + b.height) - y0 }; };
-      const chars = (from, to) => { let r = blag.getExtentOfChar(from); for (let i = from + 1; i <= to; i++) r = unite(r, blag.getExtentOfChar(i)); return r; };
+      const ctm = art.getScreenCTM(), back = heroSvg.getScreenCTM().inverse();
+      const pt = (m, x, y) => { const q = art.createSVGPoint(); q.x = x; q.y = y; return q.matrixTransform(m); };
+      const rect = (a, b) => ({ x: a.x, y: a.y, width: b.x - a.x, height: b.y - a.y });
+      const unite = rs => rect({ x: Math.min(...rs.map(r => r.x)), y: Math.min(...rs.map(r => r.y)) },
+                               { x: Math.max(...rs.map(r => r.x + r.width)), y: Math.max(...rs.map(r => r.y + r.height)) });
+      /* where the loading screen's type sits on screen: a whole element's
+         box, or one letter of "BLAGOEV" by its ink — Alfarn's outline
+         bounds, in font units up from the baseline — to match the hero's
+         outlined letters box for box */
+      const onScreen = el => { const b = el.getBBox(), m = el.getScreenCTM(); return rect(pt(m, b.x, b.y), pt(m, b.x + b.width, b.y + b.height)); };
+      const INK = { B: [45, 0, 774, 700], L: [45, 0, 643, 700], A: [0, 0, 776, 700], G: [35, -11, 764, 711],
+                    O: [30, -10, 752, 711], E: [55, 0, 673, 700], V: [-2, 0, 764, 700] };
+      const em = parseFloat(getComputedStyle(blag).fontSize) / 1000;
+      const ink = i => { const g = INK[blag.textContent[i]], o = blag.getStartPositionOfChar(i);
+        return rect(pt(ctm, o.x + g[0] * em, o.y - g[3] * em), pt(ctm, o.x + g[2] * em, o.y - g[1] * em)); };
+      const L = [0, 1, 2, 3, 4, 5, 6].map(ink);
+      /* "OEV" breaks off first and drops before it slides (its fall on a
+         quicker spring than its slide), so it curves down clear of "BLAG",
+         which swells a beat later, and tucks in under it rather than
+         cutting through it; the subtitle passes behind the name */
       const pieces = [
-        { src: art.querySelector('#hlAlex'), box: null, to: '#hbTAlex' },
-        { src: blag, box: chars(0, 3), to: '#hbTBlag' },          /* "BLAGOEV" cut at the O by each layer's own box */
-        { src: blag, box: chars(4, 6), to: '#hbTOev' },
-        { src: art.querySelector('#hlSub1'), box: null, to: '#hbTSub1' },
-        { src: art.querySelector('#hlSub2'), box: null, to: '#hbTSub2' },
+        { to: '#hbTAlex', from: onScreen(art.querySelector('#hlAlex')), delay: 0 },
+        { to: '#hbTBlag', from: unite(L.slice(0, 4)), letters: L.slice(0, 4), delay: .1 },
+        { to: '#hbTOev', from: unite(L.slice(4)), letters: L.slice(4), delay: 0, kx: .8, ky: 1.6 },
+        { to: '#hbTSub1', from: onScreen(art.querySelector('#hlSub1')), delay: .2, back: true },
+        { to: '#hbTSub2', from: onScreen(art.querySelector('#hlSub2')), delay: .22, back: true },
       ];
       const heroes = pieces.map(p => sec.querySelector(p.to)), forEl = sec.querySelector('#hbTFor');
-      if (heroes.some(h => !h) || !forEl || pieces.some(p => !p.src)) throw new Error('type missing');
+      if (heroes.some(h => !h) || !forEl || pieces.some((p, i) => p.letters && heroes[i].children.length !== p.letters.length)) throw new Error('type missing');
 
-      /* each piece as a layer the size and place of its landing spot */
-      const fly = document.createElement('div'); fly.className = 'ha-fly'; document.body.appendChild(fly);
-      const flyers = pieces.map((p, i) => {
-        const b = p.box || p.src.getBBox(), h = heroes[i].getBoundingClientRect();
-        const a0 = toScreen(b.x, b.y), w0 = b.width * k, h0 = b.height * k;
-        const svg = document.createElementNS(NS, 'svg');
-        svg.setAttribute('viewBox', [b.x, b.y, b.width, b.height].join(' ')); svg.setAttribute('preserveAspectRatio', 'none');
-        const c = p.src.cloneNode(true); c.removeAttribute('id'); svg.appendChild(c);
-        Object.assign(svg.style, { left: h.left + 'px', top: h.top + 'px', width: h.width + 'px', height: h.height + 'px' });
-        fly.appendChild(svg);
-        return { el: svg, delay: i * .07, done: false,
-                 x: a0.x + w0 / 2 - (h.left + h.width / 2), y: a0.y + h0 / 2 - (h.top + h.height / 2), vx: 0, vy: 0,
-                 sx: w0 / h.width, sy: h0 / h.height, vsx: 0, vsy: 0 };
-      });
+      /* the springs: about 1 Hz, damped to ~0.5 so they overshoot and
+         wobble twice; the scale a touch quicker than the move; the letters'
+         spacing quicker still and calmer, so it has closed up by the time
+         the word has landed */
+      const W = 2 * Math.PI * 1.05, Z = .5, Ws = W * 1.15, Wl = W * 1.25, Zl = .75;
+
       const paint = f => {
         const sp = Math.hypot(f.vx, f.vy), e = Math.min(.38, sp * .0011), th = Math.atan2(f.vy, f.vx) * 180 / Math.PI;
         f.el.style.transform = `translate3d(${f.x.toFixed(2)}px,${f.y.toFixed(2)}px,0) rotate(${th.toFixed(1)}deg) ` +
           `scale(${(1 + e).toFixed(4)},${(1 / (1 + e)).toFixed(4)}) rotate(${(-th).toFixed(1)}deg) scale(${f.sx.toFixed(4)},${f.sy.toFixed(4)})`;
+        f.kids.forEach(l => {
+          const a = 1 + l.u * l.gx, b = 1 + l.u * l.gy;
+          l.g.setAttribute('transform', `matrix(${a.toFixed(5)} 0 0 ${b.toFixed(5)} ${(l.cx + l.u * l.dx - a * l.cx).toFixed(3)} ${(l.cy + l.u * l.dy - b * l.cy).toFixed(3)})`);
+        });
+        return e;
       };
-      flyers.forEach(paint);
+      /* how far, in screen pixels, a piece still has to go, counting the
+         swing its speed will carry it through — under a fifth of a pixel,
+         it has landed */
+      const left = (f, e) => Math.hypot(f.x, f.vx / f.wx) + Math.hypot(f.y, f.vy / f.wy) + e * Math.max(f.w, f.h) / 2 +
+        Math.hypot(f.sx - 1, f.vsx / Ws) * f.w / 2 + Math.hypot(f.sy - 1, f.vsy / Ws) * f.h / 2 +
+        f.kids.reduce((s, l) => s + Math.hypot(l.u, l.vu / Wl) * l.px * (Math.hypot(l.dx, l.dy) + Math.max(Math.abs(l.gx) * l.wd, Math.abs(l.gy) * l.hd) / 2), 0);
+
+      const fly = document.createElement('div'); fly.className = 'ha-fly'; document.body.appendChild(fly);
+      let flyers;
+      try {                                     /* if anything here fails, nothing is left behind */
+        flyers = pieces.map((p, i) => {
+          /* the landing spot, on screen (measured the way the take-off is)
+             and in the hero's own units */
+          const h = onScreen(heroes[i]), vb = rect(pt(back, h.x, h.y), pt(back, h.x + h.width, h.y + h.height)), f = p.from;
+          const svg = document.createElementNS(NS, 'svg');
+          svg.setAttribute('viewBox', [vb.x, vb.y, vb.width, vb.height].join(' ')); svg.setAttribute('preserveAspectRatio', 'none');
+          const c = heroes[i].cloneNode(true); c.removeAttribute('id'); svg.appendChild(c);
+          Object.assign(svg.style, { left: h.x + 'px', top: h.y + 'px', width: h.width + 'px', height: h.height + 'px',
+                                     zIndex: p.back ? 1 : 2 });
+          fly.appendChild(svg);
+          /* each letter, wrapped, starts where the loading screen's spacing
+             puts it within the word (in the layer's units at take-off) */
+          const kids = (p.letters || []).map((l, j) => {
+            const path = c.children[j], hb = heroes[i].children[j].getBBox(), g = document.createElementNS(NS, 'g');
+            c.insertBefore(g, path); g.appendChild(path);
+            const w = l.width / f.width * vb.width, ht = l.height / f.height * vb.height;
+            const cx = hb.x + hb.width / 2, cy = hb.y + hb.height / 2;
+            return { g, delay: .035 * j, cx, cy, u: 1, vu: 0, px: h.width / vb.width,
+                     dx: vb.x + (l.x - f.x) / f.width * vb.width + w / 2 - cx, dy: vb.y + (l.y - f.y) / f.height * vb.height + ht / 2 - cy,
+                     gx: w / hb.width - 1, gy: ht / hb.height - 1, wd: hb.width, hd: hb.height };
+          });
+          return { el: svg, kids, w: h.width, h: h.height, delay: p.delay, done: false, wx: W * (p.kx || 1), wy: W * (p.ky || 1),
+                   x: f.x + f.width / 2 - (h.x + h.width / 2), y: f.y + f.height / 2 - (h.y + h.height / 2), vx: 0, vy: 0,
+                   sx: f.width / h.width, sy: f.height / h.height, vsx: 0, vsy: 0 };
+        });
+        flyers.forEach(paint);
+      } catch (e) { fly.remove(); throw e; }
       art.style.visibility = 'hidden';
       gsap.set([...heroes, forEl], { opacity: 0 });
       gsap.to(loader, { opacity: 0, duration: .55, ease: 'power1.inOut' });      /* the cream clears underneath */
 
-      /* the springs: about 1 Hz, damped to ~0.5 so they overshoot and
-         wobble twice; the scale a touch quicker than the move */
-      const W = 2 * Math.PI * 1.05, Z = .5, Ws = W * 1.15;
       return new Promise(resolve => {
-        let t0 = null, last = null, popped = false;
+        let T = 0, last = null, popped = false, over = false;
         const finish = () => {
+          if (over) return;
+          over = true;
           flyers.forEach((f, i) => { if (!f.done) { f.done = true; heroes[i].style.opacity = ''; } });
           gsap.set(forEl, { opacity: 1, scale: 1 });
           fly.remove(); resolve();
         };
         const step = now => {
           try {
-            if (t0 === null) { t0 = last = now; }
-            const t = (now - t0) / 1000, dt = Math.min(1 / 30, (now - last) / 1000); last = now;
-            let left = 0;
-            for (const f of flyers) {
-              if (f.done) continue;
-              left++;
-              if (t < f.delay) continue;
+            /* the springs' own clock: a slow frame steps it on at most 1/30s,
+               so a stutter can't throw a piece, nor cut its landing short */
+            if (last === null) last = now;
+            const dt = Math.min(1 / 30, (now - last) / 1000); last = now; T += dt;
+            let flying = 0;
+            flyers.forEach((f, i) => {
+              if (f.done) return;
+              flying++;
+              if (T < f.delay) return;
               for (let n = 0; n < 4; n++) {                       /* four small steps a frame: smooth and stable */
                 const h = dt / 4;
-                f.vx += (-W * W * f.x - 2 * Z * W * f.vx) * h; f.vy += (-W * W * f.y - 2 * Z * W * f.vy) * h;
+                f.vx += (-f.wx * f.wx * f.x - 2 * Z * f.wx * f.vx) * h; f.vy += (-f.wy * f.wy * f.y - 2 * Z * f.wy * f.vy) * h;
                 f.x += f.vx * h; f.y += f.vy * h;
                 f.vsx += (-Ws * Ws * (f.sx - 1) - 2 * Z * Ws * f.vsx) * h; f.vsy += (-Ws * Ws * (f.sy - 1) - 2 * Z * Ws * f.vsy) * h;
                 f.sx += f.vsx * h; f.sy += f.vsy * h;
+                f.kids.forEach(l => {
+                  if (T < f.delay + l.delay) return;
+                  l.vu += (-Wl * Wl * l.u - 2 * Zl * Wl * l.vu) * h; l.u += l.vu * h;
+                });
               }
-              const settled = Math.abs(f.x) < .35 && Math.abs(f.y) < .35 && Math.hypot(f.vx, f.vy) < 4 &&
-                              Math.abs(f.sx - 1) < .002 && Math.abs(f.sy - 1) < .002;
-              if (settled || t > f.delay + 3) {                     /* landed: the hero's own type takes over */
-                f.done = true; f.el.style.visibility = 'hidden'; heroes[flyers.indexOf(f)].style.opacity = '';
-              } else paint(f);
-            }
-            if (!popped && t > .75) {
+              const e = paint(f);
+              if (left(f, e) < .2 || T > f.delay + 5) {              /* landed: the hero's own type takes over */
+                f.done = true; f.el.style.visibility = 'hidden'; heroes[i].style.opacity = '';
+              }
+            });
+            if (!popped && T > .75) {
               popped = true;
               gsap.fromTo(forEl, { opacity: 0, scale: 0, transformOrigin: '50% 50%' },
                                  { opacity: 1, scale: 1, duration: .6, ease: 'back.out(3)' });
             }
-            if (left) requestAnimationFrame(step);
+            if (flying) requestAnimationFrame(step);
             else setTimeout(finish, 120);
           } catch (e) { finish(); }
         };
