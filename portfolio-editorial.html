@@ -2456,6 +2456,8 @@
 
 </script>
 
+
+
 <script>
   /* ── Hero: Alexander's blobs, alive ───────────────────────────────── */
   (function () {
@@ -2683,6 +2685,7 @@
     };
   }
 
+
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const tallMQ = matchMedia('(max-aspect-ratio: 4/5)');
 
@@ -2743,6 +2746,7 @@
 
     /* load the display face outright (the loading screen waits for it) */
     const FONTS = document.fonts ? document.fonts.load('100px Alfarn').catch(() => {}) : Promise.resolve();
+    FONTS.then(() => alignLoader());          /* re-frame the loading screen's type in its own face */
 
     /* client px -> artboard units for whichever layout is showing */
     function toArt(el, vw, vh, slice) {
@@ -2873,8 +2877,17 @@
       const art = document.querySelector('.ha-loader-art');
       if (!art) return;
       if (tallMQ.matches) {
-        art.setAttribute('viewBox', '800 740 1370 520'); art.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-        Object.assign(art.style, { inset: 'auto', left: '6vw', top: 'calc(46% - 16.7vw)', width: '88vw', height: '33.4vw' });
+        /* framed on the type itself (measured, so a new layout or a late
+           font can't crop it), 88vw wide, a little above the middle */
+        art.setAttribute('viewBox', '0 0 2880 1800');
+        const b = art.getBBox(), m = 40;
+        if (!b.width) return;
+        const vw = b.width + 2 * m, vh = b.height + 2 * m;
+        art.setAttribute('viewBox', [b.x - m, b.y - m, vw, vh].map(v => v.toFixed(1)).join(' '));
+        art.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        const h = 88 * vh / vw;
+        Object.assign(art.style, { inset: 'auto', left: '6vw', width: '88vw', height: h.toFixed(2) + 'vw',
+                                   top: 'calc(46% - ' + (h / 2).toFixed(2) + 'vw)' });
         return;
       }
       const r = wSvg.getBoundingClientRect();
