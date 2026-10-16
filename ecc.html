@@ -6,843 +6,877 @@
 <title>Easy Car Cleaner — Alexander Blagoev</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30,0;1,9..144,300..700,30,1&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #060606;
-    --paper-warm: #0e0e0e;
-    --paper-raised: #141416;
-    --ink: #e4e8ec;
-    --ink-soft: #8896a2;
-    --muted: #505a62;
-    --chrome: #7aaac8;
-    --chrome-dim: #2a4050;
-    --hairline: rgba(228,232,236,0.08);
-    --hairline-soft: rgba(228,232,236,0.04);
-    --nav-bg: rgba(6,6,6,0.94);
+    /* the page on the labels' own black (the frame colour), its type in
+       white; the case study's light blue carries the accents */
+    --paper: #191619;
+    --paper-warm: #1f1c1f;
+    --ink: #f6f4f6;
+    --ink-soft: rgba(246,244,246,0.84);
+    --muted: rgba(246,244,246,0.6);
+    --accent: #8bb9d2;
+    --hairline: rgba(246,244,246,0.12);
+    --hairline-soft: rgba(246,244,246,0.06);
+    --nav-bg: rgba(25,22,25,0.9);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Barlow', sans-serif;
-    font-size: 17px;
-    line-height: 1.65;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { background: var(--paper); color: var(--ink); font-family: 'Montserrat', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
   img { display: block; max-width: 100%; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* NAV */
   nav {
     position: sticky; top: 0; z-index: 20;
     background: var(--nav-bg);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
     padding: 1.2rem 2.5rem;
     /* 1fr | auto | 1fr keeps the name centred with sides of unequal width */
-    display: grid; grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
   }
-  nav > .nav-index { grid-column: 3; }   /* stays right when the name is hidden */
-  .nav-back {
-    justify-self: start;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted);
-    display: flex; align-items: center; gap: 0.6rem;
-    transition: color 0.2s;
-  }
-  .nav-back:hover { color: var(--chrome); }
-  .nav-back svg { width: 14px; height: 14px; }
-  .nav-logo {
-    font-family: 'Fraunces', serif;
-    font-size: 1.1rem; font-weight: 500; font-style: italic;
-  }
-  .nav-index {
-    justify-self: end;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--muted);
-  }
+  nav > .nav-back { justify-self: start; }
+  nav > .nav-index { grid-column: 3; justify-self: end; }   /* stays right when the name is hidden */
+  .nav-back { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--accent); }
+  .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: .9rem; font-weight: 500; letter-spacing: .04em; }   /* the main page's text face */
+  .nav-index { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-  /* CONTAINER */
-  .container { max-width: 1300px; margin: 0 auto; padding: 0 2.5rem; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 2.5rem; }
 
-  /* HERO */
-  .project-hero {
-    border-bottom: 1px solid var(--hairline);
-    position: relative;
-    overflow: hidden;
-    min-height: 92vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
+  /* HERO — centred; the wordmark stacked as it sits on every label */
+  .project-hero { padding: 5rem 0 4.5rem; border-bottom: 1px solid var(--hairline); text-align: center; }
+  .project-meta { display: flex; justify-content: center; flex-wrap: wrap; gap: 3rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3.5rem; }
+  .project-meta span { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+  .project-meta strong { color: var(--accent); font-weight: 400; }
+  .project-title { margin-bottom: 2.4rem; }
+  .wm-lock { display: inline-block; text-align: left; font-weight: 800; font-size: clamp(3.4rem, 9.5vw, 8.2rem); line-height: 1; letter-spacing: -.012em; text-transform: uppercase; }
+  .project-tagline { font-size: clamp(0.92rem, 1.4vw, 1.06rem); color: var(--muted); max-width: 540px; line-height: 1.75; margin: 0 auto; }
+  .hero-chips { display: flex; justify-content: center; gap: .55rem; margin-top: 2.2rem; }
+  .hero-chips i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px rgba(246,244,246,.22); }
 
-  .hero-inner {
-    position: relative;
-    padding: 0 2.5rem 5rem;
-    max-width: 1300px;
-    margin: 0 auto;
-    width: 100%;
-  }
+  /* DELIVERABLES */
+  .deliverables { border-bottom: 1px solid var(--hairline); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hairline); }
+  .deliverable { background: var(--paper); padding: 2.5rem 2rem; }
+  .deliverable-icon { font-size: 1.4rem; margin-bottom: 1rem; color: var(--accent); }
+  .deliverable-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
+  .deliverable-desc { font-size: .93rem; color: var(--ink-soft); line-height: 1.65; }
 
-  .project-meta {
-    display: flex; gap: 3rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 3.5rem;
-  }
-  .project-meta span { display: flex; flex-direction: column; gap: 0.35rem; }
-  .project-meta strong { color: var(--chrome); font-weight: 400; }
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3rem; padding-bottom: 1rem; border-bottom: 1px solid var(--hairline-soft); display: flex; justify-content: space-between; }
+  .section-label .num { color: var(--accent); }
 
-  .ecc-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(5.5rem, 13vw, 14rem);
-    line-height: 0.88;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-    margin-bottom: 2.5rem;
-  }
-  .ecc-title .line-1 { color: var(--ink); }
-  .ecc-title .line-2 { color: var(--chrome); }
-  .ecc-title .line-3 { color: var(--ink); }
+  .section { padding: 6rem 0; border-bottom: 1px solid var(--hairline); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+  .about-heading { font-weight: 800; font-size: clamp(2.2rem, 4.4vw, 3.6rem); line-height: 1.04; letter-spacing: -0.035em; margin-bottom: 2rem; }
+  .about-heading em { font-style: normal; color: var(--accent); }
+  .about-text p { font-size: .95rem; line-height: 1.8; color: var(--ink-soft); margin-bottom: 1.4rem; }
+  .roles { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 2rem; margin-top: .5rem; }
+  .roles div { display: flex; flex-direction: column; gap: .35rem; }
+  .roles dt { font-family: 'JetBrains Mono', monospace; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .roles dd { font-weight: 700; font-size: .95rem; letter-spacing: .01em; }
+  .insta-tag { display: inline-flex; align-items: center; gap: .55rem; margin-top: .4rem; padding: .7rem 1.4rem; border: 1px solid rgba(139,185,210,.5); border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .08em; color: var(--accent); transition: background .2s, color .2s; }
+  .insta-tag:hover { background: var(--accent); color: var(--paper); }
+  .insta-tag svg { width: 13px; height: 13px; fill: currentColor; }
 
-  .hero-tagline {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted);
-    display: flex; align-items: center; gap: 1.2rem;
-  }
-  .hero-tagline::before {
-    content: '';
-    display: block; width: 40px; height: 1px;
-    background: var(--chrome); flex-shrink: 0;
-  }
+  /* STATS */
+  .stats-section { padding: 5rem 0; border-bottom: 1px solid var(--hairline); background: var(--paper-warm); }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hairline); }
+  .stat { background: var(--paper-warm); padding: 3rem 2rem; text-align: center; }
+  .stat-number { font-weight: 800; font-size: clamp(3rem, 8vw, 6rem); line-height: 1; letter-spacing: -0.04em; color: var(--accent); margin-bottom: .8rem; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
-  /* BOTTLES FIELD */
-  .bottles-field {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-  }
+  /* NEXT */
+  .next-project { padding: 4rem 0; display: flex; justify-content: space-between; align-items: center; }
+  .next-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .next-title { font-weight: 800; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.03em; transition: color 0.25s; }
+  .next-title:hover { color: var(--accent); }
+  .next-arrow { font-size: 2rem; color: var(--muted); transition: transform 0.3s, color 0.3s; }
+  .next-project:hover .next-arrow { transform: translateX(12px); color: var(--accent); }
 
-  /* gradient so text stays readable over bottles */
-  .hero-text {
-    position: relative;
-    z-index: 3;
-    max-width: 52%;
-  }
-  .hero-text::before {
-    content: '';
-    position: absolute;
-    inset: -4rem -6rem -3rem -3rem;
-    background: radial-gradient(ellipse at 30% 70%, rgba(6,6,6,0.82) 30%, transparent 80%);
-    z-index: -1;
-    pointer-events: none;
-  }
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.d1 { transition-delay: 0.1s; } .reveal.d2 { transition-delay: 0.2s; }
+  .reveal.in { opacity: 1; transform: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px) } to { opacity: 1; transform: none } }
+  .project-meta { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+  .project-title { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+  .project-tagline, .hero-chips { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
 
-  .bottle {
-    position: absolute;
-    width: var(--w, 220px);
-    filter: drop-shadow(0 28px 56px rgba(0,0,0,0.75));
-    animation: var(--anim, floatA) var(--dur, 6s) ease-in-out infinite;
-    animation-delay: var(--delay, 0s);
-    opacity: var(--op, 1);
+  /* ── THE LABEL SYSTEM — a deck of slides ──────────────────────────
+     After a brand-guidelines presentation: each slide a card, a title
+     panel on the left (number, name, a line of explanation) and the
+     content on the right, in the labels' own monochrome: white type on
+     black. The slides are held at the top of the screen in turn (CSS
+     sticky) and each next one slides up over the last, which sinks back
+     a little (desktop). */
+  .deck-section { padding: 6rem 0 3rem; border-bottom: 1px solid var(--hairline); }
+  .deck { --f-black: #191619; --f-label: #1d1d1d; --f-white: #f7f7f7; margin-top: 1rem; }
+  .slide {
+    position: sticky; top: var(--top, 70px);   /* --top: the nav's height, set by the script */
+    height: calc(100vh - var(--top, 70px)); height: calc(100svh - var(--top, 70px));
+    padding: 1rem 2.5rem 2rem; display: flex;
   }
-  .bottle img { width: 100%; height: auto; display: block; }
+  .slide-card {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(260px, 30%) 1fr;
+    background: var(--f-white); color: var(--f-black);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5), 0 0 0 1px rgba(246, 244, 246, .06);
+    transform-origin: 50% 0;
+  }
+  .slide-side { padding: 2.2rem 2.2rem 2rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; }
+  .slide-num { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .12em; color: #3a7396; margin-bottom: 1rem; }
+  .slide-title { font-weight: 800; font-size: clamp(1.9rem, 3vw, 3rem); line-height: 1; letter-spacing: -.01em; text-transform: uppercase; }
+  .slide-desc { font-size: .84rem; line-height: 1.65; color: rgba(25, 22, 25, .72); max-width: 32ch; }
+  .slide-body { position: relative; min-width: 0; min-height: 0; background: var(--f-label); color: #fff; overflow: hidden; }
+  .lab { font-family: 'JetBrains Mono', monospace; font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; }
 
-  @keyframes floatA {
-    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(0px); }
-    50%       { transform: rotate(var(--rot, 0deg)) translateY(-18px); }
-  }
-  @keyframes floatB {
-    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(-10px); }
-    50%       { transform: rotate(var(--rot, 0deg)) translateY(12px); }
-  }
-  @keyframes floatC {
-    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(5px); }
-    50%       { transform: rotate(var(--rot, 0deg)) translateY(-22px); }
-  }
+  /* anatomy: the Crush label with its five zones drawn over it */
+  .sb-anat { display: grid; grid-template-columns: 1.85fr 1fr; align-items: center; gap: 4.5%; padding: 0 5%; background: #121112; }
+  .anat-fig { position: relative; justify-self: center; width: min(100%, calc((100svh - var(--top, 70px) - 8rem) * 1.0987)); box-shadow: 0 30px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .12); }
+  .anat-fig img { width: 100%; height: auto; }
+  .zone { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); border: 1.5px dashed rgba(139, 185, 210, .9); border-radius: 4px; transition: opacity .3s; }
+  .zone b { position: absolute; top: -.7rem; left: -.7rem; width: 1.4rem; height: 1.4rem; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: #191619; font: 500 .6rem/1 'JetBrains Mono', monospace; }
+  .zone.var { border: 2px solid #fff; }                      /* the one zone that changes */
+  .zone.var b { background: #fff; }
+  .anat-key { list-style: none; display: grid; gap: 1rem; }
+  .anat-key li { display: grid; grid-template-columns: 2.2rem 1fr; padding-bottom: .9rem; border-bottom: 1px solid rgba(255, 255, 255, .12); cursor: default; }
+  .anat-key b { grid-row: span 2; font: 500 .7rem 'JetBrains Mono', monospace; color: var(--accent); padding-top: .25rem; }
+  .anat-key span { font-weight: 700; font-size: 1rem; }
+  .anat-key small { font-size: .78rem; line-height: 1.5; color: rgba(255, 255, 255, .6); }
+  .anat-key li.var b { color: #fff; }
+  .sb-anat:has(.anat-key li:hover) .zone { opacity: .2; }
+  .sb-anat:has(li[data-z="1"]:hover) .zone[data-z="1"], .sb-anat:has(li[data-z="2"]:hover) .zone[data-z="2"],
+  .sb-anat:has(li[data-z="3"]:hover) .zone[data-z="3"], .sb-anat:has(li[data-z="4"]:hover) .zone[data-z="4"],
+  .sb-anat:has(li[data-z="5"]:hover) .zone[data-z="5"] { opacity: 1; }
 
-  /* spread across full hero — behind text AND on the right */
-  .b1  { --w:260px; --rot:-4deg;  --dur:6.8s; --delay:0s;    --anim:floatA; --op:0.75; top:5%;   left:2%;   }
-  .b2  { --w:300px; --rot: 5deg;  --dur:7.2s; --delay:-1.5s; --anim:floatB; --op:1;    top:0%;   right:3%;  }
-  .b3  { --w:220px; --rot:-7deg;  --dur:5.9s; --delay:-3s;   --anim:floatC; --op:0.65; top:15%;  left:28%;  }
-  .b4  { --w:310px; --rot: 3deg;  --dur:7.5s; --delay:-0.8s; --anim:floatA; --op:1;    top:35%;  right:8%;  }
-  .b5  { --w:200px; --rot:-9deg;  --dur:6.3s; --delay:-2.2s; --anim:floatB; --op:0.6;  top:28%;  left:14%;  }
-  .b6  { --w:280px; --rot: 7deg;  --dur:8s;   --delay:-4s;   --anim:floatC; --op:0.9;  top:52%;  right:26%; }
-  .b7  { --w:240px; --rot:-3deg;  --dur:6.6s; --delay:-1s;   --anim:floatA; --op:0.8;  top:60%;  right:2%;  }
-  .b8  { --w:190px; --rot: 8deg;  --dur:7s;   --delay:-3.5s; --anim:floatB; --op:0.55; top:55%;  left:8%;   }
-  .b9  { --w:265px; --rot:-5deg;  --dur:7.8s; --delay:-2s;   --anim:floatC; --op:0.85; top:72%;  right:18%; }
+  /* colour: the monochrome frame above, the nine colourways below */
+  .sb-col { display: grid; grid-template-rows: 25% 1fr; background: #121112; }
+  .frame-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .art-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+  .sw { background: var(--c); color: var(--t); display: flex; flex-direction: column; justify-content: flex-end; gap: .3rem; padding: 1rem 1.2rem; box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .07); min-width: 0; }
+  .sw-name { font-weight: 800; font-size: clamp(.95rem, 1.45vw, 1.35rem); line-height: 1.05; text-transform: uppercase; }
+  .frame-row .sw-name { font-size: clamp(1.1rem, 1.8vw, 1.7rem); }
+  .sw .lab { opacity: .8; }
 
-  @media (max-width: 900px) {
-    .project-hero { min-height: auto; }
-    .hero-inner { padding-top: 5rem; }
-    .hero-text { max-width: 100%; }
-    .hero-text::before { display: none; }
-    .bottles-field { display: none; }
-  }
+  /* type: Montserrat, in the three weights the labels use */
+  .sb-type { display: flex; flex-direction: column; justify-content: center; padding: 0 7%; }
+  .ty-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(255, 255, 255, .18); }
+  .ty-name { font-weight: 800; font-size: clamp(2.4rem, 5.4vw, 5.2rem); line-height: .95; letter-spacing: -.025em; }
+  .ty-head .lab { color: rgba(255, 255, 255, .55); text-align: right; line-height: 1.7; }
+  .ty-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding: 1.3rem 0 1rem; border-bottom: 1px solid rgba(255, 255, 255, .18); }
+  .ty-row .lab { color: var(--accent); white-space: nowrap; }
+  .ty-800 { font-weight: 800; font-size: clamp(1.25rem, 2.3vw, 2.1rem); line-height: 1.02; text-transform: uppercase; }
+  .ty-400 { font-weight: 400; font-size: clamp(.86rem, 1.2vw, 1.08rem); line-height: 1.45; max-width: 36ch; }
+  .ty-300 { font-weight: 300; font-size: clamp(1rem, 1.6vw, 1.45rem); letter-spacing: .02em; }
+  .ty-300 span { margin-left: 1.1em; }
 
-  /* SECTIONS */
-  section { padding: 5.5rem 0; border-bottom: 1px solid var(--hairline); }
+  /* a slide's content settles in as the slide arrives */
+  .slide-body > *, .slide-side > * { transition: opacity .7s ease, translate .9s cubic-bezier(.16, 1, .3, 1); }
+  .slide:not(.here) .slide-body > *, .slide:not(.here) .slide-side > * { opacity: 0; translate: 0 18px; }
 
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--chrome);
-    margin-bottom: 1rem;
+  /* ── THE SHELF — the nine bottles in 3D ───────────────────────────
+     A canvas held under the nav (CSS sticky) while its run scrolls by;
+     the scroll moves the camera along the shelf. The name of the bottle
+     in front, and a mark for each of the nine, sit over it. */
+  .shelf-section { padding: 6rem 0 0; border-bottom: 1px solid var(--hairline); }
+  .shelf-run { position: relative; height: 500vh; }
+  .shelf-stage {
+    position: sticky; top: var(--top, 70px);
+    height: calc(100vh - var(--top, 70px)); height: calc(100svh - var(--top, 70px));
+    overflow: hidden; background: var(--paper);
   }
-  .section-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    color: var(--ink);
-  }
+  .shelf-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .9s ease; }
+  .shelf-stage.ready .shelf-canvas { opacity: 1; }
+  .shelf-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); transition: opacity .4s; pointer-events: none; }
+  .shelf-stage.ready .shelf-load { opacity: 0; }
+  .shelf-hint { position: absolute; left: 0; right: 0; top: 1.6rem; text-align: center; color: rgba(246, 244, 246, .45); transition: opacity .6s; pointer-events: none; }
+  .shelf-run.moved .shelf-hint { opacity: 0; }
+  .shelf-cap { position: absolute; left: 2.5rem; bottom: 2.2rem; display: flex; flex-direction: column; gap: .55rem; pointer-events: none; }
+  .sc-num { color: var(--accent); }
+  .sc-name { font-weight: 800; font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: .95; letter-spacing: -.01em; text-transform: uppercase; }
+  .sc-meta { display: flex; align-items: center; gap: .6rem; color: var(--muted); }
+  .sc-meta i { width: .7rem; height: .7rem; border-radius: 50%; background: var(--c, #90a8c0); box-shadow: 0 0 0 1px rgba(246, 244, 246, .3); }
+  .shelf-ticks { position: absolute; right: 2.5rem; bottom: 2.1rem; display: flex; list-style: none; }
+  .shelf-ticks button { display: block; width: 30px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; position: relative; }
+  .shelf-ticks button::before { content: ''; position: absolute; left: 3px; right: 3px; top: 50%; height: 2px; margin-top: -1px; background: rgba(246, 244, 246, .22); transition: background .3s; }
+  .shelf-ticks button:hover::before { background: rgba(246, 244, 246, .6); }
+  .shelf-ticks button[aria-current="true"]::before { background: var(--accent); }
+  .shelf-ticks button:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+  .shelf-still { display: none; }
+  .shelf-run.still { height: auto !important; }
+  .shelf-run.still .shelf-stage { display: none; }
+  .shelf-run.still .shelf-still { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 0 2.5rem 4rem; }
+  .shelf-still img { width: 100%; height: auto; }
 
-  /* BRIEF */
-  .brief-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 5rem;
-    align-items: start;
-    margin-top: 3.5rem;
-  }
-
-  .brief-roles {
-    display: flex; flex-direction: column; gap: 2.5rem;
-  }
-  .brief-role-item {
-    display: flex; flex-direction: column; gap: 0.4rem;
-  }
-  .brief-role-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--muted);
-  }
-  .brief-role-value {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    font-size: 1.05rem;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  .brief-body {
-    display: flex; flex-direction: column; gap: 1.5rem;
-  }
-  .brief-body p {
-    font-size: 1.05rem;
-    color: var(--ink-soft);
-    font-weight: 300;
-    line-height: 1.75;
-    max-width: 620px;
-  }
-  .brief-body p strong {
-    color: var(--ink);
-    font-weight: 500;
-  }
-
-  /* LABEL GRID */
-  .label-intro {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    max-width: 560px;
-    font-size: 0.95rem;
-    color: var(--muted);
-    font-weight: 300;
-    line-height: 1.7;
-  }
-
-  .label-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5px;
-    background: var(--hairline);
-    border: 1.5px solid var(--hairline);
-  }
-  .label-grid-item {
-    background: var(--paper-raised);
-    overflow: hidden;
-    aspect-ratio: 4/3;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .label-grid-item img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .label-grid-item:hover img { transform: scale(1.03); }
-
-  /* PHOTO SECTION */
-  .photo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 3.5rem;
-    gap: 2rem;
-  }
-  .photo-caption {
-    font-size: 0.88rem;
-    color: var(--muted);
-    font-weight: 300;
-    max-width: 340px;
-    text-align: right;
-    line-height: 1.6;
-  }
-
-  /* EDITORIAL PHOTO GRID */
-  .photo-grid-hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-
-  .photo-tall {
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    background: var(--paper-raised);
-  }
-  .photo-tall img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .photo-tall:hover img { transform: scale(1.04); }
-
-  .photo-grid-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-
-  .photo-square {
-    aspect-ratio: 1;
-    overflow: hidden;
-    background: var(--paper-raised);
-  }
-  .photo-square img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .photo-square:hover img { transform: scale(1.04); }
-
-  .photo-wide {
-    aspect-ratio: 16/8;
-    overflow: hidden;
-    background: var(--paper-raised);
-  }
-  .photo-wide img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
+  /* ── IN PRODUCTION — the labels on the real bottles ─────────────── */
+  .photo-grid-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .photo-grid-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .photo-tall, .photo-square, .photo-wide, .kit-photo { overflow: hidden; background: var(--paper-warm); }
+  .photo-tall { aspect-ratio: 3 / 4; }
+  .photo-square { aspect-ratio: 1; }
+  .photo-wide { aspect-ratio: 16 / 8; }
+  .photo-tall img, .photo-square img, .photo-wide img, .kit-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.25, .46, .45, .94); }
+  .photo-tall img { object-position: center top; }
+  .photo-tall:hover img, .photo-square:hover img { transform: scale(1.04); }
   .photo-wide:hover img { transform: scale(1.03); }
 
-  /* KIT SECTION */
-  .kit-section {
-    padding: 5.5rem 0 0;
-    border: none;
-  }
-  .kit-layout {
-    margin-top: 3rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-  .kit-photo {
-    aspect-ratio: 1;
-    overflow: hidden;
-    background: var(--paper-raised);
-  }
-  .kit-photo img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-  .kit-text {
-    display: flex; flex-direction: column; gap: 2rem;
-  }
-  .kit-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--chrome);
-  }
-  .kit-heading {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 2.8rem;
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    color: var(--ink);
-  }
-  .kit-body {
-    font-size: 1rem; font-weight: 300;
-    color: var(--ink-soft);
-    line-height: 1.75;
-  }
-  .kit-products {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--hairline);
-  }
-  .kit-product {
-    display: flex; align-items: center;
-    gap: 1rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--muted);
-    padding: 0.5rem 0;
-  }
-  .kit-product::before {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--chrome-dim);
-    flex-shrink: 0;
-  }
-  .kit-product strong { color: var(--ink-soft); font-weight: 400; }
+  /* THE FULL KIT */
+  .kit-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .kit-photo { aspect-ratio: 1; }
+  .kit-products { display: flex; flex-direction: column; margin-top: 1rem; border-top: 1px solid var(--hairline); }
+  .kit-product { display: flex; align-items: center; gap: 1rem; font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: .75rem 0; border-bottom: 1px solid var(--hairline-soft); }
+  .kit-product::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--accent)); flex-shrink: 0; }
+  .kit-product strong { color: var(--ink); font-weight: 500; }
 
-  /* FOOTER */
-  .project-footer {
-    padding: 4rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--hairline);
+  @media (max-width: 1000px) {
+    .container { padding: 0 1.5rem; } nav { padding: 1.2rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .deliverables { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .project-meta { gap: 1.5rem; }
+    .kit-layout { grid-template-columns: 1fr; gap: 2.5rem; }
   }
-  .footer-brand {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 1.4rem;
-    text-transform: uppercase; letter-spacing: 0.05em;
-    color: var(--muted);
-  }
-  .footer-nav {
-    display: flex; gap: 2.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted);
-  }
-  .footer-nav a { transition: color 0.2s; }
-  .footer-nav a:hover { color: var(--chrome); }
-  /* it's a <nav>, so the header's `nav` rule reached it too: its padding,
-     border and blur, and its position (on Mortar that pinned the footer
-     link to the top of the screen, right over the header's own link) */
-  .footer-nav { position: static; padding: 0; border-bottom: 0; background: none;
-                -webkit-backdrop-filter: none; backdrop-filter: none; }
-
-  /* SCROLL REVEAL */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-
-  /* DIVIDER */
-  .section-divider {
-    width: 40px; height: 2px;
-    background: var(--chrome-dim);
-    margin-bottom: 2.5rem;
-  }
-
-  /* FRAGRANCE STRIP */
-  .fragrance-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5px;
-    background: var(--hairline);
-    border: 1.5px solid var(--hairline);
-    margin-top: 6px;
-  }
-  .fragrance-strip-item {
-    aspect-ratio: 3/5;
-    overflow: hidden;
-    background: var(--paper-raised);
-  }
-  .fragrance-strip-item img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .fragrance-strip-item:hover img { transform: scale(1.06); }
-
-  /* INSTAGRAM TAG */
-  .insta-tag {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; letter-spacing: 0.1em;
-    color: var(--chrome);
-    border: 1px solid var(--chrome-dim);
-    padding: 0.4rem 0.9rem;
-    border-radius: 2rem;
-    margin-top: 1.5rem;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .insta-tag:hover {
-    background: rgba(122,170,200,0.08);
-    border-color: var(--chrome);
-  }
-  .insta-tag svg { width: 12px; height: 12px; fill: currentColor; }
-
-  @media (max-width: 900px) {
-    .brief-grid { grid-template-columns: 1fr; gap: 3rem; }
+  /* phones and narrow windows */
+  @media (max-width: 820px) {
+    .slide { padding: .6rem .75rem 1rem; }
+    .slide-card { grid-template-columns: 1fr; grid-template-rows: auto 1fr; border-radius: 12px; }
+    .slide-side { padding: 1.1rem 1.2rem 1rem; gap: .5rem; }
+    .slide-side > div { display: flex; align-items: baseline; justify-content: space-between; flex-direction: row-reverse; gap: 1rem; }
+    .slide-num { margin: 0; }
+    .slide-title { font-size: clamp(1.4rem, 6.4vw, 2rem); }
+    .slide-title br { display: none; }
+    .slide-desc { font-size: .76rem; max-width: none; }
+    .sb-anat { grid-template-columns: 1fr; align-content: center; gap: 1.4rem; padding: 6% 6%; }
+    .anat-fig { width: 100%; max-width: calc((100svh - var(--top, 70px) - 21rem) * 1.0987); }
+    .anat-key { grid-template-columns: 1fr 1fr; gap: .45rem 1rem; }
+    .anat-key li { grid-template-columns: 1.6rem 1fr; padding-bottom: .4rem; }
+    .anat-key span { font-size: .78rem; }
+    .anat-key small { display: none; }
+    .zone b { width: 1.1rem; height: 1.1rem; top: -.55rem; left: -.55rem; font-size: .5rem; }
+    .sb-col { grid-template-rows: 20% 1fr; }
+    .sw { padding: .6rem .7rem; gap: .15rem; }
+    .sw-name { font-size: .8rem; }
+    .frame-row .sw-name { font-size: .95rem; }
+    .sw .lab { font-size: .52rem; }
+    .sw .lab.kind { display: none; }
+    .sb-type { padding: 0 6%; }
+    .ty-head { flex-direction: column; align-items: flex-start; gap: .4rem; padding-bottom: .9rem; }
+    .ty-head .lab { text-align: left; }
+    .ty-row { flex-direction: column-reverse; align-items: flex-start; gap: .45rem; padding: .9rem 0 .8rem; }
+    .ty-row .lab { white-space: normal; }
+    .shelf-section { padding-top: 4rem; }
+    .shelf-cap { left: 0; right: 0; bottom: 1.3rem; align-items: center; text-align: center; }
+    .sc-name { font-size: 1.7rem; }
+    .shelf-ticks { right: auto; left: 50%; translate: -50% 0; bottom: auto; top: .6rem; }
+    .shelf-ticks button { width: 26px; }
+    .shelf-hint { top: 3rem; }
+    .shelf-run.still .shelf-still { grid-template-columns: 1fr 1fr; padding: 0 1rem 3rem; }
+    .shelf-run.still .shelf-still img:last-child { grid-column: 1 / -1; width: 50%; justify-self: center; }
     .photo-grid-hero { grid-template-columns: 1fr; }
     .photo-grid-row { grid-template-columns: 1fr 1fr; }
-    .kit-layout { grid-template-columns: 1fr; gap: 2.5rem; }
-    .label-grid { grid-template-columns: 1fr 1fr; }
-    .fragrance-strip { grid-template-columns: repeat(2, 1fr); }
+    .photo-grid-row > :first-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
   }
-  @media (max-width: 600px) {
-    nav { padding: 1rem 1.25rem; }
-    .container { padding: 0 1.25rem; }
-    .project-meta { flex-wrap: wrap; gap: 1.5rem; }
-    .photo-grid-row { grid-template-columns: 1fr; }
-    .photo-header { flex-direction: column; align-items: flex-start; }
-    .photo-caption { text-align: left; }
+  @media (prefers-reduced-motion: reduce) {
+    .slide-body > *, .slide-side > * { transition: none; }
+    .slide:not(.here) .slide-body > *, .slide:not(.here) .slide-side > * { opacity: 1; translate: none; }
   }
-
-  /* ===== Desktop-first notice — only shown on small screens ===== */
-
-  /* ══ Phones ═══════════════════════════════════════════════════════
-     Last in the sheet so no later rule can override it. */
+  /* ══ Phones ═══ */
   @media (max-width: 600px) {
-    /* Header: back link only. The name and the counter needed
-       ~378px beside "Back to Portfolio" on a 327px row, so all of it wrapped. */
     .nav-logo, .nav-index { display: none; }
     .nav-back { white-space: nowrap; }
-
-    /* mono labels had drifted as low as 9.3px; 12px is the legible floor */
-    .project-meta, .project-meta span, .project-meta strong,
-    .nav-back, .nav-back span,
-    .section-label, .section-label span, .section-label .num,
-    .sec-label span, .sec-label .n, .section-eyebrow, .f-eyebrow,
-    .deliverable-title, .browser-url, .visit-btn,
-    .swatch-name, .swatch-hex, .type-label, .stat-label, .next-label,
-    .brief-role-label, .insta-tag, .kit-label, .kit-product, .kit-product strong,
-    .wip-badge span, .feature-num, .launch-label, .footer-nav a { font-size: .75rem; }
-    /* footer row was no-wrap; with 44px links it ran 3px past the screen */
-    .project-footer { flex-wrap: wrap; row-gap: .75rem; }
-    /* 2.5rem gaps broke every link onto two lines; spread them instead */
-    .footer-nav { width: 100%; justify-content: space-between; gap: 1rem; }
-    .footer-nav a { white-space: nowrap; }
-
-    /* Kit list: name above description. Side by side, the long Bulgarian
-       names wrapped and left the descriptions floating mid-row. */
-    .kit-product { display: block; position: relative; padding-left: calc(6px + 1rem); line-height: 1.6; }
-    .kit-product::before { position: absolute; left: 0; top: calc(.5rem + .8em - 3px); }
-    .kit-product strong { display: block; }
+    .project-meta, .project-meta span, .project-meta strong, .nav-back, .section-label, .section-label span, .section-label .num,
+    .deliverable-title, .insta-tag, .stat-label, .next-label, .roles dt { font-size: .75rem; }
+    .section-label { flex-wrap: wrap; gap: .35rem 1.5rem; }
+    .section-label > span { white-space: nowrap; }
   }
-  /* 44px is the minimum a thumb hits reliably */
   @media (pointer: coarse) {
-    .nav-back, .footer-nav a, .insta-tag, .visit-btn {
-      min-height: 44px; display: inline-flex; align-items: center;
-    }
+    .nav-back, .insta-tag { min-height: 44px; display: inline-flex; align-items: center; }
   }
 </style>
 </head>
 <body>
 
-
 <!-- NAV -->
 <nav>
-  <a href="portfolio-editorial.html" class="nav-back">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
-    <span>Portfolio</span>
-  </a>
-  <span class="nav-logo">Alexander Blagoev</span>
+  <a href="portfolio-editorial.html" class="nav-back">← Back to Portfolio</a>
+  <a href="portfolio-editorial.html" class="nav-logo">Alexander Blagoev</a>
   <span class="nav-index">04 / 05</span>
 </nav>
 
 <!-- HERO -->
 <section class="project-hero">
-  <div class="hero-inner">
-    <div class="hero-text">
-      <div class="project-meta reveal">
-        <span><span>Project</span><strong>04</strong></span>
-        <span><span>Category</span><strong>Print Design</strong></span>
-        <span><span>Deliverable</span><strong>Label System</strong></span>
-        <span><span>Industry</span><strong>Automotive</strong></span>
-      </div>
-
-      <h1 class="ecc-title reveal reveal-delay-1">
-        <span class="line-1">Easy</span>
-        <span class="line-2">Car</span>
-        <span class="line-3">Cleaner</span>
-      </h1>
-
-      <p class="hero-tagline reveal reveal-delay-2">
-        <span>Car cosmetics brand · Label design system</span>
-      </p>
+  <div class="container">
+    <div class="project-meta">
+      <span><span>Project</span><strong>04</strong></span>
+      <span><span>Category</span><strong>Print Design</strong></span>
+      <span><span>Deliverable</span><strong>Label System</strong></span>
+      <span><span>Industry</span><strong>Automotive</strong></span>
     </div>
-
-    <!-- FLOATING BOTTLES -->
-    <div class="bottles-field">
-      <div class="bottle b1"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/1.png" alt="Sweet Aura"></div>
-      <div class="bottle b2"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/2.png" alt="Размразител за стъкла"></div>
-      <div class="bottle b3"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/9.png" alt="Black Code"></div>
-      <div class="bottle b4"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/7.png" alt="Crush"></div>
-      <div class="bottle b5"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/5.png" alt="Leagle"></div>
-      <div class="bottle b6"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/6.png" alt="Exotic Mango"></div>
-      <div class="bottle b7"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/3.png" alt="Polish"></div>
-      <div class="bottle b8"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/4.png" alt="Мляко за табло"></div>
-      <div class="bottle b9"><img loading="lazy" src="web/easycarcleaner_productphotos/no-bg/8.png" alt="Bugz Off"></div>
+    <h1 class="project-title"><span class="wm-lock">Easy<br>Car<br>Cleaner</span></h1>
+    <p class="project-tagline">A label system for a Bulgarian car-care brand: one frame for the whole range, each product told apart by its artwork and its colour.</p>
+    <div class="hero-chips" aria-hidden="true">
+      <i style="--c:#90A8C0"></i><i style="--c:#000018"></i><i style="--c:#78A860"></i><i style="--c:#A86030"></i><i style="--c:#C090A8"></i><i style="--c:#F0F0F0"></i><i style="--c:#A83030"></i><i style="--c:#4878A8"></i><i style="--c:#C0C0C0"></i>
     </div>
   </div>
 </section>
 
-<!-- BRIEF -->
-<section>
-  <div class="container">
-    <div class="section-label reveal">Overview</div>
-    <div class="section-divider reveal reveal-delay-1"></div>
-    <h2 class="section-title reveal reveal-delay-1">The Brief</h2>
+<!-- DELIVERABLES -->
+<div class="deliverables">
+  <div class="deliverable reveal">
+    <div class="deliverable-icon">✦</div>
+    <div class="deliverable-title">Label System</div>
+    <div class="deliverable-desc">One fixed frame — wordmark, badge, artwork panel, copy, category and volume — reused across the whole range.</div>
+  </div>
+  <div class="deliverable reveal d1">
+    <div class="deliverable-icon">◻</div>
+    <div class="deliverable-title">Print Production</div>
+    <div class="deliverable-desc">Nine print-ready label artworks, set up for the brand's 150 ml and 250 ml spray bottles.</div>
+  </div>
+  <div class="deliverable reveal d2">
+    <div class="deliverable-icon">◈</div>
+    <div class="deliverable-title">Colour Coding</div>
+    <div class="deliverable-desc">One colourway per product, so each one is found on the shelf at a glance.</div>
+  </div>
+</div>
 
-    <div class="brief-grid">
-      <div class="brief-roles reveal reveal-delay-1">
-        <div class="brief-role-item">
-          <span class="brief-role-label">My Role</span>
-          <span class="brief-role-value">Label Designer</span>
-        </div>
-        <div class="brief-role-item">
-          <span class="brief-role-label">Output</span>
-          <span class="brief-role-value">Print-Ready Labels</span>
-        </div>
-        <div class="brief-role-item">
-          <span class="brief-role-label">Products</span>
-          <span class="brief-role-value">9 Label Variants</span>
-        </div>
-        <div class="brief-role-item">
-          <span class="brief-role-label">Format</span>
-          <span class="brief-role-value">150ml Spray Bottles</span>
-        </div>
+<!-- THE BRIEF -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">01</span> &nbsp;— <span>The Brief</span></span>
+      <span>Car Care / Bulgaria</span>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="about-heading">One frame that survives a <em>growing</em> product line.</div>
+        <dl class="roles">
+          <div><dt>My Role</dt><dd>Label Designer</dd></div>
+          <div><dt>Output</dt><dd>Print-Ready Labels</dd></div>
+          <div><dt>Products</dt><dd>9 Label Variants</dd></div>
+          <div><dt>Format</dt><dd>150 ml Spray Bottles</dd></div>
+        </dl>
+      </div>
+      <div class="about-text reveal d1">
+        <p>Easy Car Cleaner is a Bulgarian car cosmetics brand making spray products for car care — from interior fragrances to glass de-icers and insect removers. It was adding products faster than it could design for them, and every label had been drawn from scratch.</p>
+        <p>The task was to fix the frame once — wordmark, artwork panel, copy block, category and volume — so a new product becomes an artwork swap, not a redesign. Each label wraps a matte black spray bottle; the artwork panel tells the products apart at a glance: bold gradients for the fragrances, close-up photography for the cleaners.</p>
+        <p>The result is a product family with real shelf presence: each item known by its colour and artwork, the range still reading as one brand.</p>
         <a href="https://www.instagram.com/easy.car.cleaner1" target="_blank" rel="noopener" class="insta-tag">
-          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           @easy.car.cleaner1
         </a>
       </div>
-
-      <div class="brief-body reveal reveal-delay-2">
-        <p>
-          Easy Car Cleaner is a Bulgarian car cosmetics brand producing a range of spray products for automotive care — from interior fragrances to glass defrosters and insect repellents. The brand needed a complete label design system that could scale across its growing product line.
-        </p>
-        <p>
-          Each label was designed to wrap a matte black 150ml spray bottle, featuring the EASY CAR CLEANER wordmark and a distinctive photographic or illustrative artwork panel that communicates each product's character at a glance — bold gradients for fragrances, close-up photography for functional cleaners.
-        </p>
-        <p>
-          The result: a cohesive product family with strong shelf presence, where each item is immediately identifiable by its color and artwork, while still reading as one coherent brand system.
-        </p>
-      </div>
     </div>
   </div>
 </section>
 
-<!-- LABEL DESIGNS -->
-<section>
+<!-- THE LABEL SYSTEM — a deck of slides, each held at the top of the
+     screen while the next slides up over it -->
+<section class="deck-section">
   <div class="container">
-    <div class="section-label reveal">Print Design</div>
-    <div class="section-divider reveal reveal-delay-1"></div>
-    <h2 class="section-title reveal reveal-delay-1">Label System</h2>
-    <p class="label-intro reveal reveal-delay-2">
-      Nine labels across two product categories — five car fragrances with distinct artwork, plus functional cleaners for detailing, defrosting, and interior care. Each print-ready at production size.
-    </p>
+    <div class="section-label">
+      <span><span class="num">02</span> &nbsp;— <span>The Label System</span></span>
+      <span>Anatomy / Colour / Type</span>
+    </div>
   </div>
 
-  <div class="container reveal reveal-delay-1">
-    <div class="label-grid">
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-blackcode.jpg" alt="Black Code fragrance label" loading="lazy">
+  <div class="deck">
+
+    <article class="slide">
+      <div class="slide-card">
+        <div class="slide-side">
+          <div><div class="slide-num">01 / 03</div><h3 class="slide-title">Label <br>Anatomy</h3></div>
+          <p class="slide-desc">Five fixed zones, and only one of them changes: the artwork panel, which carries the product's name and colour.</p>
+        </div>
+        <div class="slide-body sb-anat">
+          <figure class="anat-fig">
+            <img src="web/ecc-site/labels/crush.jpg" width="1024" height="932" alt="The Crush label, its five zones outlined" loading="lazy" decoding="async">
+            <span class="zone" data-z="1" style="--x:4.7%; --y:9%; --w:24.7%; --h:18.6%"><b>01</b></span>
+            <span class="zone" data-z="2" style="--x:77%; --y:10%; --w:15.5%; --h:12.8%"><b>02</b></span>
+            <span class="zone var" data-z="3" style="--x:4.9%; --y:31.8%; --w:54.5%; --h:55.9%"><b>03</b></span>
+            <span class="zone" data-z="4" style="--x:64.6%; --y:30%; --w:34.8%; --h:51%"><b>04</b></span>
+            <span class="zone" data-z="5" style="--x:4.9%; --y:92.3%; --w:54.1%; --h:7.1%"><b>05</b></span>
+          </figure>
+          <ol class="anat-key">
+            <li data-z="1"><b>01</b><span>Wordmark</span><small>Stacked in three lines, in the same place on every label.</small></li>
+            <li data-z="2"><b>02</b><span>Brand badge</span><small>The car mark, top right, at a fixed size.</small></li>
+            <li data-z="3" class="var"><b>03</b><span>Artwork panel</span><small>The only zone that changes: a gradient or a photograph, with the product's name.</small></li>
+            <li data-z="4"><b>04</b><span>Copy block</span><small>The Bulgarian description, ragged right on a fixed measure, so its length can vary.</small></li>
+            <li data-z="5"><b>05</b><span>Category &amp; volume</span><small>What it is on the left, how much on the right, along the bottom.</small></li>
+          </ol>
+        </div>
       </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-crush.jpg" alt="Crush fragrance label" loading="lazy">
+    </article>
+
+    <article class="slide">
+      <div class="slide-card">
+        <div class="slide-side">
+          <div><div class="slide-num">02 / 03</div><h3 class="slide-title">Colour</h3></div>
+          <p class="slide-desc">The frame is monochrome, white on black like the bottle it wraps. Colour only appears in the artwork: one colourway per product, sampled from the delivered files.</p>
+        </div>
+        <div class="slide-body sb-col">
+          <div class="frame-row">
+            <div class="sw" style="--c:#191619; --t:#fff"><span class="lab kind">Frame · every label's ground</span><span class="sw-name">Frame Black</span><span class="lab">#191619</span></div>
+            <div class="sw" style="--c:#fff; --t:#191619"><span class="lab kind">Frame · all type and marks</span><span class="sw-name">Frame White</span><span class="lab">#FFFFFF</span></div>
+          </div>
+          <div class="art-grid">
+            <div class="sw" style="--c:#90A8C0; --t:#191619"><span class="sw-name">Crush</span><span class="lab">#90A8C0</span></div>
+            <div class="sw" style="--c:#000018; --t:#fff"><span class="sw-name">Black Code</span><span class="lab">#000018</span></div>
+            <div class="sw" style="--c:#78A860; --t:#191619"><span class="sw-name">Leagle</span><span class="lab">#78A860</span></div>
+            <div class="sw" style="--c:#A86030; --t:#fff"><span class="sw-name">Exotic Mango</span><span class="lab">#A86030</span></div>
+            <div class="sw" style="--c:#C090A8; --t:#191619"><span class="sw-name">Sweet Aura</span><span class="lab">#C090A8</span></div>
+            <div class="sw" style="--c:#F0F0F0; --t:#191619"><span class="sw-name">Мляко за табло</span><span class="lab">#F0F0F0</span></div>
+            <div class="sw" style="--c:#A83030; --t:#fff"><span class="sw-name">Polish</span><span class="lab">#A83030</span></div>
+            <div class="sw" style="--c:#4878A8; --t:#fff"><span class="sw-name">Размразител</span><span class="lab">#4878A8</span></div>
+            <div class="sw" style="--c:#C0C0C0; --t:#191619"><span class="sw-name">Bugz Off</span><span class="lab">#C0C0C0</span></div>
+          </div>
+        </div>
       </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-sweetaura.jpg" alt="Sweet Aura fragrance label" loading="lazy">
+    </article>
+
+    <article class="slide">
+      <div class="slide-card">
+        <div class="slide-side">
+          <div><div class="slide-num">03 / 03</div><h3 class="slide-title">Type&shy;face</h3></div>
+          <p class="slide-desc">One family, three weights: ExtraBold for the wordmark and the product names, Regular for the copy, Light for the category and volume.</p>
+        </div>
+        <div class="slide-body sb-type">
+          <div class="ty-head"><p class="ty-name">Montserrat</p><span class="lab">Latin + Cyrillic<br>300 · 400 · 800</span></div>
+          <div class="ty-row"><p class="ty-800">Easy Car Cleaner<br>Crush · Black Code</p><span class="lab">ExtraBold — wordmark, names</span></div>
+          <div class="ty-row"><p class="ty-400">Ароматизиращ спрей за кола с изтънчен и свеж аромат. Идеален за създаване на приятна атмосфера в автомобила.</p><span class="lab">Regular — copy</span></div>
+          <div class="ty-row"><p class="ty-300">АРОМАТИЗАТОР<span>150 ML</span></p><span class="lab">Light — category, volume</span></div>
+        </div>
       </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-leagle.jpg" alt="Leagle fragrance label" loading="lazy">
+    </article>
+
+  </div>
+</section>
+
+<!-- THE SHELF — the nine bottles in 3D; scrolling walks the camera along
+     them, and each turns to face it as it passes -->
+<section class="shelf-section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">03</span> &nbsp;— <span>The Shelf</span></span>
+      <span>Nine Products / One Frame</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-heading reveal">Nine variants, <em>one</em> frame.</div>
+      <div class="about-text reveal d1">
+        <p>Same wordmark, same badge, same copy measure, same volume line. Only the artwork panel and its colour change from one product to the next. Scroll along the shelf: each bottle turns to face you as you pass.</p>
       </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-exoticmango.jpg" alt="Exotic Mango fragrance label" loading="lazy">
+    </div>
+  </div>
+  <div class="shelf-run">
+    <div class="shelf-stage" role="img" aria-label="The nine bottles standing on a shelf in 3D; scrolling moves along the shelf and each bottle turns to show its label">
+      <canvas class="shelf-canvas" aria-hidden="true"></canvas>
+      <p class="shelf-load lab">Setting up the shelf…</p>
+      <p class="shelf-hint lab">Scroll along the shelf</p>
+      <div class="shelf-cap" aria-live="polite">
+        <span class="sc-num lab">01 / 09</span>
+        <span class="sc-name">Crush</span>
+        <span class="sc-meta lab"><i></i><span>Car fragrance · 150 ml · #90A8C0</span></span>
       </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-mlqko.jpg" alt="Мляко за табло label" loading="lazy">
-      </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-razm.jpg" alt="Размразител за стъкла label" loading="lazy">
-      </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-polish.jpg" alt="Полиращ препарат label" loading="lazy">
-      </div>
-      <div class="label-grid-item">
-        <img src="web/ecc-brand/label-bugzoff.jpg" alt="Bugz Off insect repellent label" loading="lazy">
-      </div>
+      <ol class="shelf-ticks">
+        <li><button type="button" aria-label="Crush"></button></li>
+        <li><button type="button" aria-label="Black Code"></button></li>
+        <li><button type="button" aria-label="Leagle"></button></li>
+        <li><button type="button" aria-label="Exotic Mango"></button></li>
+        <li><button type="button" aria-label="Sweet Aura"></button></li>
+        <li><button type="button" aria-label="Мляко за табло"></button></li>
+        <li><button type="button" aria-label="Polish"></button></li>
+        <li><button type="button" aria-label="Размразител"></button></li>
+        <li><button type="button" aria-label="Bugz Off"></button></li>
+      </ol>
+    </div>
+    <div class="shelf-still">
+      <img loading="lazy" src="web/ecc-site/labels/crush.jpg" width="1024" height="932" alt="Crush label">
+      <img loading="lazy" src="web/ecc-site/labels/blackcode.jpg" width="1024" height="901" alt="Black Code label">
+      <img loading="lazy" src="web/ecc-site/labels/leagle.jpg" width="1024" height="902" alt="Leagle label">
+      <img loading="lazy" src="web/ecc-site/labels/exoticmango.jpg" width="1024" height="901" alt="Exotic Mango label">
+      <img loading="lazy" src="web/ecc-site/labels/sweetaura.jpg" width="1024" height="902" alt="Sweet Aura label">
+      <img loading="lazy" src="web/ecc-site/labels/mlqko.jpg" width="1024" height="901" alt="Мляко за табло (dashboard milk) label">
+      <img loading="lazy" src="web/ecc-site/labels/polish.jpg" width="1024" height="758" alt="Polish label">
+      <img loading="lazy" src="web/ecc-site/labels/razm.jpg" width="1024" height="759" alt="Размразител за стъкла (glass de-icer) label">
+      <img loading="lazy" src="web/ecc-site/labels/bugzoff.jpg" width="1024" height="903" alt="Bugz Off label">
     </div>
   </div>
 </section>
 
-<!-- PRODUCT PHOTOGRAPHY -->
-<section>
+<!-- IN PRODUCTION — the labels on the real bottles -->
+<section class="section">
   <div class="container">
-    <div class="photo-header">
-      <div>
-        <div class="section-label reveal">In Context</div>
-        <div class="section-divider reveal reveal-delay-1"></div>
-        <h2 class="section-title reveal reveal-delay-1">The Products</h2>
-      </div>
-      <p class="photo-caption reveal reveal-delay-2">
-        Labels photographed on final production bottles — studio and lifestyle shots for the brand's social media presence.
-      </p>
+    <div class="section-label">
+      <span><span class="num">04</span> &nbsp;— <span>In Production</span></span>
+      <span>Studio / Lifestyle</span>
     </div>
-  </div>
-
-  <div class="container reveal">
-    <!-- Row 1: two tall photos side by side -->
-    <div class="photo-grid-hero">
-      <div class="photo-tall">
-        <img src="easycarcleaner_productphotos/487139426_17956636619920129_7520832823073793519_n.jpg"
-             alt="Crush, Black Code, Summer Scent fragrances on smoky dark background"
-             loading="lazy">
-      </div>
-      <div class="photo-tall">
-        <img src="easycarcleaner_productphotos/465896919_17939752232920129_6820737967264063687_n.jpg"
-             alt="Glass defroster bottle with blue squeegee on ice"
-             loading="lazy">
+    <div class="about-grid" style="margin-bottom: 3.5rem">
+      <div class="about-heading reveal">On the <em>real</em> bottles.</div>
+      <div class="about-text reveal d1">
+        <p>The labels photographed on the final production bottles: studio and lifestyle shots for the brand's social media.</p>
       </div>
     </div>
-
-    <!-- Row 2: wide + two squares -->
-    <div class="photo-grid-row">
-      <div class="photo-tall" style="aspect-ratio: auto; min-height: 320px;">
-        <img src="web/easycarcleaner_productphotos/IMG_0831.jpg"
-             alt="Sweet Aura, Crush and Black Code fragrances on dark reflective surface"
-             loading="lazy"
-             style="object-position: center center;">
+    <div class="reveal">
+      <div class="photo-grid-hero">
+        <div class="photo-tall"><img src="easycarcleaner_productphotos/487139426_17956636619920129_7520832823073793519_n.jpg" width="1440" height="1440" alt="Crush, Black Code and Summer Scent fragrances on a smoky dark background" loading="lazy" decoding="async"></div>
+        <div class="photo-tall"><img src="easycarcleaner_productphotos/465896919_17939752232920129_6820737967264063687_n.jpg" width="720" height="861" alt="The glass de-icer with a blue squeegee on ice" loading="lazy" decoding="async"></div>
       </div>
-      <div class="photo-square">
-        <img src="web/easycarcleaner_productphotos/IMG_0835.jpg"
-             alt="Spray bottle with ice and snow"
-             loading="lazy">
+      <div class="photo-grid-row">
+        <div class="photo-tall" style="aspect-ratio: auto; min-height: 320px;"><img src="web/easycarcleaner_productphotos/IMG_0831.jpg" width="1208" height="1610" alt="Sweet Aura, Crush and Black Code fragrances on a dark reflective surface" loading="lazy" decoding="async" style="object-position: center center;"></div>
+        <div class="photo-square"><img src="web/easycarcleaner_productphotos/IMG_0835.jpg" width="1200" height="1358" alt="A spray bottle with ice and snow" loading="lazy" decoding="async"></div>
+        <div class="photo-square"><img src="web/easycarcleaner_productphotos/IMG_0848.jpg" width="1200" height="1600" alt="The product range on a car" loading="lazy" decoding="async"></div>
       </div>
-      <div class="photo-square">
-        <img src="web/easycarcleaner_productphotos/IMG_0848.jpg"
-             alt="Product range on car surface"
-             loading="lazy">
-      </div>
-    </div>
-
-    <!-- Row 3: autumn lifestyle -->
-    <div class="photo-wide" style="margin-top: 6px;">
-      <img src="web/easycarcleaner_productphotos/IMG_0833-1200.jpg" srcset="web/easycarcleaner_productphotos/IMG_0833-1200.jpg 1200w, web/easycarcleaner_productphotos/IMG_0833.jpg 2440w" sizes="(max-width: 1260px) 100vw, 1220px"
-           alt="Full fragrance lineup laid on autumn leaves"
-           loading="lazy"
-           style="object-position: center 40%;">
+      <div class="photo-wide"><img src="web/easycarcleaner_productphotos/IMG_0833-1200.jpg" srcset="web/easycarcleaner_productphotos/IMG_0833-1200.jpg 1200w, web/easycarcleaner_productphotos/IMG_0833.jpg 2440w" sizes="(max-width: 1260px) 100vw, 1220px" width="1200" height="1600" alt="The full fragrance line-up laid on autumn leaves" loading="lazy" decoding="async" style="object-position: center 40%;"></div>
     </div>
   </div>
 </section>
 
 <!-- THE FULL KIT -->
-<section class="kit-section">
+<section class="section">
   <div class="container">
+    <div class="section-label">
+      <span><span class="num">05</span> &nbsp;— <span>The Full Kit</span></span>
+      <span>Complete Range</span>
+    </div>
     <div class="kit-layout">
-      <div class="kit-photo reveal">
-        <img src="easycarcleaner_productphotos/465779758_17939753546920129_2967218668408059801_n.jpg"
-             alt="Easy Car Cleaner full gift kit box with all products"
-             loading="lazy">
-      </div>
-      <div class="kit-text">
-        <div>
-          <div class="kit-label reveal">Complete Range</div>
-          <div class="section-divider reveal reveal-delay-1"></div>
-          <h2 class="kit-heading reveal reveal-delay-1">The Full Kit</h2>
-        </div>
-        <p class="kit-body reveal reveal-delay-2">
-          The full Easy Car Cleaner lineup packaged as a complete gift kit — cleaners, fragrances, and accessories all carrying the unified label system. The brand card uses the same visual language as the labels, bringing cohesion to the entire product family.
-        </p>
-        <div class="kit-products reveal reveal-delay-2">
-          <div class="kit-product"><strong>Мляко за табло</strong> — dashboard milk</div>
-          <div class="kit-product"><strong>Размразител за стъкла</strong> — glass defroster</div>
-          <div class="kit-product"><strong>Sweet Aura</strong> — interior fragrance</div>
-          <div class="kit-product"><strong>Ароматизатори</strong> — fragrance series · Crush, Black Code, Leagle, Exotic Mango, Summer Scent</div>
-          <div class="kit-product"><strong>Bugz Off</strong> — insect repellent spray</div>
-          <div class="kit-product"><strong>Polish</strong> — exterior detailing</div>
+      <div class="kit-photo reveal"><img src="easycarcleaner_productphotos/465779758_17939753546920129_2967218668408059801_n.jpg" width="1080" height="1349" alt="The Easy Car Cleaner gift kit box with all the products" loading="lazy" decoding="async"></div>
+      <div class="about-text reveal d1">
+        <div class="about-heading">Everything, in <em>one</em> box.</div>
+        <p>The full line-up packed as a gift kit — cleaners, fragrances and accessories, all in the same label system. The brand card speaks the labels' language too, so the whole family reads as one.</p>
+        <div class="kit-products">
+          <div class="kit-product" style="--c:#F0F0F0"><span><strong>Мляко за табло</strong> — dashboard milk</span></div>
+          <div class="kit-product" style="--c:#4878A8"><span><strong>Размразител за стъкла</strong> — glass de-icer</span></div>
+          <div class="kit-product" style="--c:#C090A8"><span><strong>Sweet Aura</strong> — interior fragrance</span></div>
+          <div class="kit-product" style="--c:#90A8C0"><span><strong>Ароматизатори</strong> — Crush, Black Code, Leagle, Exotic Mango, Summer Scent</span></div>
+          <div class="kit-product" style="--c:#C0C0C0"><span><strong>Bugz Off</strong> — insect remover</span></div>
+          <div class="kit-product" style="--c:#A83030"><span><strong>Polish</strong> — exterior detailing</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<div class="container">
-  <div class="project-footer">
-    <span class="footer-brand">Easy Car Cleaner</span>
-    <nav class="footer-nav">
-      <a href="bogota.html">← Bogota</a>
-      <a href="portfolio-editorial.html">All Projects</a>
-      <a href="muave.html">Muave →</a>
-    </nav>
+<!-- STATS -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat reveal"><div class="stat-number">9</div><div class="stat-label">Labels designed</div></div>
+      <div class="stat reveal d1"><div class="stat-number">6</div><div class="stat-label">Product lines</div></div>
+      <div class="stat reveal d2"><div class="stat-number">1</div><div class="stat-label">Shared frame</div></div>
+    </div>
   </div>
 </div>
 
+<!-- NEXT -->
+<div class="container">
+  <a href="mortar.html" class="next-project">
+    <div>
+      <div class="next-label">— Next Project</div>
+      <div class="next-title">Mortar</div>
+    </div>
+    <span class="next-arrow">→</span>
+  </a>
+</div>
+
 <script>
-  // Scroll to top on load
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
 
-  // Theme sync (dark mode)
-  const saved = localStorage.getItem('portfolio-theme');
-  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
-
   // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-  reveals.forEach(el => observer.observe(el));
+  const revealIO = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); }
+  }), { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
 
-  // Stagger children of grids for entrance
-  document.querySelectorAll('.label-grid, .photo-grid-hero, .photo-grid-row, .fragrance-strip').forEach(grid => {
-    const items = grid.children;
-    Array.from(items).forEach((item, i) => {
-      item.style.transitionDelay = `${i * 0.06}s`;
-      item.classList.add('reveal');
-      observer.observe(item);
-    });
-  });
+  // ── The label system deck ─────────────────────────────────────────
+  /* The slides hold under the nav (CSS sticky, so iOS keeps its bars and
+     nothing jitters). Here: the nav's height for where they hold; each
+     slide's content settles in as the slide arrives; and on desktop the
+     slide being covered sinks back and dims a touch as the next comes up. */
+  (function () {
+    const nav = document.querySelector('nav');
+    let top = 70;
+    const setTop = () => { top = nav ? nav.offsetHeight : 0; document.documentElement.style.setProperty('--top', top + 'px'); };
+    setTop(); addEventListener('resize', setTop);
+
+    const deck = document.querySelector('.deck');
+    if (!deck) return;
+    const slides = [...deck.querySelectorAll('.slide')];
+    const cards = slides.map(s => s.querySelector('.slide-card'));
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('here'); io.unobserve(e.target); }
+    }), { threshold: .35 });
+    slides.forEach(s => io.observe(s));
+
+    if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 821px)').matches ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let queued = false;
+    const sink = () => {
+      queued = false;
+      const h = innerHeight - top;
+      for (let i = 0; i < slides.length - 1; i++) {
+        const y = slides[i + 1].getBoundingClientRect().top - top;
+        const p = Math.min(1, Math.max(0, 1 - y / h));
+        cards[i].style.transform = p ? `scale(${(1 - .06 * p).toFixed(4)})` : '';
+        cards[i].style.filter = p ? `brightness(${(1 - .3 * p).toFixed(3)})` : '';
+      }
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(sink); } }, { passive: true });
+    sink();
+  })();
+
+  // ── The shelf: the nine bottles in 3D ──────────────────────────────
+  /* The bottle is the one in the product renders, traced: its outline
+     spun round for the body, the trigger head's side view given depth.
+     Each wears its own label, wrapped round the body at the label's true
+     proportions with its artwork panel to the front. The nine stand in a
+     row on a shelf; scrolling glides the camera along it, and each bottle
+     turns to face the camera as it comes level, then on round as it goes.
+     three.js is only fetched as the section comes near; without WebGL, or
+     with reduced motion, the nine labels are laid out flat instead. */
+  (function () {
+    const run = document.querySelector('.shelf-run');
+    if (!run) return;
+    const still = () => run.classList.add('still');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return still();
+    try { const c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) return still(); }
+    catch (e) { return still(); }
+
+    const stage = run.querySelector('.shelf-stage'), canvas = run.querySelector('.shelf-canvas');
+    const cap = run.querySelector('.shelf-cap'), capNum = cap.querySelector('.sc-num'), capName = cap.querySelector('.sc-name');
+    const capChip = cap.querySelector('.sc-meta i'), capMeta = cap.querySelector('.sc-meta span');
+    const ticks = [...run.querySelectorAll('.shelf-ticks button')];
+    // label file, name, what it is, volume, colour, label width / height,
+    // and where the artwork panel's centre sits across the label
+    const ITEMS = [
+      ['crush', 'Crush', 'Car fragrance', '150 ml', '#90A8C0', 1.0987, .320],
+      ['blackcode', 'Black Code', 'Car fragrance', '150 ml', '#000018', 1.1363, .286],
+      ['leagle', 'Leagle', 'Car fragrance', '150 ml', '#78A860', 1.1350, .285],
+      ['exoticmango', 'Exotic Mango', 'Car fragrance', '150 ml', '#A86030', 1.1366, .291],
+      ['sweetaura', 'Sweet Aura', 'Car fragrance', '150 ml', '#C090A8', 1.1356, .286],
+      ['mlqko', 'Мляко за табло', 'Dashboard milk', '150 ml', '#F0F0F0', 1.1361, .293],
+      ['polish', 'Polish', 'Polishing compound', '250 ml', '#A83030', 1.3507, .280],
+      ['razm', 'Размразител', 'Glass de-icer', '250 ml', '#4878A8', 1.3487, .282],
+      ['bugzoff', 'Bugz Off', 'Insect remover', '150 ml', '#C0C0C0', 1.1341, .293],
+    ];
+    // the bottle, from the render (units of 1000 px there, y up from the
+    // base): the body's outline as radius, height pairs from the bottom
+    // up, and the trigger head's side view as x, y pairs, x from the axis
+    const BODY = [0,0,0.2075,0.004,0.262,0.02,0.277,0.028,0.288,0.036,0.297,0.044,0.3095,0.06,0.319,0.076,0.3255,0.092,0.336,0.132,0.336,1.212,0.332,1.236,0.3235,1.26,0.3075,1.292,0.2955,1.308,0.2725,1.332,0.2525,1.348,0.228,1.364,0.197,1.38,0.1585,1.396,0.143,1.404,0.1325,1.412,0.125,1.42,0.147,1.428,0.147,1.564,0,1.564];
+    const HEAD = [-0.014,2.154,0.03,2.154,0.066,2.148,0.098,2.138,0.146,2.114,0.21,2.062,0.238,2.026,0.254,1.992,0.258,1.95,0.244,1.912,0.226,1.888,0.16,1.824,0.128,1.786,0.102,1.738,0.084,1.688,0.108,1.678,0.114,1.646,0.144,1.64,0.146,1.566,-0.146,1.566,-0.144,1.64,-0.12,1.644,-0.112,1.65,-0.108,1.68,-0.078,1.686,-0.072,1.908,-0.064,1.912,-0.062,1.936,-0.05,1.946,-0.052,1.968,-0.11,1.946,-0.158,1.906,-0.204,1.844,-0.276,1.728,-0.334,1.662,-0.396,1.616,-0.49,1.566,-0.496,1.572,-0.496,1.58,-0.488,1.604,-0.416,1.678,-0.362,1.754,-0.334,1.81,-0.28,1.944,-0.258,1.988,-0.232,2.024,-0.292,2.044,-0.292,2.092,-0.234,2.11,-0.138,2.11,-0.062,2.146];
+    const TALL = 2.154;                        // base to the top of the trigger
+    const LABEL = [.101, 1.216];               // the label's bottom and top edge
+    const GAP = 1.3;                           // bottle to bottle along the shelf
+    const TURN = 1.75;                         // how far round a bottle stands when it isn't in front (rad)
+    const L = ITEMS.length - 1;
+    const clamp = x => Math.min(1, Math.max(0, x));
+    const smooth = x => x * x * (3 - 2 * x);
+    const navTop = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70;
+
+    // the scroll, in bottles along the shelf, with a still moment at each
+    let span = 1;
+    function layout() {
+      const H = innerHeight - navTop();
+      span = L * H * (innerWidth <= 820 ? .5 : .55);
+      run.style.height = (span + stage.offsetHeight) + 'px';
+    }
+    function scrollTarget() {
+      const p = clamp((navTop() - run.getBoundingClientRect().top) / span) * L;
+      const i = Math.min(L - 1, Math.floor(p)), t = p - i;
+      return i + smooth(clamp((t - .18) / .64));
+    }
+    layout();
+    ticks.forEach((b, k) => b.addEventListener('click', () => {
+      scrollTo({ top: scrollY + run.getBoundingClientRect().top - navTop() + k / L * span, behavior: 'smooth' });
+    }));
+
+    let shown = 0;
+    function caption(k) {
+      if (k === shown) return;
+      shown = k;
+      const it = ITEMS[k];
+      capNum.textContent = String(k + 1).padStart(2, '0') + ' / 09';
+      capName.textContent = it[1];
+      capChip.style.setProperty('--c', it[4]);
+      capMeta.textContent = `${it[2]} · ${it[3]} · ${it[4]}`;
+      ticks.forEach((b, j) => b.setAttribute('aria-current', j === k ? 'true' : 'false'));
+      cap.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.16,1,.3,1)' });
+    }
+    ticks[0].setAttribute('aria-current', 'true');
+
+    // normals for the extruded head: smooth across its gentle turns, sharp
+    // where its faces meet at an angle (the extrusion leaves them flat)
+    function creased(T, geo, angle) {
+      const pos = geo.attributes.position, n = pos.count, out = new Float32Array(n * 3);
+      const a = new T.Vector3(), b = new T.Vector3(), c = new T.Vector3(), face = [];
+      for (let i = 0; i < n; i += 3) {
+        a.fromBufferAttribute(pos, i); b.fromBufferAttribute(pos, i + 1); c.fromBufferAttribute(pos, i + 2);
+        const f = c.clone().sub(b).cross(a.clone().sub(b));
+        if (f.lengthSq() > 0) f.normalize();
+        face.push(f, f, f);
+      }
+      const at = new Map();
+      for (let i = 0; i < n; i++) {
+        const k = Math.round(pos.getX(i) * 1e4) + ',' + Math.round(pos.getY(i) * 1e4) + ',' + Math.round(pos.getZ(i) * 1e4);
+        let g = at.get(k); if (!g) at.set(k, g = []); g.push(i);
+      }
+      const cos = Math.cos(angle), s = new T.Vector3();
+      for (const g of at.values()) for (const i of g) {
+        s.set(0, 0, 0);
+        for (const j of g) if (face[i].dot(face[j]) > cos) s.add(face[j]);
+        if (s.lengthSq() === 0) s.copy(face[i]);
+        s.normalize(); out[i * 3] = s.x; out[i * 3 + 1] = s.y; out[i * 3 + 2] = s.z;
+      }
+      geo.setAttribute('normal', new T.BufferAttribute(out, 3));
+      return geo;
+    }
+
+    const radial = (stops, size) => {
+      const c = document.createElement('canvas'); c.width = c.height = size;
+      const g = c.getContext('2d'), r = size / 2, grad = g.createRadialGradient(r, r, 0, r, r, r);
+      stops.forEach(([o, col]) => grad.addColorStop(o, col));
+      g.fillStyle = grad; g.fillRect(0, 0, size, size);
+      return c;
+    };
+
+    async function build() {
+      const T = await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js');
+      const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = T.NeutralToneMapping;
+      const scene = new T.Scene();
+      const camera = new T.PerspectiveCamera(24, 1, .1, 80);
+
+      // light: for the reflections, a dark studio with a tall strip light
+      // either side of the camera and a broad one overhead; a key light for
+      // the labels; and white rims from behind to draw the black bottles out
+      // of the black
+      const studio = new T.Scene();
+      studio.add(new T.Mesh(new T.BoxGeometry(30, 20, 30), new T.MeshBasicMaterial({ color: 0x0a090a, side: T.BackSide })));
+      const softbox = (w, h, k, x, y, z) => {
+        const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color().setScalar(k), side: T.DoubleSide }));
+        m.position.set(x, y, z); m.lookAt(0, 0, 0); studio.add(m);
+      };
+      softbox(1.6, 9, 6, -6, 1, 4.5); softbox(1.6, 9, 6, 6, 1, 4.5);
+      softbox(9, 3, 2.5, 0, 8, 1.5); softbox(8, 1.2, 1.2, 0, 1, -10);
+      const pmrem = new T.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(studio, .03).texture;
+      pmrem.dispose();
+      scene.add(new T.HemisphereLight(0xffffff, 0x141214, .8));
+      const key = new T.DirectionalLight(0xffffff, 2.2); key.position.set(-2.5, 4, 6);
+      const rimL = new T.DirectionalLight(0xffffff, 3); rimL.position.set(-6, 3, -5);
+      const rimR = new T.DirectionalLight(0xffffff, 3); rimR.position.set(6, 2.5, -5);
+      scene.add(key, rimL, rimR);
+
+      // the bottle
+      const pairs = a => { const v = []; for (let i = 0; i < a.length; i += 2) v.push(new T.Vector2(a[i], a[i + 1])); return v; };
+      const prof = pairs(BODY);
+      const bodyGeo = new T.LatheGeometry(prof, 72);
+      const headGeo = creased(T, new T.ExtrudeGeometry(new T.Shape(pairs(HEAD)),
+        { depth: .2, bevelEnabled: true, bevelThickness: .022, bevelSize: .014, bevelOffset: -.014, bevelSegments: 3 }), .6);
+      headGeo.translate(0, 0, -.1);
+      const radiusAt = y => {
+        for (let i = 1; i < prof.length; i++) {
+          const a = prof[i - 1], b = prof[i];
+          if (b.y > a.y && y >= a.y && y <= b.y) return a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y);
+        }
+        return 0;
+      };
+      // a label: the body's own curve, a hair proud of it, round as far as
+      // the label is wide (at its height), the artwork panel's centre at
+      // the front; its rows are even in height, so the art isn't stretched
+      const labelGeo = (aspect, front) => {
+        const [y0, y1] = LABEL, h = y1 - y0, arc = h * aspect / .336, pts = [];
+        for (let k = 0; k <= 40; k++) { const y = y0 + h * k / 40; pts.push(new T.Vector2(radiusAt(y) + .0015, y)); }
+        return new T.LatheGeometry(pts, 96, -front * arc, arc);
+      };
+      const plastic = new T.MeshPhysicalMaterial({ color: 0x1d1d1d, roughness: .42, clearcoat: .5, clearcoatRoughness: .32 });
+      const labelMats = ITEMS.map(() => new T.MeshPhysicalMaterial({ color: 0x1d1d1d, roughness: .5, clearcoat: .35, clearcoatRoughness: .4 }));
+
+      // the shelf, and a soft shadow under each bottle
+      const plank = new T.Mesh(new T.BoxGeometry(L * GAP + 2.8, .12, 1.25), new T.MeshPhysicalMaterial({ color: 0x2a272a, roughness: .6, clearcoat: .2 }));
+      plank.position.set(L * GAP / 2, -.06, 0);
+      scene.add(plank);
+      const shadowMat = new T.MeshBasicMaterial({ map: new T.CanvasTexture(radial([[0, 'rgba(0,0,0,.8)'], [.5, 'rgba(0,0,0,.35)'], [1, 'rgba(0,0,0,0)']], 128)), transparent: true, depthWrite: false });
+      const shadowGeo = new T.PlaneGeometry(1.15, 1.15).rotateX(-Math.PI / 2);
+
+      const bottles = ITEMS.map((it, i) => {
+        const g = new T.Group();
+        g.add(new T.Mesh(bodyGeo, plastic), new T.Mesh(headGeo, plastic), new T.Mesh(labelGeo(it[5], it[6]), labelMats[i]));
+        g.position.x = i * GAP;
+        const s = new T.Mesh(shadowGeo, shadowMat); s.position.set(i * GAP, .002, 0);
+        scene.add(g, s);
+        return g;
+      });
+
+      const loader = new T.TextureLoader();
+      const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      ITEMS.forEach((it, i) => loader.load('web/ecc-site/labels/' + it[0] + '.jpg', tex => {
+        tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = aniso;
+        labelMats[i].map = tex; labelMats[i].color.set(0xffffff); labelMats[i].needsUpdate = true;
+        kick();
+      }));
+
+      // the camera: the bottle about 58% of the height, and on a phone
+      // enough across for the bottles either side to show
+      let dist = 8, W = 0, H = 0;
+      function size() {
+        const w = stage.clientWidth, h = stage.clientHeight;
+        if (w === W && h === H) return;
+        W = w; H = h;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        dist = Math.max(TALL / .58, 2.2 / camera.aspect) / 2 / Math.tan(camera.fov * Math.PI / 360);
+        camera.updateProjectionMatrix();
+      }
+      function place(f) {
+        const x = f * GAP;
+        camera.position.set(x, 1.5, dist);
+        camera.lookAt(x, .82, 0);
+        // each bottle faces the camera when level with it, and stands turned
+        // away either side, so it turns round as the camera goes past
+        bottles.forEach((b, i) => {
+          const d = Math.max(-1, Math.min(1, i - f));
+          b.rotation.y = -Math.sign(d) * smooth(Math.abs(d)) * TURN;
+        });
+      }
+
+      // drawn only when something moves: the camera eases after the scroll
+      let target = scrollTarget(), focus = target, raf = 0, last = 0, onScreen = true;
+      function frame(now) {
+        raf = 0;
+        const dt = last ? Math.min(.05, (now - last) / 1000) : .016;
+        last = now;
+        focus += (target - focus) * (1 - Math.exp(-dt * 7));
+        if (Math.abs(target - focus) < .0005) focus = target;
+        size(); place(focus);
+        renderer.render(scene, camera);
+        caption(Math.round(focus));
+        run.classList.toggle('moved', focus > .25);
+        if (focus !== target) raf = requestAnimationFrame(frame); else last = 0;
+      }
+      function kick() { if (!raf && onScreen) raf = requestAnimationFrame(frame); }
+      addEventListener('scroll', () => { target = scrollTarget(); kick(); }, { passive: true });
+      addEventListener('resize', () => { layout(); target = scrollTarget(); kick(); });
+      new IntersectionObserver(es => { onScreen = es[0].isIntersecting; if (onScreen) { target = scrollTarget(); kick(); } }).observe(run);
+      size(); place(focus); renderer.render(scene, camera);
+      stage.classList.add('ready');
+    }
+
+    let begun = false;
+    const near = new IntersectionObserver(es => {
+      if (!es[0].isIntersecting || begun) return;
+      begun = true; near.disconnect();
+      build().catch(e => { console.warn('shelf:', e); still(); });
+    }, { rootMargin: '150% 0px' });
+    near.observe(run);
+    addEventListener('resize', layout);
+  })();
 </script>
 
 </body>

@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Metropolis, the system's text face (public domain), for the parts below the Figma */
+  @font-face { font-family: 'Metropolis'; font-style: normal; font-weight: 400; font-display: swap; src: url(https://cdn.jsdelivr.net/npm/@fontsource/metropolis@5.2.5/files/metropolis-latin-400-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Metropolis'; font-style: normal; font-weight: 500; font-display: swap; src: url(https://cdn.jsdelivr.net/npm/@fontsource/metropolis@5.2.5/files/metropolis-latin-500-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Metropolis'; font-style: normal; font-weight: 600; font-display: swap; src: url(https://cdn.jsdelivr.net/npm/@fontsource/metropolis@5.2.5/files/metropolis-latin-600-normal.woff2) format('woff2'); }
   /* ===== Design tokens taken from the Figma file (canvas 1512 × 4323) ===== */
   :root {
     --paper:  #3e363f;
@@ -206,8 +210,11 @@
   }
   .what .copy p + p { margin-top: 0; }
 
-  /* ================= BELOW THE FIGMA — app screens, same language ================= */
-  .work { margin-top: calc(214 * var(--s)); }
+  /* ================= BELOW THE FIGMA — the design system and the app ================= */
+  /* Outside .canvas: its overflow clip would stop the slides and the phone
+     from holding still (sticky needs ancestors that don't clip). Same 1512
+     column, so the edges line up with everything above. */
+  .below { width: calc(1512 * var(--s)); margin: calc(214 * var(--s)) auto 0; }
 
   .sec-label {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -219,46 +226,185 @@
   }
   .sec-label .n { color: var(--lime); }
 
-  .feature { padding: calc(150 * var(--s)) calc(113 * var(--s)); }
-  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(120 * var(--s)); align-items: center; }
-  .feature-grid.flip { direction: rtl; }
-  .feature-grid.flip > * { direction: ltr; }
-
-  .f-eyebrow {
-    font-size: calc(20 * var(--s)); font-weight: 600;
-    letter-spacing: calc(2.6 * var(--s)); text-transform: uppercase;
-    color: var(--lime); margin-bottom: calc(22 * var(--s));
-  }
+  /* a heading and a few lines of copy over each part */
+  .intro { display: grid; grid-template-columns: 1fr 1fr; gap: calc(120 * var(--s)); align-items: end; padding: calc(110 * var(--s)) calc(113 * var(--s)) calc(70 * var(--s)); }
   .f-head {
     font-weight: 700; font-size: calc(64 * var(--s)); line-height: calc(70 * var(--s));
     letter-spacing: calc(-1.4 * var(--s)); color: var(--white);
-    margin-bottom: calc(28 * var(--s));
   }
   .f-head .script { font-size: calc(72 * var(--s)); }
-  .f-desc {
-    font-weight: 500; font-size: calc(24 * var(--s)); line-height: calc(38 * var(--s));
-    color: rgba(238,238,238,0.72);
-  }
+  .intro p { font-family: 'Metropolis', sans-serif; font-weight: 500; font-size: calc(22 * var(--s)); line-height: calc(36 * var(--s)); color: rgba(238,238,238,0.72); max-width: calc(560 * var(--s)); }
 
-  /* phones — the device frame is baked into each export, so these are
-     just transparent PNGs with a shadow cast off the frame silhouette */
-  .phones { display: flex; gap: calc(40 * var(--s)); justify-content: center; align-items: flex-end; }
-  .phones .pw { width: calc(300 * var(--s)); }
-  .phones .pw:nth-child(2) { transform: translateY(calc(-46 * var(--s))); }
-  .pw img {
-    width: 100%; height: auto; display: block;
-    filter: drop-shadow(0 calc(26 * var(--s)) calc(50 * var(--s)) rgba(0,0,0,0.55));
+  /* ── THE DESIGN SYSTEM — a deck of slides ──────────────────────────
+     After a brand-guidelines presentation: each slide a card, a title
+     panel in Seasalt on the left and the content on the right. The slides
+     hold at the top of the screen in turn (CSS sticky) and each next one
+     slides up over the last, which sinks back a little (desktop). */
+  .deck { --av: #9eb22b; --av-l: #c5d180; --av-d: #5f6b1a; --jet: #3e363f; --jet-l: #8b868c; --jet-d: #191619; --salt: #f9f9f9; --salt-d: #959595; --sun: #feea00; --link: #91b4fa; --red: #e5484d; }
+  .slide {
+    position: sticky; top: var(--top, 56px);   /* --top: the nav's height, set by the script */
+    height: calc(100vh - var(--top, 56px)); height: calc(100svh - var(--top, 56px));
+    padding: 1rem calc(113 * var(--s)) 2rem; display: flex;
   }
+  .slide-card {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(250px, 30%) 1fr;
+    background: var(--salt); color: var(--jet);
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 -12px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.05);
+    transform-origin: 50% 0;
+  }
+  .slide-side { padding: 2.2rem 2.2rem 2rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; }
+  .slide-num { font-size: .7rem; font-weight: 600; letter-spacing: .14em; color: var(--av-d); margin-bottom: 1rem; }
+  .slide-title { font-weight: 700; font-size: clamp(1.9rem, 3vw, 3rem); line-height: 1.02; letter-spacing: -.02em; }
+  .slide-desc { font-family: 'Metropolis', sans-serif; font-weight: 500; font-size: .9rem; line-height: 1.6; color: rgba(62,54,63,.74); max-width: 32ch; }
+  .slide-body { position: relative; min-width: 0; min-height: 0; background: var(--jet-d); color: var(--salt); overflow: hidden; }
+  .lab { font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+  .tm { display: block; overflow: visible; }
 
-  /* all screens grid */
-  .screens { padding: calc(120 * var(--s)) calc(113 * var(--s)) calc(160 * var(--s)); }
-  .screens-grid {
-    margin-top: calc(80 * var(--s));
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: calc(72 * var(--s)) calc(56 * var(--s)); align-items: end;
+  /* logo: the mark on its colours, and the app icon */
+  .sb-logo { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .tile { position: relative; display: grid; place-items: center; min-height: 0; }
+  .tile .lab { position: absolute; left: 1.2rem; bottom: 1rem; opacity: .7; }
+  .tile > .tm { width: min(44%, 280px); aspect-ratio: 1123 / 677; }
+  .t-jet { background: var(--jet); }
+  .t-salt { background: var(--salt); color: var(--jet); --mk: var(--jet); --lf: var(--av); }
+  .t-av { background: var(--av); color: var(--jet-d); --mk: var(--jet-d); --lf: var(--jet-d); }
+  .t-dark { background: var(--jet-d); }
+  .icon { width: min(30%, 168px); aspect-ratio: 1; border-radius: 22.4%; background: var(--jet); display: grid; place-items: center; box-shadow: 0 20px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+  .icon .tm { width: 60%; aspect-ratio: 1123 / 677; }
+
+  /* colour: the four colours and their shades, then the split */
+  .sb-pal { display: grid; grid-template-rows: 1fr auto; gap: 1.5rem; padding: 2.2rem 2.4rem; }
+  .pal-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; min-height: 0; }
+  .pal-col { display: flex; flex-direction: column; gap: .5rem; min-height: 0; }
+  .pal-col .lab { color: var(--av); }
+  .pal-name { font-weight: 700; font-size: clamp(1rem, 1.5vw, 1.4rem); margin-bottom: .3rem; }
+  .chip { flex: 1; min-height: 0; border-radius: 12px; background: var(--c); color: var(--t); display: flex; align-items: flex-end; padding: .65rem .8rem; font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: .78rem; letter-spacing: .04em; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+  .chip.big { flex: 1.7; }
+  .chip.edge { box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .split { display: flex; height: 2.6rem; border-radius: 12px; overflow: hidden; font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: .74rem; }
+  .split span { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+  .split span:nth-child(1) { flex: 60; background: var(--salt); color: var(--jet); }
+  .split span:nth-child(2) { flex: 30; background: var(--jet); color: var(--salt); }
+  .split span:nth-child(3) { flex: 10; background: var(--av); color: var(--jet-d); }
+
+  /* type: the two families, then the scale at its true proportions */
+  .sb-type { display: flex; flex-direction: column; justify-content: center; padding: 0 6%; --u: min(1px, calc((100svh - var(--top, 56px)) / 900), calc(100vw / 1512)); }
+  .fams { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding-bottom: 1.3rem; border-bottom: 1px solid rgba(249,249,249,.16); }
+  .fams > div { display: flex; flex-direction: column; gap: .5rem; }
+  .fams .lab { color: var(--av); }
+  .fam-p { font-weight: 800; font-size: calc(76 * var(--u)); line-height: 1; letter-spacing: -.02em; }
+  .fam-m { font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: calc(76 * var(--u)); line-height: 1; letter-spacing: -.02em; }
+  .scale { list-style: none; }
+  .scale li { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; padding: calc(12 * var(--u)) 0; border-bottom: 1px solid rgba(249,249,249,.08); }
+  .scale .lab { color: rgba(249,249,249,.5); white-space: nowrap; }
+  .s-h1 { font-weight: 800; font-size: calc(48 * var(--u)); line-height: 1.1; }
+  .s-h2 { font-weight: 700; font-size: calc(40 * var(--u)); line-height: 1.1; }
+  .s-h3 { font-weight: 700; font-size: calc(32 * var(--u)); line-height: 1.1; }
+  .s-h4, .s-h5, .s-p, .s-c { font-family: 'Metropolis', sans-serif; line-height: 1.2; }
+  .s-h4 { font-weight: 600; font-size: calc(24 * var(--u)); }
+  .s-h5 { font-weight: 500; font-size: calc(20 * var(--u)); }
+  .s-p { font-weight: 400; font-size: calc(16 * var(--u)); }
+  .s-c { font-weight: 500; font-size: calc(12 * var(--u)); }
+
+  /* components, on white as in the spec: buttons, the two recipe cards,
+     field states, the 8pt grid and the corner radii */
+  .sb-comp { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, .85fr); grid-template-rows: auto auto; align-content: center; gap: 2.2rem 2.4rem; padding: 2.2rem 2.6rem; background: #fff; color: var(--jet); box-shadow: inset 1px 0 0 rgba(62,54,63,.08); }
+  .c-block { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
+  .c-block > .lab, .c-sub { color: var(--av-d); }
+  .c-buttons { grid-column: 1 / -1; }
+  .btns { display: grid; grid-template-columns: auto repeat(4, minmax(0, 9.5rem)); gap: .65rem .9rem; align-items: center; }
+  .btns .lab { color: rgba(62,54,63,.55); }
+  .btns .tier { text-align: center; }
+  .btn { display: grid; place-items: center; height: 2.6rem; border-radius: 999px; font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: .86rem; }
+  .btn.s.p { background: var(--av); color: #fff; }
+  .btn.s.s2 { background: var(--jet); color: #fff; }
+  .btn.s.t { background: var(--salt-d); color: var(--jet); }
+  .btn.s.a { background: var(--av-d); color: #fff; }
+  .btn.o { box-shadow: inset 0 0 0 1.5px currentColor; }
+  .btn.o.p { color: var(--av); } .btn.o.s2 { color: var(--jet); } .btn.o.t { color: var(--salt-d); } .btn.o.a { color: var(--av-d); }
+  .cards { display: flex; gap: 1rem; align-items: flex-start; }
+  .rc { flex: none; background: var(--jet); color: #fff; border-radius: 12px; overflow: hidden; }
+  .rc-img { position: relative; background: #5d545e center / cover no-repeat; }
+  .badge { position: absolute; top: .5rem; left: .5rem; padding: .16rem .55rem; border-radius: 999px; font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: .58rem; }
+  .badge.sun { background: var(--sun); color: var(--jet-d); }
+  .badge.av { background: var(--av); color: #fff; }
+  .rc b { display: block; font-weight: 600; font-size: .8rem; line-height: 1.25; }
+  .rc small { display: block; margin-top: .35rem; font-family: 'Metropolis', sans-serif; font-size: .64rem; color: rgba(255,255,255,.6); }
+  .rc.tall { width: 7.4rem; }
+  .rc.tall .rc-img { height: 5.3rem; }
+  .rc.tall .rc-txt { padding: .7rem .75rem .85rem; }
+  .rc.wide { width: 13rem; height: 4.8rem; display: grid; grid-template-columns: 4.8rem 1fr; }
+  .rc.wide .rc-txt { padding: 0 .9rem; align-self: center; }
+  .dims { display: flex; gap: 1rem; font-family: 'Metropolis', sans-serif; font-size: .64rem; color: rgba(62,54,63,.5); }
+  .dims span:first-child { width: 7.4rem; }
+  .fld { display: flex; align-items: center; justify-content: space-between; height: 2.45rem; padding: 0 .9rem; border-radius: 12px; font-family: 'Metropolis', sans-serif; font-size: .8rem; color: rgba(62,54,63,.6); box-shadow: inset 0 0 0 1.5px #dcdadc; }
+  .fld.focus { color: var(--jet); box-shadow: inset 0 0 0 1.5px var(--av), 0 0 0 4px rgba(158,178,43,.16); }
+  .fld.err { box-shadow: inset 0 0 0 1.5px var(--red); }
+  .fld.err::after { content: '!'; font-weight: 700; color: var(--red); }
+  .fld.ok { box-shadow: inset 0 0 0 1.5px var(--av); }
+  .fld.ok::after { content: '✓'; font-weight: 700; color: var(--av); }
+  .sq-row { display: flex; align-items: flex-end; gap: .7rem; }
+  .sq { display: flex; flex-direction: column; align-items: center; gap: .35rem; font-family: 'Metropolis', sans-serif; font-size: .62rem; color: rgba(62,54,63,.55); }
+  .sq i { display: block; background: var(--av); border-radius: 2px; }
+  .sq-row.radii .sq i { width: 2.5rem; height: 2.5rem; background: var(--jet); }
+  .c-sub { margin-top: .6rem; }
+
+  /* the audit: two things building it caught */
+  .sb-audit { display: flex; flex-direction: column; justify-content: center; gap: 1.2rem; padding: 2.4rem; }
+  .aud { display: grid; grid-template-columns: 3.4rem 1fr auto; gap: 1.6rem; align-items: center; background: var(--jet); border-radius: 18px; padding: 1.8rem 2rem; }
+  .aud-n { align-self: start; font-weight: 700; font-size: 2.1rem; line-height: 1; color: var(--av); }
+  .aud h4 { font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.3rem); line-height: 1.25; margin-bottom: .55rem; }
+  .aud p { font-family: 'Metropolis', sans-serif; font-size: .86rem; line-height: 1.6; color: rgba(249,249,249,.62); max-width: 52ch; }
+  .aud-vis { display: grid; grid-auto-flow: column; gap: 1.4rem; align-items: center; }
+  .aud-vis > div { display: grid; gap: .45rem; justify-items: start; }
+  .aud-vis .lab { color: rgba(249,249,249,.5); font-size: .55rem; }
+  .b-spec { display: grid; place-items: center; width: 9.6rem; height: 2.65rem; border-radius: 999px; background: var(--av); color: #fff; font-weight: 700; font-size: 1.25rem; }
+  .b-real { display: grid; place-items: center; width: 7.6rem; height: 1.75rem; border-radius: 999px; background: var(--av); color: #fff; font-family: 'Metropolis', sans-serif; font-weight: 600; font-size: .72rem; }
+  .sw3 { display: flex; gap: .4rem; }
+  .sw3 i { display: block; width: 2.3rem; height: 1.45rem; border-radius: 6px; background: var(--c); }
+
+  /* ── THE APP — an iPhone held still while the scroll taps through it ──
+     The six screens sit in one phone; each hands over to the next the way
+     iOS does (a push, a fresh start after checkout, a tab), with a thumb
+     pressing the button first. The steps beside it light up in turn. */
+  .app-run { position: relative; }
+  .app-stage {
+    position: sticky; top: var(--top, 56px);
+    height: calc(100vh - var(--top, 56px)); height: calc(100svh - var(--top, 56px));
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: calc(120 * var(--s));
+    padding: 1.5rem calc(170 * var(--s)) 1.5rem calc(113 * var(--s));
   }
-  .screens-grid .pw { width: 100%; }
-  .screens-grid .pw:nth-child(even) { transform: translateY(calc(-34 * var(--s))); }
+  .steps { list-style: none; max-width: calc(600 * var(--s)); }
+  .steps li { display: grid; grid-template-columns: calc(74 * var(--s)) 1fr; padding: calc(20 * var(--s)) 0; border-top: 1px solid var(--hair); opacity: .34; transition: opacity .45s; }
+  .steps li:last-child { border-bottom: 1px solid var(--hair); }
+  .steps li.on { opacity: 1; }
+  .steps .n { padding-top: calc(9 * var(--s)); font-size: calc(18 * var(--s)); font-weight: 600; letter-spacing: calc(2.4 * var(--s)); color: var(--lime); }
+  .steps h3 { font-weight: 700; font-size: calc(34 * var(--s)); line-height: 1.2; letter-spacing: calc(-0.6 * var(--s)); color: var(--white); }
+  .steps .d { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s cubic-bezier(.16,1,.3,1); }
+  .steps li.on .d { grid-template-rows: 1fr; }
+  .steps .d p { overflow: hidden; font-family: 'Metropolis', sans-serif; font-weight: 500; font-size: calc(20 * var(--s)); line-height: 1.6; color: rgba(238,238,238,0.72); }
+  .steps .d p::before { content: ''; display: block; height: calc(10 * var(--s)); }
+  /* an iPhone drawn to its own proportions (433 x 882, the screen 393 x 852
+     inside it), the app showing through the screen under a status bar */
+  .app-phone { position: relative; height: min(calc((100svh - var(--top, 56px)) * .86), 820px); aspect-ratio: 441 / 882; }
+  .phone-screen { position: absolute; left: calc(24 / 441 * 100%); top: calc(15 / 882 * 100%); width: calc(393 / 441 * 100%); height: calc(852 / 882 * 100%); border-radius: calc(55 / 393 * 100%) / calc(55 / 852 * 100%); overflow: hidden; background: #201d21; isolation: isolate; }
+  .scr { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; visibility: hidden; will-change: transform, opacity; }
+  .scr:first-child { visibility: visible; }
+  .phone-status { position: absolute; top: 0; left: 0; z-index: 3; width: 100%; height: auto; display: block; }
+  .tap { position: absolute; z-index: 4; width: 15%; aspect-ratio: 1; margin: -7.5% 0 0 -7.5%; border-radius: 50%; background: rgba(255,255,255,.26); box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 4px 18px rgba(0,0,0,.35); opacity: 0; pointer-events: none; }
+  .phone-frame { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; filter: drop-shadow(0 28px 40px rgba(0,0,0,.55)); }
+
+  /* the numbers */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: calc(110 * var(--s)) calc(113 * var(--s)) 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+  .stat { padding: calc(56 * var(--s)) 0; }
+  .stat + .stat { padding-left: calc(40 * var(--s)); border-left: 1px solid var(--hair); }
+  .stat-number { font-weight: 700; font-size: calc(80 * var(--s)); line-height: 1; letter-spacing: calc(-2 * var(--s)); color: var(--lime); }
+  .stat-label { margin-top: calc(14 * var(--s)); font-size: calc(17 * var(--s)); font-weight: 600; letter-spacing: calc(2.4 * var(--s)); text-transform: uppercase; color: var(--muted); }
+
+  /* the content of each slide settles in as the slide arrives */
+  .slide-body > *, .slide-side > * { transition: opacity .7s ease, translate .9s cubic-bezier(.16,1,.3,1); }
+  .slide:not(.here) .slide-body > *, .slide:not(.here) .slide-side > * { opacity: 0; translate: 0 18px; }
 
   /* next project */
   .next {
@@ -267,6 +413,7 @@
     padding: calc(90 * var(--s)) 0 calc(110 * var(--s));
     display: flex; justify-content: space-between; align-items: center;
   }
+  .stats + .next { border-top: 0; }
   .next-label {
     font-size: calc(20 * var(--s)); font-weight: 600;
     letter-spacing: calc(2.6 * var(--s)); text-transform: uppercase;
@@ -408,19 +555,79 @@
     .what .copy p + p { margin-top: 1rem; }
     .phone-side { position: static; width: 128%; margin: 2.5rem -14% 0 0; }
 
-    .work { margin-top: 4rem; }
+    .below { width: 100%; margin-top: 4rem; }
     .sec-label { padding: 0 1.2rem 0.8rem; font-size: 0.62rem; letter-spacing: 0.14em; }
-    .feature { padding: 3rem 1.2rem; }
-    .feature-grid { grid-template-columns: 1fr; gap: 2.4rem; }
-    .feature-grid.flip { direction: ltr; }
-    .f-eyebrow { font-size: 0.62rem; letter-spacing: 0.14em; margin-bottom: 0.7rem; }
-    .f-head { font-size: 1.9rem; line-height: 1.1; margin-bottom: 0.9rem; }
+    .intro { grid-template-columns: 1fr; gap: 1rem; padding: 2.6rem 1.2rem 1.8rem; }
+    .f-head { font-size: 1.9rem; line-height: 1.1; letter-spacing: -0.02em; }
     .f-head .script { font-size: 2.1rem; }
-    .f-desc { font-size: 0.95rem; line-height: 1.65; }
-    .phones { gap: 1rem; }
-    .feature .phones .pw { width: 40vw; }
-    .screens { padding: 3rem 1.2rem 4rem; }
-    .screens-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+    .intro p { font-size: 0.95rem; line-height: 1.65; max-width: none; }
+
+    .slide { padding: .6rem .75rem 1rem; }
+    .slide-card { grid-template-columns: 1fr; grid-template-rows: auto 1fr; border-radius: 14px; }
+    .slide-side { padding: 1.1rem 1.2rem 1rem; gap: .5rem; }
+    .slide-side > div { display: flex; align-items: baseline; justify-content: space-between; flex-direction: row-reverse; gap: 1rem; }
+    .slide-num { margin: 0; }
+    .slide-title { font-size: clamp(1.4rem, 6.4vw, 2rem); }
+    .slide-title br { display: none; }
+    .slide-desc { font-size: .78rem; max-width: none; }
+    .tile .lab { left: .7rem; bottom: .6rem; font-size: .54rem; }
+    .tile > .tm { width: 58%; }
+    .icon { width: 42%; }
+    .sb-pal { padding: 1rem; gap: .8rem; }
+    .pal-cols { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: .8rem .6rem; }
+    .pal-col { gap: .3rem; }
+    .pal-col .lab { font-size: .5rem; }
+    .pal-name { font-size: .85rem; margin: 0; }
+    .chip { padding: .35rem .5rem; font-size: .6rem; border-radius: 8px; }
+    .split { height: 2rem; font-size: .58rem; border-radius: 8px; }
+    .split span:nth-child(3) { font-size: 0; }
+    .sb-type { padding: 0 1.1rem; }
+    .fams { gap: 1rem; padding-bottom: .9rem; }
+    .fams .lab { font-size: .5rem; }
+    .fam-p, .fam-m { font-size: 1.55rem; }
+    .scale li { padding: .45rem 0; gap: .8rem; }
+    .scale .lab { font-size: .5rem; }
+    .s-h1 { font-size: 1.45rem; } .s-h2 { font-size: 1.3rem; } .s-h3 { font-size: 1.15rem; }
+    .s-h4 { font-size: 1rem; } .s-h5 { font-size: .92rem; } .s-p { font-size: .82rem; } .s-c { font-size: .7rem; }
+    .sb-comp { grid-template-columns: 1fr; grid-template-rows: none; align-content: center; gap: 1.1rem; padding: 1rem 1.1rem; }
+    .btns { grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: .4rem; }
+    .btn { height: 1.9rem; font-size: .62rem; }
+    .btns .lab { font-size: .48rem; }
+    .c-fields { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+    .c-fields > .lab { grid-column: 1 / -1; }
+    .fld { height: 2rem; font-size: .68rem; border-radius: 9px; padding: 0 .7rem; }
+    .c-grid { display: none; }
+    .rc.tall { width: 7rem; } .rc.tall .rc-img { height: 4.6rem; }
+    .rc.wide { width: 12.4rem; height: 4.6rem; grid-template-columns: 4.6rem 1fr; }
+    .dims { display: none; }
+    .sb-audit { padding: 1rem; gap: .8rem; }
+    .aud { grid-template-columns: 2rem 1fr; gap: .6rem .8rem; padding: 1rem 1.1rem; border-radius: 14px; }
+    .aud-n { font-size: 1.3rem; }
+    .aud h4 { font-size: .9rem; margin: 0; }
+    .aud p { display: none; }
+    .aud-vis { grid-column: 2; justify-content: start; gap: .9rem; }
+    .b-spec { width: 6.6rem; height: 1.85rem; font-size: .86rem; }
+    .b-real { width: 5.2rem; height: 1.2rem; font-size: .55rem; }
+    .sw3 i { width: 1.7rem; height: 1.1rem; }
+
+    .app-stage { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 1.1rem; padding: .8rem 1.2rem 1rem; }
+    .app-phone { order: -1; height: min(calc((100svh - var(--top, 56px)) * .6), 560px); }
+    .steps { width: 100%; max-width: 30rem; min-height: 7.5rem; }
+    .steps li { display: none; grid-template-columns: 2.6rem 1fr; padding: 0; border: 0 !important; opacity: 1; }
+    .steps li.on { display: grid; }
+    .steps .n { padding-top: .3rem; font-size: .7rem; letter-spacing: .14em; }
+    .steps h3 { font-size: 1.25rem; letter-spacing: -.01em; }
+    .steps .d { grid-template-rows: 1fr; transition: none; }
+    .steps .d p { font-size: .88rem; }
+    .steps .d p::before { height: .35rem; }
+
+    .stats { grid-template-columns: 1fr 1fr; margin: 3rem 1.2rem 0; }
+    .stat { padding: 1.6rem 0; }
+    .stat + .stat { padding-left: 0; border-left: 0; }
+    .stat:nth-child(even) { padding-left: 1.2rem; border-left: 1px solid var(--hair); }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--hair); }
+    .stat-number { font-size: 2.4rem; letter-spacing: -0.03em; }
+    .stat-label { margin-top: .5rem; font-size: .62rem; letter-spacing: .12em; }
     .next { margin: 0 1.2rem; padding: 2.4rem 0 3rem; }
     .next-label { font-size: 0.62rem; letter-spacing: 0.14em; }
     .next-title { font-size: 1.9rem; }
@@ -523,74 +730,240 @@
     </div>
   </section>
 
-  <!-- ============ below the Figma ============ -->
-  <div class="work">
+</div>
 
-    <div class="sec-label"><span><span class="n">01</span> &nbsp;— <span>Onboarding</span></span><span>Olli / 2023</span></div>
-    <section class="feature">
-      <div class="feature-grid">
-        <div class="phones reveal">
-          <div class="pw"><img loading="lazy" src="olli/allergens.png" alt="Allergen selection"></div>
-          <div class="pw"><img loading="lazy" src="olli/prefer.png" alt="Taste preferences"></div>
+<!-- ============ below the Figma — the design system, then the app ============ -->
+<!-- the olli mark once, for the logo slide (its colours come from --mk / --lf) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="olli-m" viewBox="0 0 1123 677">
+    <rect style="fill:var(--mk,#9eb22b)" x="0" y="72" width="321" height="605" rx="160.5"/>
+    <path style="fill:var(--mk,#9eb22b)" d="M417,0 A163,163 0 0 1 580,163 L580,677 A163,163 0 0 1 417,514 Z"/>
+    <path style="fill:var(--mk,#9eb22b)" d="M659,0 A164,164 0 0 1 823,164 L823,677 A164,164 0 0 1 659,513 Z"/>
+    <rect style="fill:var(--mk,#9eb22b)" x="920" y="203" width="164" height="474"/>
+    <path style="fill:var(--lf,#feea00)" d="M1103,0 L1107,7 L1111,14 L1114,21 L1117,28 L1119,35 L1120,42 L1121,49 L1122,56 L1122,63 L1121,70 L1120,77 L1119,84 L1117,91 L1115,98 L1112,105 L1108,112 L1104,119 L1099,126 L1093,133 L1086,140 L1078,147 L1069,154 L1057,161 L1043,168 L1023,175 L980,175 L960,168 L948,161 L940,154 L933,147 L928,140 L925,133 L922,126 L921,119 L920,112 L921,105 L922,98 L924,91 L927,84 L932,77 L938,70 L945,63 L956,56 L972,49 L990,42 L1009,35 L1028,28 L1046,21 L1065,14 L1083,7 L1102,0 Z"/>
+  </symbol>
+</svg>
+
+<div class="below">
+
+  <!-- THE DESIGN SYSTEM — a deck of slides, each held at the top of the
+       screen while the next slides up over it -->
+  <section class="system">
+    <div class="sec-label"><span><span class="n">01</span> &nbsp;— <span>The Design System</span></span><span>Figma → SwiftUI</span></div>
+    <div class="intro">
+      <h2 class="f-head">Specified in Figma, <span class="script">built</span> in SwiftUI.</h2>
+      <p>A complete design system — brand, colour, type, grid and an 86-component library across twelve Figma pages — translated into a running iOS app, every value read from the source file.</p>
+    </div>
+
+    <div class="deck">
+
+      <article class="slide">
+        <div class="slide-card">
+          <div class="slide-side">
+            <div><div class="slide-num">01 / 05</div><h3 class="slide-title">Logo</h3></div>
+            <p class="slide-desc">Four rounded strokes and a leaf for the dot of the i. Avocado on Jet as standard, a single colour where it has to be, and the app icon.</p>
+          </div>
+          <div class="slide-body sb-logo">
+            <div class="tile t-jet"><svg class="tm" viewBox="0 0 1123 677" role="img" aria-label="The olli mark on Jet"><use href="#olli-m"/></svg><span class="lab">Primary</span></div>
+            <div class="tile t-salt"><svg class="tm" viewBox="0 0 1123 677" role="img" aria-label="The mark on Seasalt"><use href="#olli-m"/></svg><span class="lab">On light</span></div>
+            <div class="tile t-av"><svg class="tm" viewBox="0 0 1123 677" role="img" aria-label="The mark in one colour on Avocado"><use href="#olli-m"/></svg><span class="lab">One colour</span></div>
+            <div class="tile t-dark"><div class="icon"><svg class="tm" viewBox="0 0 1123 677" role="img" aria-label="The app icon"><use href="#olli-m"/></svg></div><span class="lab">App icon</span></div>
+          </div>
         </div>
-        <div class="reveal d1">
-          <div class="f-eyebrow">Feature 01</div>
-          <h3 class="f-head"><span>Built</span> <span class="script">around</span> <span>you.</span></h3>
-          <p class="f-desc">Onboarding builds a profile that actually matters. Pick your allergens and how you like to eat — Meat &amp; Veggies, Fit &amp; Wholesome, Veggie, Pescatarian — and every week is filtered to match. The whole thing takes under two minutes.</p>
+      </article>
+
+      <article class="slide">
+        <div class="slide-card">
+          <div class="slide-side">
+            <div><div class="slide-num">02 / 05</div><h3 class="slide-title">Colour</h3></div>
+            <p class="slide-desc">A 60-30-10 palette that adapts: sixty percent Seasalt, thirty Jet, ten Avocado. Every colour is an adaptive token, so light and dark are one system rather than two sets of values.</p>
+          </div>
+          <div class="slide-body sb-pal">
+            <div class="pal-cols">
+              <div class="pal-col"><span class="lab">Primary</span><span class="pal-name">Avocado</span>
+                <span class="chip big" style="--c:#9EB22B; --t:#191619">#9EB22B</span><span class="chip" style="--c:#C5D180; --t:#191619">#C5D180</span><span class="chip" style="--c:#5F6B1A; --t:#F9F9F9">#5F6B1A</span></div>
+              <div class="pal-col"><span class="lab">Secondary</span><span class="pal-name">Jet</span>
+                <span class="chip big" style="--c:#3E363F; --t:#F9F9F9">#3E363F</span><span class="chip" style="--c:#8B868C; --t:#191619">#8B868C</span><span class="chip edge" style="--c:#191619; --t:#F9F9F9">#191619</span></div>
+              <div class="pal-col"><span class="lab">Tertiary</span><span class="pal-name">Seasalt</span>
+                <span class="chip big" style="--c:#F9F9F9; --t:#3E363F">#F9F9F9</span><span class="chip" style="--c:#959595; --t:#191619">#959595</span></div>
+              <div class="pal-col"><span class="lab">Accent</span><span class="pal-name">Sun / Link</span>
+                <span class="chip big" style="--c:#FEEA00; --t:#191619">#FEEA00</span><span class="chip" style="--c:#91B4FA; --t:#191619">#91B4FA</span></div>
+            </div>
+            <div class="split" aria-label="The split: 60% Seasalt, 30% Jet, 10% Avocado"><span>60% Seasalt</span><span>30% Jet</span><span>10%</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-card">
+          <div class="slide-side">
+            <div><div class="slide-num">03 / 05</div><h3 class="slide-title">Typo&shy;graphy</h3></div>
+            <p class="slide-desc">Poppins for voice, Metropolis for clarity: Poppins sets the three heading levels, Metropolis everything you read. The scale ships tight, at 100% line height.</p>
+          </div>
+          <div class="slide-body sb-type">
+            <div class="fams">
+              <div><span class="fam-p">Poppins</span><span class="lab">For voice — headings 1 to 3</span></div>
+              <div><span class="fam-m">Metropolis</span><span class="lab">For clarity — everything you read</span></div>
+            </div>
+            <ol class="scale">
+              <li><span class="s-h1">Heading 1</span><span class="lab">Poppins ExtraBold · 48</span></li>
+              <li><span class="s-h2">Heading 2</span><span class="lab">Poppins Bold · 40</span></li>
+              <li><span class="s-h3">Heading 3</span><span class="lab">Poppins Bold · 32</span></li>
+              <li><span class="s-h4">Heading 4</span><span class="lab">Metropolis SemiBold · 24</span></li>
+              <li><span class="s-h5">Heading 5</span><span class="lab">Metropolis Medium · 20</span></li>
+              <li><span class="s-p">Paragraph text</span><span class="lab">Metropolis Regular · 16</span></li>
+              <li><span class="s-c">Caption text</span><span class="lab">Metropolis Medium · 12</span></li>
+            </ol>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-card">
+          <div class="slide-side">
+            <div><div class="slide-num">04 / 05</div><h3 class="slide-title">Compo&shy;nents</h3></div>
+            <p class="slide-desc">Every variant, built to spec. Buttons vary by style and tier, recipe cards come in two footprints, fields carry four states — all rebuilt as typed SwiftUI components, not static images.</p>
+          </div>
+          <div class="slide-body sb-comp">
+            <div class="c-block c-buttons">
+              <span class="lab">Buttons</span>
+              <div class="btns">
+                <span class="lab">Solid</span><span class="btn s p">Button</span><span class="btn s s2">Button</span><span class="btn s t">Button</span><span class="btn s a">Button</span>
+                <span class="lab">Outline</span><span class="btn o p">Button</span><span class="btn o s2">Button</span><span class="btn o t">Button</span><span class="btn o a">Button</span>
+                <span></span><span class="lab tier">Primary</span><span class="lab tier">Secondary</span><span class="lab tier">Tertiary</span><span class="lab tier">Accent</span>
+              </div>
+            </div>
+            <div class="c-block c-cards">
+              <span class="lab">Recipe card — two footprints</span>
+              <div class="cards">
+                <div class="rc tall"><div class="rc-img" style="background-image:url(web/olli-app/dish-burrito.jpg)"><span class="badge sun">Hall of fame</span></div><div class="rc-txt"><b>Chipotle Burrito Bowl</b><small>30 min</small></div></div>
+                <div class="rc wide"><div class="rc-img" style="background-image:url(web/olli-app/dish-pasta.jpg)"><span class="badge av">New</span></div><div class="rc-txt"><b>Creamy Tuscan Pasta</b><small>25 min</small></div></div>
+              </div>
+              <div class="dims"><span>149 × 212</span><span>339 × 123</span></div>
+            </div>
+            <div class="c-block c-fields">
+              <span class="lab">Field states</span>
+              <span class="fld">Default</span><span class="fld focus">Focused</span><span class="fld err">Error</span><span class="fld ok">Success</span>
+            </div>
+            <div class="c-block c-grid">
+              <span class="lab">Spacing — 8pt grid</span>
+              <div class="sq-row">
+                <span class="sq"><i style="width:6px;height:6px"></i>8</span><span class="sq"><i style="width:12px;height:12px"></i>16</span><span class="sq"><i style="width:18px;height:18px"></i>24</span>
+                <span class="sq"><i style="width:24px;height:24px"></i>32</span><span class="sq"><i style="width:30px;height:30px"></i>40</span><span class="sq"><i style="width:36px;height:36px"></i>48</span>
+              </div>
+              <span class="lab c-sub">Radii</span>
+              <div class="sq-row radii">
+                <span class="sq"><i style="border-radius:8%"></i>5</span><span class="sq"><i style="border-radius:19%"></i>12</span><span class="sq"><i style="border-radius:29%"></i>18</span><span class="sq"><i style="border-radius:50%"></i>30</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-card">
+          <div class="slide-side">
+            <div><div class="slide-num">05 / 05</div><h3 class="slide-title">Design <br>Audit</h3></div>
+            <p class="slide-desc">Building a design system is the fastest way to test it. Two problems surfaced that a static file would never have shown.</p>
+          </div>
+          <div class="slide-body sb-audit">
+            <div class="aud">
+              <span class="aud-n">01</span>
+              <div><h4>A button label that couldn't fit its button</h4><p>The symbol sheet draws every button at 246 × 68 with a 32pt label, but every real one in the flow is 40–44pt tall. Fixed with a proportional size ramp that keeps the spec for reference.</p></div>
+              <div class="aud-vis">
+                <div><span class="b-spec">Button</span><span class="lab">246 × 68 spec</span></div>
+                <div><span class="b-real">Button</span><span class="lab">44pt in every screen</span></div>
+              </div>
+            </div>
+            <div class="aud">
+              <span class="aud-n">02</span>
+              <div><h4>Two palettes in one file</h4><p>The Colors page documents Avocado as primary, but the button symbols still painted an earlier purple and mint palette across 32 instances. The build follows the documented palette, and the old values are flagged.</p></div>
+              <div class="aud-vis">
+                <div><span class="lab">On the button symbols</span><span class="sw3"><i style="--c:#B9A9CF"></i><i style="--c:#B2DCC4"></i><i style="--c:#26042A"></i></span></div>
+                <div><span class="lab">On the Colors page</span><span class="sw3"><i style="--c:#9EB22B"></i><i style="--c:#C5D180"></i><i style="--c:#5F6B1A"></i></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- THE APP — an iPhone held still while the scroll taps through it -->
+  <section class="app">
+    <div class="sec-label"><span><span class="n">02</span> &nbsp;— <span>The App</span></span><span>6 screens</span></div>
+    <div class="intro">
+      <h2 class="f-head">From stranger <span class="script">to</span> first box.</h2>
+      <p>The path a new user takes, in the SwiftUI build. Each step asks one thing and shows how far along you are. Scroll, and the phone taps through it.</p>
+    </div>
+    <div class="app-run">
+      <div class="app-stage">
+        <ol class="steps">
+          <li class="on"><span class="n">01</span><div><h3>Allergens</h3><div class="d"><p>Onboarding starts with what you can't eat: tap your allergens once and they're kept out of every week.</p></div></div></li>
+          <li><span class="n">02</span><div><h3>Preferences</h3><div class="d"><p>Then how you like to eat — Meat &amp; Veggies, Family Friendly, Fit &amp; Wholesome, Veggie, Pescatarian, Quick and Easy. The feed leads with what you pick.</p></div></div></li>
+          <li><span class="n">03</span><div><h3>Plan size</h3><div class="d"><p>People and recipes per week, each with a − and a +. Servings, price per serving and the weekly total update as you go.</p></div></div></li>
+          <li><span class="n">04</span><div><h3>Checkout</h3><div class="d"><p>No surprises: the receipt shows what you paid and exactly when the box arrives.</p></div></div></li>
+          <li><span class="n">05</span><div><h3>Your kitchen</h3><div class="d"><p>Home greets you by name, says when the box lands, and leads with this week's top picks and recipes chosen for your profile.</p></div></div></li>
+          <li><span class="n">06</span><div><h3>Account</h3><div class="d"><p>Your plan, your orders and the app's appearance — system, light or dark — on one screen, behind iOS's own Liquid Glass tab bar.</p></div></div></li>
+        </ol>
+        <div class="app-phone" role="img" aria-label="The Olli app on an iPhone, stepping from allergens through checkout to the home screen and the account page as you scroll">
+          <div class="phone-screen">
+            <img class="scr" src="web/olli-app/allergens.jpg" width="600" height="1304" alt="" decoding="async">
+            <img class="scr" src="web/olli-app/prefer.jpg" width="600" height="1304" alt="" loading="lazy" decoding="async">
+            <img class="scr" src="web/olli-app/customize.jpg" width="600" height="1304" alt="" loading="lazy" decoding="async">
+            <img class="scr" src="web/olli-app/purchase.jpg" width="600" height="1304" alt="" loading="lazy" decoding="async">
+            <img class="scr" src="web/olli-app/home.jpg" width="600" height="1304" alt="" loading="lazy" decoding="async">
+            <img class="scr" src="web/olli-app/profile.jpg" width="600" height="1304" alt="" loading="lazy" decoding="async">
+            <svg class="phone-status" viewBox="0 0 393 54" aria-hidden="true">
+              <rect width="393" height="54" fill="#201d21"/>
+              <text x="78" y="37" text-anchor="middle" font-family="-apple-system, 'SF Pro Text', system-ui, sans-serif" font-weight="600" font-size="17" fill="#fff">16:26</text>
+              <g fill="#fff"><rect x="289" y="30.5" width="3.3" height="5.5" rx="1"/><rect x="294.5" y="28" width="3.3" height="8" rx="1"/><rect x="300" y="25.5" width="3.3" height="10.5" rx="1"/><rect x="305.5" y="23" width="3.3" height="13" rx="1"/></g>
+              <g fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M321.4 29.9a6.2 6.2 0 0 1 8.8 0"/><path d="M318.2 26.7a10.7 10.7 0 0 1 15.2 0"/></g>
+              <circle cx="325.8" cy="34" r="1.9" fill="#fff"/>
+              <rect x="342.5" y="23.5" width="25" height="12.5" rx="3.8" fill="none" stroke="#fff" stroke-opacity=".38"/>
+              <rect x="344.5" y="25.5" width="21" height="8.5" rx="2.2" fill="#fff"/>
+              <path d="M369 27.8v4a2.1 2.1 0 0 0 0-4z" fill="#fff" fill-opacity=".4"/>
+            </svg>
+            <span class="tap"></span>
+          </div>
+          <svg class="phone-frame" viewBox="-4 0 441 882" aria-hidden="true">
+            <defs>
+              <linearGradient id="pfTi" x1="0" x2="1"><stop offset="0" stop-color="#9a989d"/><stop offset=".035" stop-color="#4b494e"/><stop offset=".5" stop-color="#36343a"/><stop offset=".965" stop-color="#4b494e"/><stop offset="1" stop-color="#9a989d"/></linearGradient>
+              <linearGradient id="pfBtn" x1="0" x2="1"><stop offset="0" stop-color="#2e2c31"/><stop offset=".55" stop-color="#7d7b80"/><stop offset="1" stop-color="#3a383d"/></linearGradient>
+              <linearGradient id="pfGlare" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".09"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            </defs>
+            <rect x="-3.5" y="168" width="6" height="34" rx="2" fill="url(#pfBtn)"/>
+            <rect x="-3.5" y="232" width="6" height="62" rx="2" fill="url(#pfBtn)"/>
+            <rect x="-3.5" y="306" width="6" height="62" rx="2" fill="url(#pfBtn)"/>
+            <rect x="430.5" y="262" width="6" height="96" rx="2" fill="url(#pfBtn)"/>
+            <path fill="url(#pfTi)" fill-rule="evenodd" d="M70,0H363A70,70 0 0 1 433,70V812A70,70 0 0 1 363,882H70A70,70 0 0 1 0,812V70A70,70 0 0 1 70,0ZM70,4H363A66,66 0 0 1 429,70V812A66,66 0 0 1 363,878H70A66,66 0 0 1 4,812V70A66,66 0 0 1 70,4Z"/>
+            <path fill="#060607" fill-rule="evenodd" d="M70,4H363A66,66 0 0 1 429,70V812A66,66 0 0 1 363,878H70A66,66 0 0 1 4,812V70A66,66 0 0 1 70,4ZM75,15H358A55,55 0 0 1 413,70V812A55,55 0 0 1 358,867H75A55,55 0 0 1 20,812V70A55,55 0 0 1 75,15Z"/>
+            <rect x=".75" y=".75" width="431.5" height="880.5" rx="69.3" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="1.5"/>
+            <rect x="4.5" y="4.5" width="424" height="873" rx="65.5" fill="none" stroke="#000" stroke-opacity=".55"/>
+            <rect x="153.5" y="26" width="126" height="37" rx="18.5" fill="#000"/>
+            <circle cx="261" cy="44.5" r="6.5" fill="#0c0e18"/><circle cx="261" cy="44.5" r="3" fill="#1a2240"/><circle cx="259.6" cy="43.1" r="1.1" fill="#6a7ab0" opacity=".7"/>
+            <path fill="url(#pfGlare)" d="M75,15H358A55,55 0 0 1 413,70V812A55,55 0 0 1 358,867H75A55,55 0 0 1 20,812V70A55,55 0 0 1 75,15Z"/>
+          </svg>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <div class="sec-label"><span><span class="n">02</span> &nbsp;— <span>Your Weekly Box</span></span></div>
-    <section class="feature">
-      <div class="feature-grid flip">
-        <div class="phones reveal">
-          <div class="pw"><img loading="lazy" src="olli/customize.png" alt="Plan size"></div>
-          <div class="pw"><img loading="lazy" src="olli/purchase.png" alt="Order confirmation"></div>
-        </div>
-        <div class="reveal d1">
-          <div class="f-eyebrow">Feature 02</div>
-          <h3 class="f-head"><span>Priced as you</span> <span class="script">build</span> <span>it.</span></h3>
-          <p class="f-desc">Set how many people you cook for and how many recipes you want — servings, price per serving and the weekly total all update as you go. No surprises at checkout, and the receipt says exactly when the box lands.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="sec-label"><span><span class="n">03</span> &nbsp;— <span>The Kitchen</span></span></div>
-    <section class="feature">
-      <div class="feature-grid">
-        <div class="phones reveal">
-          <div class="pw"><img loading="lazy" src="olli/home.png" alt="Home feed"></div>
-          <div class="pw"><img loading="lazy" src="olli/profile.png" alt="Account"></div>
-        </div>
-        <div class="reveal d1">
-          <div class="f-eyebrow">Feature 03</div>
-          <h3 class="f-head"><span>Your box, your</span> <span class="script">terms</span><span>.</span></h3>
-          <p class="f-desc">The home feed greets you by name and shows when the box lands. Your plan, orders and appearance settings all live on one screen — nothing buried, nothing to hunt for.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="screens">
-      <div class="sec-label" style="padding-left:0;padding-right:0;"><span><span class="n">04</span> &nbsp;— <span>All Screens</span></span><span>6 screens</span></div>
-      <div class="screens-grid">
-        <div class="pw reveal"><img loading="lazy" src="olli/allergens.png" alt="Allergen selection"></div>
-        <div class="pw reveal d1"><img loading="lazy" src="olli/prefer.png" alt="Taste preferences"></div>
-        <div class="pw reveal d2"><img loading="lazy" src="olli/customize.png" alt="Plan size"></div>
-        <div class="pw reveal d3"><img loading="lazy" src="olli/purchase.png" alt="Order confirmation"></div>
-        <div class="pw reveal"><img loading="lazy" src="olli/home.png" alt="Home feed"></div>
-        <div class="pw reveal d1"><img loading="lazy" src="olli/profile.png" alt="Account"></div>
-      </div>
-    </section>
-
-    <a href="bogota.html" class="next">
-      <div>
-        <div class="next-label">Next Project</div>
-        <div class="next-title">Restaurant Bogota</div>
-      </div>
-      <span class="next-arrow">→</span>
-    </a>
+  <div class="stats">
+    <div class="stat"><div class="stat-number">1,358</div><div class="stat-label">Layers decoded</div></div>
+    <div class="stat"><div class="stat-number">86</div><div class="stat-label">Components</div></div>
+    <div class="stat"><div class="stat-number">12</div><div class="stat-label">Figma pages</div></div>
+    <div class="stat"><div class="stat-number">25</div><div class="stat-label">Screens designed</div></div>
   </div>
+
+  <a href="muave.html" class="next">
+    <div>
+      <div class="next-label">Next Project</div>
+      <div class="next-title">Muave</div>
+    </div>
+    <span class="next-arrow">→</span>
+  </a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
@@ -861,22 +1234,136 @@
 
     /* everything below */
     animate('.sec-label', 'is-reveal');
-    animate('.f-eyebrow', 'is-reveal');
-    animate('.f-head', 'is-reveal', 0, 0.08);
-    animate('.f-desc', 'is-reveal', 0, 0.16);
+    animate('.intro .f-head', 'is-reveal');
+    animate('.intro p', 'is-reveal', 0, 0.12);
+    animate('.stat', 'is-reveal', 0.08);
     animate('.next-label, .next-title', 'is-reveal', 0.08);
     io.observe(document.querySelector('.next'));  // last on the page: on a phone the title can't scroll past the -8% margin itself
-
-    /* phones — stagger within each group */
-    document.querySelectorAll('.phones').forEach(group =>
-      animate([...group.querySelectorAll('.pw')], 'is-phone', 0.14));
-    animate([...document.querySelectorAll('.screens-grid .pw')], 'is-phone', 0.09);
 
     /* script words are written on; the CSS wipe is the fallback for a
        blocked CDN. Fonts must be in before the ink can be measured. */
     if (HW.ok) document.fonts.ready.then(HW.setup);
     else animate('.script', 'is-write', 0, 0.25);
   }
+
+  /* ── Below the Figma: the deck and the app ─────────────────────────
+     Both hold under the nav while their runs scroll by (CSS sticky, so
+     iOS keeps its bars and nothing jitters); --top is the nav's height. */
+  const navTop = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 56;
+  (function () {
+    const nav = document.querySelector('nav');
+    const setTop = () => document.documentElement.style.setProperty('--top', nav.offsetHeight + 'px');
+    setTop(); addEventListener('resize', setTop);
+  })();
+
+  /* The deck: each slide's content settles in as the slide arrives, and on
+     desktop the slide being covered sinks back and dims a touch as the
+     next comes up over it. */
+  (function () {
+    const slides = [...document.querySelectorAll('.deck .slide')];
+    if (!slides.length) return;
+    const cards = slides.map(s => s.querySelector('.slide-card'));
+    const seen = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('here'); seen.unobserve(e.target); }
+    }), { threshold: .35 });
+    slides.forEach(s => seen.observe(s));
+
+    if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 821px)').matches || reduced) return;
+    let queued = false;
+    const sink = () => {
+      queued = false;
+      const top = navTop(), h = innerHeight - top;
+      for (let i = 0; i < slides.length - 1; i++) {
+        const y = slides[i + 1].getBoundingClientRect().top - top;
+        const p = Math.min(1, Math.max(0, 1 - y / h));
+        cards[i].style.transform = p ? `scale(${(1 - .06 * p).toFixed(4)})` : '';
+        cards[i].style.filter = p ? `brightness(${(1 - .3 * p).toFixed(3)})` : '';
+      }
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(sink); } }, { passive: true });
+    sink();
+  })();
+
+  /* The app: the phone holds still while its run scrolls by, and the
+     scroll steps it through the six screens. Before each change a thumb
+     presses the button that makes it; then the screens hand over the way
+     iOS does: the next pushed in from the right over the last, the app
+     itself rising over the receipt after checkout, a quick switch between
+     tabs. With reduced motion the screens simply swap. */
+  (function () {
+    const run = document.querySelector('.app-run');
+    if (!run) return;
+    const stage = run.querySelector('.app-stage');
+    const shots = [...run.querySelectorAll('.scr')];
+    const steps = [...run.querySelectorAll('.steps li')];
+    const tap = run.querySelector('.tap');
+    // how each screen hands over to the next, and where the thumb lands to
+    // make it happen (as a share of the screen's width and height)
+    const MOVES = [
+      ['push', .5, .924],    // Continue
+      ['push', .5, .924],    // Continue
+      ['push', .5, .924],    // Continue
+      ['root', .5, .924],    // Go to my kitchen
+      ['tab', .807, .948],   // the Account tab
+    ];
+    const L = shots.length - 1;
+    const clamp = x => Math.min(1, Math.max(0, x));
+    const smooth = x => x * x * (3 - 2 * x);
+    let span = 1;
+    function layout() {
+      span = L * (innerHeight - navTop()) * .62;
+      run.style.height = (span + stage.offsetHeight) + 'px';
+    }
+    const target = () => clamp((navTop() - run.getBoundingClientRect().top) / span) * L;
+
+    let on = 0;
+    function render(f) {
+      const i = Math.min(L - 1, Math.floor(f));
+      const t = clamp((f - i - .12) / .76);                           // a still moment either side
+      const [kind, x, y] = MOVES[i];
+      const press = reduced ? 0 : Math.sin(Math.PI * clamp(t / .3));  // the thumb comes down, presses, lifts
+      const u = reduced ? (t < .5 ? 0 : 1) : smooth(clamp((t - .26) / .74));
+      const a = shots[i], b = shots[i + 1];
+      shots.forEach((s, k) => { s.style.visibility = k === i || (k === i + 1 && u > 0) ? 'visible' : 'hidden'; });
+      a.style.zIndex = 1; b.style.zIndex = 2; a.style.boxShadow = '';
+      if (kind === 'push' && !reduced) {
+        a.style.transform = `translate3d(${(-30 * u).toFixed(2)}%,0,0)`; a.style.opacity = 1;
+        a.style.filter = u ? `brightness(${(1 - .35 * u).toFixed(3)})` : '';
+        b.style.transform = `translate3d(${(100 * (1 - u)).toFixed(2)}%,0,0)`; b.style.opacity = 1; b.style.filter = '';
+        b.style.boxShadow = u > 0 && u < 1 ? '-14px 0 34px rgba(0,0,0,.45)' : '';
+      } else if (kind === 'root' && !reduced) {
+        a.style.transform = `scale(${(1 - .06 * u).toFixed(4)})`; a.style.opacity = 1;
+        a.style.filter = u ? `brightness(${(1 - .45 * u).toFixed(3)})` : '';
+        b.style.transform = `translate3d(0,${(100 * (1 - u)).toFixed(2)}%,0)`; b.style.opacity = 1; b.style.filter = '';
+        b.style.boxShadow = u > 0 && u < 1 ? '0 -14px 34px rgba(0,0,0,.45)' : '';
+      } else {
+        const w = reduced ? u : clamp((u - .4) / .2);   // a tab switches at once, not through a blend
+        a.style.transform = ''; a.style.opacity = 1; a.style.filter = '';
+        b.style.transform = ''; b.style.opacity = w.toFixed(3); b.style.filter = ''; b.style.boxShadow = '';
+      }
+      tap.style.left = x * 100 + '%'; tap.style.top = y * 100 + '%';
+      tap.style.opacity = (press * .95).toFixed(3);
+      tap.style.transform = `scale(${(1.3 - .4 * press).toFixed(3)})`;
+      const now = u >= .5 ? i + 1 : i;
+      if (now !== on) { on = now; steps.forEach((li, k) => li.classList.toggle('on', k === on)); }
+    }
+
+    // the phone eases after the scroll, so a mouse wheel's steps don't jolt it
+    let goal = 0, f = 0, raf = 0, last = 0;
+    function frame(now) {
+      raf = 0;
+      const dt = last ? Math.min(.05, (now - last) / 1000) : .016;
+      last = now;
+      f += (goal - f) * (1 - Math.exp(-dt * 8));
+      if (Math.abs(goal - f) < .0005) f = goal;
+      render(f);
+      if (f !== goal) raf = requestAnimationFrame(frame); else last = 0;
+    }
+    const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+    addEventListener('scroll', () => { goal = target(); kick(); }, { passive: true });
+    addEventListener('resize', () => { layout(); goal = target(); kick(); });
+    layout(); goal = f = target(); render(f);
+  })();
 </script>
 
 </body>
