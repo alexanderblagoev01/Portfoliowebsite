@@ -220,12 +220,11 @@
   .deck-section { padding: 6rem 0 3rem; border-bottom: 1px solid var(--hairline); }
   .deck {
     --mv-rose: #AF9690; --mv-brown: #62595F; --mv-pale: #F3E5F5; --mv-white: #FBF8FB;
-    --top: 70px;                              /* the nav's height, set by the script */
     margin-top: 1rem;
   }
   .slide {
-    position: sticky; top: var(--top);
-    height: calc(100vh - var(--top)); height: calc(100svh - var(--top));
+    position: sticky; top: var(--top, 70px);   /* --top: the nav's height, set by the script */
+    height: calc(100vh - var(--top, 70px)); height: calc(100svh - var(--top, 70px));
     padding: 1rem 2.5rem 2rem; display: flex;
   }
   .slide-card {
@@ -335,6 +334,70 @@
   @media (prefers-reduced-motion: reduce) {
     .slide-body > *, .slide-side > * { transition: none; }
     .slide:not(.here) .slide-body > *, .slide:not(.here) .slide-side > * { opacity: 1; translate: none; }
+  }
+
+  /* ── WEBSITE ──────────────────────────────────────────────────────
+     The shop's product page in a browser window, and its phone version
+     in front of it. The frames hold (CSS sticky) while the section's
+     run scrolls by, and the pages inside them scroll top to bottom. */
+  .site-section { padding: 6rem 0 0; border-bottom: 1px solid var(--hairline); }
+  .site-run { position: relative; height: 240vh; }
+  .site-stage {
+    position: sticky; top: var(--top, 70px);
+    height: calc(100vh - var(--top, 70px)); height: calc(100svh - var(--top, 70px));
+    display: grid; place-items: center; padding: 1.5rem 2.5rem 2.5rem;
+  }
+  .site-frames {
+    position: relative; aspect-ratio: 16 / 9.4;
+    width: min(1180px, 100%, calc((100svh - var(--top, 70px) - 4rem) * 1.702));
+  }
+  .browser {
+    position: absolute; left: 0; top: 0; width: 80%; height: 100%;
+    background: #efefef; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 30px 70px rgba(30, 24, 28, .45);
+  }
+  .browser-bar {
+    height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 14px;
+    background: #e4dde5; border-bottom: 1px solid rgba(98, 89, 95, .14);
+  }
+  .browser-bar i { width: 11px; height: 11px; border-radius: 50%; }
+  .browser-bar .r { background: #ff5f57; } .browser-bar .y { background: #febc2e; } .browser-bar .g { background: #28c840; }
+  .browser-url {
+    margin: 0 auto; transform: translateX(-20px);
+    font-family: 'JetBrains Mono', monospace; font-size: .66rem; letter-spacing: .04em; color: rgba(98, 89, 95, .8);
+    background: rgba(255, 255, 255, .7); border-radius: 6px; padding: .25rem 1.4rem;
+  }
+  .browser-view { position: absolute; top: 34px; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  /* an iPhone drawn to its own proportions (433 x 882, the screen 393 x
+     852 inside it): titanium band, black glass, Dynamic Island, buttons;
+     the page shows through the screen under a status bar */
+  .phone { position: absolute; right: 0; bottom: 0; height: 94%; aspect-ratio: 441 / 882; }
+  .phone-screen {
+    position: absolute; left: calc(24 / 441 * 100%); top: calc(15 / 882 * 100%);
+    width: calc(393 / 441 * 100%); height: calc(852 / 882 * 100%);
+    border-radius: calc(55 / 393 * 100%) / calc(55 / 852 * 100%); overflow: hidden; background: #efefef;
+  }
+  .phone-status { position: absolute; top: 0; left: 0; width: 100%; height: auto; display: block; }
+  .phone-view { position: absolute; top: calc(54 / 852 * 100%); left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .phone-frame { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none;
+                 filter: drop-shadow(0 28px 40px rgba(30, 24, 28, .5)); }
+  .browser-view img, .phone-view img { display: block; width: 100%; height: auto; will-change: transform; }
+  /* reduced motion: no scroll-reading; the frames scroll by hand */
+  .site-run.still { height: auto; }
+  .site-run.still .site-stage { position: relative; top: 0; }
+  .site-run.still .browser-view, .site-run.still .phone-view { overflow-y: auto; }
+
+  @media (max-width: 820px) {
+    .site-section { padding-top: 4rem; }
+    .site-run { height: 220vh; }
+    .site-stage { padding: .75rem 1rem 1.5rem; }
+    .site-frames { width: 100%; height: 100%; aspect-ratio: auto; }
+    .browser { width: 100%; height: 44%; border-radius: 10px; }
+    .browser-bar { height: 26px; padding: 0 10px; gap: 5px; }
+    .browser-bar i { width: 8px; height: 8px; }
+    .browser-url { font-size: .55rem; padding: .15rem .9rem; transform: none; }
+    .browser-view { top: 26px; }
+    .phone { right: auto; left: 50%; translate: -50% 0; height: 62%; }
   }
 </style>
 </head>
@@ -565,7 +628,65 @@
   </div>
 </section>
 
-<!-- WEBSITE (from Figma) — to come -->
+<!-- WEBSITE — the Wave Hoodie's product page, on desktop and on a phone;
+     both pages read top to bottom inside their frames as the page scrolls -->
+<section class="site-section">
+  <div class="container">
+    <div class="section-label">
+      <span><span class="num">03</span> &nbsp;— <span>Website</span></span>
+      <span>E-commerce / Product Page</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-heading reveal">The first drop,<br><em>online.</em></div>
+      <div class="about-text reveal d1">
+        <p>A product page for the Wave Hoodie: four finishes (Lotus, Cloud, Earth and Noir), four sizes, and the fit, fabric and care at a glance. Designed for desktop and phone.</p>
+      </div>
+    </div>
+  </div>
+  <div class="site-run">
+    <div class="site-stage">
+      <div class="site-frames">
+        <div class="browser">
+          <div class="browser-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="browser-url">muave.com/wave-hoodie</span></div>
+          <div class="browser-view"><img src="web/muave-site/shop-desktop.jpg" width="1600" height="2000" alt="The Wave Hoodie product page on desktop" loading="lazy" decoding="async"></div>
+        </div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-view"><img src="web/muave-site/shop-mobile.jpg" width="780" height="3042" alt="The Wave Hoodie product page on a phone" loading="lazy" decoding="async"></div>
+            <svg class="phone-status" viewBox="0 0 393 54" aria-hidden="true">
+              <rect width="393" height="54" fill="#efefef"/>
+              <text x="78" y="37" text-anchor="middle" font-family="-apple-system, 'SF Pro Text', system-ui, sans-serif" font-weight="600" font-size="17" fill="#111">9:41</text>
+              <g fill="#111"><rect x="289" y="30.5" width="3.3" height="5.5" rx="1"/><rect x="294.5" y="28" width="3.3" height="8" rx="1"/><rect x="300" y="25.5" width="3.3" height="10.5" rx="1"/><rect x="305.5" y="23" width="3.3" height="13" rx="1"/></g>
+              <g fill="none" stroke="#111" stroke-width="2.3" stroke-linecap="round"><path d="M321.4 29.9a6.2 6.2 0 0 1 8.8 0"/><path d="M318.2 26.7a10.7 10.7 0 0 1 15.2 0"/></g>
+              <circle cx="325.8" cy="34" r="1.9" fill="#111"/>
+              <rect x="342.5" y="23.5" width="25" height="12.5" rx="3.8" fill="none" stroke="#111" stroke-opacity=".38"/>
+              <rect x="344.5" y="25.5" width="21" height="8.5" rx="2.2" fill="#111"/>
+              <path d="M369 27.8v4a2.1 2.1 0 0 0 0-4z" fill="#111" fill-opacity=".4"/>
+            </svg>
+          </div>
+          <svg class="phone-frame" viewBox="-4 0 441 882" aria-hidden="true">
+            <defs>
+              <linearGradient id="pfTi" x1="0" x2="1"><stop offset="0" stop-color="#9a989d"/><stop offset=".035" stop-color="#4b494e"/><stop offset=".5" stop-color="#36343a"/><stop offset=".965" stop-color="#4b494e"/><stop offset="1" stop-color="#9a989d"/></linearGradient>
+              <linearGradient id="pfBtn" x1="0" x2="1"><stop offset="0" stop-color="#2e2c31"/><stop offset=".55" stop-color="#7d7b80"/><stop offset="1" stop-color="#3a383d"/></linearGradient>
+              <linearGradient id="pfGlare" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".09"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            </defs>
+            <rect x="-3.5" y="168" width="6" height="34" rx="2" fill="url(#pfBtn)"/>
+            <rect x="-3.5" y="232" width="6" height="62" rx="2" fill="url(#pfBtn)"/>
+            <rect x="-3.5" y="306" width="6" height="62" rx="2" fill="url(#pfBtn)"/>
+            <rect x="430.5" y="262" width="6" height="96" rx="2" fill="url(#pfBtn)"/>
+            <path fill="url(#pfTi)" fill-rule="evenodd" d="M70,0H363A70,70 0 0 1 433,70V812A70,70 0 0 1 363,882H70A70,70 0 0 1 0,812V70A70,70 0 0 1 70,0ZM70,4H363A66,66 0 0 1 429,70V812A66,66 0 0 1 363,878H70A66,66 0 0 1 4,812V70A66,66 0 0 1 70,4Z"/>
+            <path fill="#060607" fill-rule="evenodd" d="M70,4H363A66,66 0 0 1 429,70V812A66,66 0 0 1 363,878H70A66,66 0 0 1 4,812V70A66,66 0 0 1 70,4ZM75,15H358A55,55 0 0 1 413,70V812A55,55 0 0 1 358,867H75A55,55 0 0 1 20,812V70A55,55 0 0 1 75,15Z"/>
+            <rect x=".75" y=".75" width="431.5" height="880.5" rx="69.3" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="1.5"/>
+            <rect x="4.5" y="4.5" width="424" height="873" rx="65.5" fill="none" stroke="#000" stroke-opacity=".55"/>
+            <rect x="153.5" y="26" width="126" height="37" rx="18.5" fill="#000"/>
+            <circle cx="261" cy="44.5" r="6.5" fill="#0c0e18"/><circle cx="261" cy="44.5" r="3" fill="#1a2240"/><circle cx="259.6" cy="43.1" r="1.1" fill="#6a7ab0" opacity=".7"/>
+            <path fill="url(#pfGlare)" d="M75,15H358A55,55 0 0 1 413,70V812A55,55 0 0 1 358,867H75A55,55 0 0 1 20,812V70A55,55 0 0 1 75,15Z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- STATS -->
 <div class="stats-section">
@@ -624,7 +745,7 @@
     const slides = [...deck.querySelectorAll('.slide')];
     const cards = slides.map(s => s.querySelector('.slide-card'));
     let top = 70;
-    const setTop = () => { top = nav ? nav.offsetHeight : 0; deck.style.setProperty('--top', top + 'px'); };
+    const setTop = () => { top = nav ? nav.offsetHeight : 0; document.documentElement.style.setProperty('--top', top + 'px'); };
     setTop(); addEventListener('resize', setTop);
 
     const io = new IntersectionObserver(es => es.forEach(e => {
@@ -647,6 +768,31 @@
     };
     addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(sink); } }, { passive: true });
     sink();
+  })();
+
+  // ── Website: the two pages read top to bottom as the section scrolls ──
+  (function () {
+    const run = document.querySelector('.site-run');
+    if (!run) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { run.classList.add('still'); return; }
+    const stage = run.querySelector('.site-stage');
+    const views = [...run.querySelectorAll('.browser-view, .phone-view')].map(v => ({ v, img: v.querySelector('img') }));
+    let queued = false;
+    const read = () => {
+      queued = false;
+      const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70;
+      const r = run.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (top - r.top) / Math.max(1, r.height - stage.offsetHeight)));
+      views.forEach(({ v, img }) => {
+        const travel = Math.max(0, img.offsetHeight - v.clientHeight);
+        img.style.transform = `translate3d(0, ${(-p * travel).toFixed(1)}px, 0)`;
+      });
+    };
+    const ask = () => { if (!queued) { queued = true; requestAnimationFrame(read); } };
+    addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', ask);
+    views.forEach(({ img }) => img.addEventListener('load', ask));
+    read();
   })();
 </script>
 
