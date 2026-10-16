@@ -1081,9 +1081,16 @@
     .fw-name { flex-basis: 100%; white-space: normal; }
     .fw-flip .fw-cap, .fw-cap { order: 1; margin: .45rem 0 0; }
     .fw-flip .fw-pic, .fw-pic { order: 2; --ph: calc(var(--fs) * 1.35); margin: .45rem 0 0; }
-    .fw-row.is-on .fw-pic, .fw-row.fw-flip.is-on .fw-pic { margin: .45rem 0 0 .8rem; }
     .fw-row:nth-child(even) .fw-pic { order: 0; }
-    .fw-row:nth-child(even).is-on .fw-pic { margin: .45rem .8rem 0 0; }
+    /* phones: every bar lit, its cover already in place; a sliver of
+       cobalt between them keeps each bar its own */
+    .fw-row { background: #CDD308; color: #2D4C90; }
+    .fw-row + .fw-row { margin-top: 6px; }
+    .fw-cap, .fw-row.is-on .fw-cap { color: rgba(45, 76, 144, .8); }
+    .fw-wip .fw-name, .fw-wip .fw-cap { opacity: 1; }
+    .fw-pic, .fw-flip .fw-pic { width: calc(var(--ph) * 2.9); margin: .45rem 0 0 .8rem; transition: none; }
+    .fw-row:nth-child(even) .fw-pic { margin: .45rem .8rem 0 0; }
+    .fw-pic img { scale: 1; transition: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .fw-row, .fw-cap, .fw-pic, .fw-pic img { transition: none; }
@@ -2265,8 +2272,9 @@
 
 <script>
   /* ── Selected work: one bar lit at a time — the one under the cursor,
-     or (no hover) the one crossing the middle of the screen as it
-     scrolls; keyboard focus lights it too ── */
+     or (no hover, on a tablet-wide screen) the one crossing the middle
+     of the screen as it scrolls; keyboard focus lights it too. Phones
+     show every bar lit (CSS) ── */
   (function () {
     const list = document.querySelector('.fw-list');
     if (!list) return;
@@ -2276,7 +2284,7 @@
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
       rows.forEach(r => r.addEventListener('mouseenter', () => light(r)));
       list.addEventListener('mouseleave', () => light(null));
-    } else {
+    } else if (!matchMedia('(max-width: 1000px)').matches) {   /* phones have every bar lit already */
       const crossing = new Set();
       const io = new IntersectionObserver(es => {
         es.forEach(e => e.isIntersecting ? crossing.add(e.target) : crossing.delete(e.target));
